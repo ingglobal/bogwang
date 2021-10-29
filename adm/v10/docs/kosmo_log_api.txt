@@ -1,0 +1,105 @@
+ㅎ5_1_company테이블에 com_kosmolog_key컬럼추가
+
+// kosmo 인증키 company테이블에 추가
+compay_form.php, com_form_update.php에 com_kosmolog_key필드내용을 추가하고 디비테이블에도 추가해라
+
+
+###################################################################################
+
+user.02.function.php
+
+//KOSMO에 log데이터 전송 함수 정의
+if(!function_exists('send_kosmo_log')){
+function send_kosmo_log(){
+	global $g5, $board, $is_member, $member, $w, $stx, $mb;
+	if(!$is_member)
+		return;
+	//print_r2($_SESSION);exit;
+	if(!$_SEESSION['ss_com_kosmolog_key'])
+		return;
+
+	if(!$member['mb_id'])
+		return;
+	
+	$user_status = '';
+	if(preg_match('/update$/i',$g5['file_name'])){
+		if(!$w) $user_status = '등록';
+		else if($w == 'u') $user_status = '수정';
+		else if($w == 'd') $user_status = '삭제';
+	}
+	else if(preg_match('/list$/i',$g5['file_name'])){
+		if($stx) $user_status = '검색';
+	}
+	else{
+		if($g5['file_name'] == 'login_check'){
+			//print_r2($member);exit;
+			$user_status = '접속';
+		}
+		else if($g5['file_name'] == 'logout'){
+			$user_status = '종료';
+		}
+	}
+	
+	if(!$user_status)
+		return;
+	//print_r3($user_status);return;
+	$url = 'https://log.smart-factory.kr/apisvc/sendLogData.json';
+	/*
+	$crtcKey = $_SEESSION['ss_com_kosmolog_key'];
+	$logDt = G5_TIME_YMDHIS;
+	$useSe = $user_status;
+	$sysUser = $member['mb_id'];
+	$conectIp = $member['mb_login_ip'];
+	$dataUsgqty = '';
+	*/
+	$darr = array(
+		'crtfcKey' => $_SEESSION['ss_com_kosmolog_key'],
+		'logDt' => G5_TIME_YMDHIS,
+		'useSe' => $user_status,
+		'sysUser' => $member['mb_id'],
+		'conectIp' => $member['mb_login_ip'],
+		'dataUsgqty' => ''
+	);
+
+	$opt = array(
+		'http' => array(
+			'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+			'method' => 'POST',
+			'content' => http_build_query($darr)
+		)
+	);
+	$context = stream_context_create($opt); //데이터 가공
+	$result = file_get_contents($url, false, $context); //전송 ~ 결과값 반환
+	$data = json_decode($result, true);
+}
+}
+
+
+###################################################################################
+
+
+user.03.default.php
+
+function u_common_header()함수 안 제일 하단에 아래 소스 추가
+
+//kosmo에 사용현황 log 전송 함수(extend/suer.02.function.php에 정의)
+send_kosmo_log();
+
+
+###################################################################################
+
+
+user.08.hook.php
+
+function u_member_login_check()함수 중간쯤 set_session('ss_com_idx', $com_idx); 이런 소스만 있는 부분을 아래와 같이 수정해라(세션정보추가)
+
+$c_sql = sql_fetch(" SELECT com_kosmolog_key FROM {$g5['company_table']} WHERE com_idx = '$com_idx' ");
+$com_kosmolog_key = $c_sql['com_kosmolog_key'];
+set_session('ss_com_idx', $com_idx);
+set_session('ss_com_kosmolog_key',$com_kosmolog_key);
+-------------------------------------------------------
+
+function u_member_login_check()함수 안 제일 하단에 아래 소스 추가
+
+//kosmo에 사용현황 log 전송 함수(extend/suer.02.function.php에 정의)
+send_kosmo_log();
