@@ -44,7 +44,6 @@ if (!$sst) {
 $sql_order = " ORDER BY {$sst} {$sod} ";
 
 $sql = " select count(*) as cnt {$sql_common} {$sql_search} ";
-// echo $sql.'<br>';
 $row = sql_fetch($sql,1);
 $total_count = $row['cnt'];
 // echo $total_count.'<br>';
@@ -120,14 +119,16 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
             <label for="chkall" class="sound_only">전체</label>
             <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
         </th>
+        <th scope="col">생산일</th>
         <th scope="col"><?php echo subject_sort_link('itm_name') ?>품명</a></th>
         <th scope="col">파트넘버</th>
-        <th scope="col">거래처</th>
         <th scope="col">바코드</th>
+        <th scope="col">외부라벨</th>
         <th scope="col">LOT</th>
-        <th scope="col">단가</th>
+        <th scope="col">PLT</th>
         <th scope="col">품질</th>
         <th scope="col">위치</th>
+        <th scope="col">히스토리</th>
         <th scope="col">상태</th>
         <th scope="col">관리</th>
     </tr>
@@ -150,18 +151,16 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
             <label for="chk_<?php echo $i; ?>" class="sound_only"><?php echo get_text($row['itm_name']); ?> <?php echo get_text($row['itm_nick']); ?>님</label>
             <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i ?>">
         </td>
+        <td class="td_itm_reg_dt"><?=substr($row['itm_reg_dt'],0,19)?></td><!-- 생산일 -->
         <td class="td_itm_name"><?=$row['itm_name']?></td><!-- 품명 -->
         <td class="td_itm_part_no"><?=$row['bom_part_no']?></td><!-- 파트넘버 -->
-        <td class="td_com_name"><?=$g5['customer'][$row['com_idx_customer']]['com_name']?></td><!-- 거래처 -->
-        <td class="td_itm_barcode"><!-- 바코드 -->
-            <input type="text" name="itm_barcode[<?php echo $i; ?>]" value="<?=$row['itm_barcode']?>" class="tbl_input sit_amt" style="width:150px;">
-        </td>
-        <td class="td_itm_lot">
-            <input type="text" name="itm_lot[<?php echo $i; ?>]" value="<?=$row['itm_lot']?>" class="tbl_input sit_amt" style="width:100px;">
-        </td>
-        <td class="td_itm_price"><?=number_format($row['itm_price'])?></td><!-- 단가 -->
+        <td class="td_itm_barcode"><?=$row['itm_barcode']?></td><!-- 바코드 -->
+        <td class="td_itm_com_barcode"><?=$row['itm_com_barcode']?></td><!-- 외부라벨 -->
+        <td class="td_itm_lot"><?=$row['itm_lot']?></td><!-- LOT -->
+        <td class="td_itm_plt"><?=$row['itm_plt']?></td><!-- PLT -->
         <td class="td_itm_defect"><?=($row['itm_defect'])?'불량품':'양품'?></td><!-- 품질 -->
         <td class="td_itm_location"><?=$g5['location_name'][$row['trm_idx_location']]?></td><!-- 위치 -->
+        <td class="td_itm_history"><?=$row['itm_history']?></td><!-- 히스토리 -->
         <td class="td_itm_status"><?=$g5['set_itm_status_value'][$row['itm_status']]?></td><!-- 상태 -->
         <td class="td_mng">
             <?=($row['itm_type']!='material')?$s_bom:''?><!-- 자재가 아닌 경우만 BOM 버튼 -->
@@ -179,7 +178,11 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 
 <div class="btn_fixed_top">
     <?php if (!auth_check($auth[$sub_menu],'d')) { ?>
-       <a href="javascript:" id="btn_excel_upload" class="btn btn_02" style="margin-right:50px;">엑셀등록</a>
+       <a href="" class="btn btn_02">생산시작</a>
+       <a href="javascript:" class="btn btn_02">검수</a>
+       <a href="javascript:" class="btn btn_02">완제품코드매칭</a>
+       <a href="javascript:" class="btn btn_02">출하</a>
+       <a href="javascript:" class="btn btn_02" style="margin-right:200px;">생산시작</a>
     <?php } ?>
     <?php if (!auth_check($auth[$sub_menu],'w')) { ?>
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
