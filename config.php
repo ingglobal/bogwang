@@ -34,7 +34,7 @@ define('G5_HTTPS_DOMAIN', '');
 define('G5_DEBUG', false);
 
 // Set Databse table default engine is Databse default_storage_engine, If you want to use MyISAM or InnoDB, change to MyISAM or InnoDB.
-define('G5_DB_ENGINE', '');
+define('G5_DB_ENGINE', 'MyISAM');
 
 // Set Databse table default Charset
 // utf8, utf8mb4 등 지정 가능 기본값은 utf8, 설치전에 utf8mb4 으로 수정시 모든 테이블에 이모지 입력이 가능합니다. utf8mb4 는 mysql 또는 mariadb 5.5 버전 이상을 요구합니다.
