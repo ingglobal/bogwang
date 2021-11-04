@@ -1,4 +1,5 @@
 <?php
+/*
 $menu["menu935"] = array (
     array('935000', '공정관리', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
     ,array('935100', '생산공정메뉴', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
@@ -9,3 +10,4 @@ $menu["menu935"] = array (
     ,array('935150', '실시간생산현황2', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
     ,array('935160', '실시간생산현황3', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
 );
+*/

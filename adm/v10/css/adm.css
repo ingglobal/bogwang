@@ -264,3 +264,8 @@ td.td_grpset{border-left:1px solid #4b5465;}
 #scp_list_find{background:#060D1B;border:1px solid #142546;}
 #scp_list_find .btn_frmline{height:35px;line-height:35px;}
 
+/*높이 클래*/
+.ht26{height:26px;}
+a.ht26{height:26px;line-height:26px;}
+input.ht26{height:26px;line-height:26px;}
+button.ht26{height:26px;line-height:26px;}

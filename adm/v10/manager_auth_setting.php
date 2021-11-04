@@ -41,7 +41,7 @@ include_once('./_head.sub.php');
 				<td>
                     <?php echo help('선택한 회원과 동일한 권한으로 설정합니다.') ?>
 					<input type="text" name="mb_id_saler" value="<?php echo $sra['mb_id_saler'] ?>" id="mb_id_saler" required class="frm_input required" style="width:35%;">
-					<a href="./member_select.php?frm=form01&tar1=mb_id_saler" id="btn_member" class="btn_frmline">검색</a>
+					<a href="./member_select.php?frm=form01&tar1=mb_id_saler" id="btn_member" class="btn_frmline ht26">검색</a>
 				</td>
 			</tr>
 			<tr>
@@ -68,7 +68,7 @@ include_once('./_head.sub.php');
                             }
                         }
                     }
-                    if(count($au_array)==0)
+                    if(@count($au_array)==0)
                         echo '권한 없음';
                     ?>
                 </td>
