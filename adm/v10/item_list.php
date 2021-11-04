@@ -178,11 +178,10 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 
 <div class="btn_fixed_top">
     <?php if (!auth_check($auth[$sub_menu],'d')) { ?>
-       <a href="" class="btn btn_02">생산시작</a>
-       <a href="javascript:" class="btn btn_02">검수</a>
-       <a href="javascript:" class="btn btn_02">완제품코드매칭</a>
-       <a href="javascript:" class="btn btn_02">출하</a>
-       <a href="javascript:" class="btn btn_02" style="margin-right:200px;">생산시작</a>
+       <a href="<?=G5_URL?>/device/itm_ing/form.php" target="_blank" class="btn btn_02">생산시작</a>
+       <a href="<?=G5_URL?>/device/itm_error/form.php" target="_blank" class="btn btn_02">검수</a>
+       <a href="<?=G5_URL?>/device/itm_error/form.php" target="_blank" class="btn btn_02">완제품코드매칭</a>
+       <a href="<?=G5_URL?>/device/itm_error/form.php" target="_blank" class="btn btn_02" style="margin-right:200px;">출하</a>
     <?php } ?>
     <?php if (!auth_check($auth[$sub_menu],'w')) { ?>
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
