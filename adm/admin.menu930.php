@@ -10,7 +10,6 @@ $menu["menu930"] = array (
     //,array('930150', '불량발생제품', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
     //,array('930160', '포장코드매칭', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
     //,array('930170', '완제품입고전표생성', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
-    //,array('930180', '완제품재고관리', ''.G5_USER_ADMIN_URL.'/item_list.php', 'item_list')
     //,array('930190', '출하납품관리', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
     //,array('930200', '완제품출고전표확인', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
 );
