@@ -1,6 +1,6 @@
 <?php
 $menu["menu915"] = array (
-    array('915000', '기준정보관리', ''.G5_USER_ADMIN_URL.'/mms_list.php', 'mms_list')
+    array('915000', '기준정보', ''.G5_USER_ADMIN_URL.'/mms_list.php', 'mms_list')
     ,array('915110', '사원 정보', ''.G5_USER_ADMIN_URL.'/employee_list.php', 'employee_list')
     ,array('915120', '거래처 정보', ''.G5_USER_ADMIN_URL.'/customer_list.php', 'customer_list')
     //,array('915122', '제품환경설정', ''.G5_USER_ADMIN_URL.'/bom_common_setting_form.php', 'bom_common_setting_form')

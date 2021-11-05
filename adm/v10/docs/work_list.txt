@@ -1,0 +1,133 @@
+관리자
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '910100', au_auth = 'r';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '915110', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '915120', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '915125', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '915130', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '915145', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '915190', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '920100', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '920110', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '925100', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '925180', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '925120', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '925130', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '925230', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '930100', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '930105', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '945110', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '945115', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '945118', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '950100', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '950110', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '955400', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '955500', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'lbw', au_menu = '960100', au_auth = 'r,w';
+
+생산관리
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '910100', au_auth = 'r';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '915125', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '915130', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '915145', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '915190', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '920100', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '920110', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '925100', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '925180', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '925120', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '925130', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '925230', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '930100', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '930105', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '945110', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '945115', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '945118', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '950100', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '950110', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '955400', au_auth = 'r';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '955500', au_auth = 'r';
+INSERT `g5_auth` SET mb_id = 'kbw', au_menu = '960100', au_auth = 'r';
+
+품질관리
+INSERT `g5_auth` SET mb_id = 'kyh', au_menu = '910100', au_auth = 'r';
+INSERT `g5_auth` SET mb_id = 'kyh', au_menu = '915120', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kyh', au_menu = '915125', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kyh', au_menu = '915130', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kyh', au_menu = '915190', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kyh', au_menu = '920100', au_auth = 'r';
+INSERT `g5_auth` SET mb_id = 'kyh', au_menu = '920110', au_auth = 'r';
+INSERT `g5_auth` SET mb_id = 'kyh', au_menu = '930100', au_auth = 'r';
+INSERT `g5_auth` SET mb_id = 'kyh', au_menu = '930105', au_auth = 'r';
+INSERT `g5_auth` SET mb_id = 'kyh', au_menu = '945110', au_auth = 'r,w';
+INSERT `g5_auth` SET mb_id = 'kyh', au_menu = '945115', au_auth = 'r';
+INSERT `g5_auth` SET mb_id = 'kyh', au_menu = '945118', au_auth = 'r';
+INSERT `g5_auth` SET mb_id = 'kyh', au_menu = '955500', au_auth = 'r';
+INSERT `g5_auth` SET mb_id = 'kyh', au_menu = '960100', au_auth = 'r';
+
+
+
+총괄관리
+910100=r
+915110=r,w
+915120=r,w
+915125=r,w
+915130=r,w
+915145=r,w
+915190=r,w
+920100=r,w
+920110=r,w
+925100=r,w
+925180=r,w
+925120=r,w
+925130=r,w
+925230=r,w
+930100=r,w
+930105=r,w
+945110=r,w
+945115=r,w
+945118=r,w
+950100=r,w
+950110=r,w
+955400=r,w
+955500=r,w
+960100=r,w
+
+생산관리
+910100=r
+915125=r,w
+915130=r,w
+915145=r,w
+915190=r,w
+920100=r,w
+920110=r,w
+925100=r,w
+925180=r,w
+925120=r,w
+925130=r,w
+925230=r,w
+930100=r,w
+930105=r,w
+945110=r,w
+945115=r,w
+945118=r,w
+950100=r,w
+950110=r,w
+955400=r
+955500=r
+960100=r
+
+품질관리
+910100=r
+915120=r,w
+915125=r,w
+915130=r,w
+915190=r,w
+920100=r
+920110=r
+930100=r
+930105=r
+945110=r,w
+945115=r
+945118=r
+955500=r
+960100=r

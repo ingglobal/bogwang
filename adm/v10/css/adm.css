@@ -40,7 +40,7 @@ input[type="checkbox"]:checked:after{font-family:FontAwesome;position:absolute;c
 /* 레이아웃 (default_project에서 width:1100px 선언된 부분 무력화  */
 #container {width: inherit;background:#060D1B;padding:0 0 0 240px;}
 #container.container-small{padding-left:70px;}
-#container_title {font-size: 1.1em;border-bottom:1px solid #142546;padding-left:260px;}
+#container_title {font-size: 1.1em;border-bottom:1px solid #142546;padding-left:250px;}
 #container.container-small #container_title{padding-left:84px;}
 .container_wr {padding: 15px 15px;}
 #ft{background:#020710;}
@@ -50,12 +50,12 @@ input[type="checkbox"]:checked:after{font-family:FontAwesome;position:absolute;c
 
 /* 배경 컬러 */
 #hd_top {background:#060d1b;border-bottom: solid 1px #142546;}
-#logo {background: #020710;width:240px;padding:15px 0 15px 70px;}
-#btn_gnb {background-color:#0b1838;width:70px;}
+#logo {background: #020710;width:230px;padding:15px 0 15px 60px;}
+#btn_gnb {background-color:#0b1838;width:60px;}
 #gnb .gnb_oparea {background: #162c52;}
 #btn_gnb.btn_gnb_open {
     background-color:#0f1e3b;
-    width:70px;
+    width:60px;
 }
 #gnb .gnb_li .btn_op {background-color:#363c5e;}
 #tnb .tnb_community:hover {
@@ -65,7 +65,7 @@ input[type="checkbox"]:checked:after{font-family:FontAwesome;position:absolute;c
 /* 관리자단 왼편 하단 아이콘 */
 #gnb .gnb_ul {
     background: #0B1838;
-    width:70px;
+    width:60px;
 }
 #gnb .gnb_li .btn_op{background-color:#0f1e3b}
 #gnb .on .btn_op{background-color:#162c52}
@@ -126,7 +126,7 @@ input[type="checkbox"]:checked:after{font-family:FontAwesome;position:absolute;c
     -webkit-box-shadow: none;
     -moz-box-shadow: 2px 0 2px rgba(150,150,150,0.1);
     box-shadow: none;
-    left:70px;
+    left:60px;
 }
 
 /*관리자단 메뉴숨김*/
@@ -146,7 +146,7 @@ input[type="checkbox"]:checked:after{font-family:FontAwesome;position:absolute;c
     border: 0;
     display:block;
     position:relative;
-    width: 70px;
+    width: 60px;
     height: 36px;
     text-indent:inherit;
     /*text-indent: -999px;

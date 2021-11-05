@@ -4,8 +4,8 @@
 
 /* 레이아웃 */
 #container{margin-top:100px;}
-#container_sub_title{position:fixed;font-size:0.95em;font-weight:normal;top:91px;left:0;width:100%;line-height:26px;padding:0 10px;padding-left:240px;border-bottom:1px solid #142546;background:#000204;z-index:99}
-#container.container-small #container_sub_title{padding-left:70px}
+#container_sub_title{position:fixed;font-size:0.95em;font-weight:normal;top:91px;left:0;width:100%;line-height:26px;padding:0 10px;padding-left:250px;border-bottom:1px solid #142546;background:#000204;z-index:99}
+#container.container-small #container_sub_title{padding-left:80px}
 #container_sub_title a:after{content:' | ';}
 #container_sub_title a:last-child:after{content:'';}
 

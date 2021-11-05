@@ -1,6 +1,6 @@
 <?php
 $menu["menu985"] = array (
-    array('985000', '데이터생성', ''.G5_USER_ADMIN_URL.'/index.php', 'index')
+    array('985000', '데이터2', ''.G5_USER_ADMIN_URL.'/index.php', 'index')
     //,array('985100', '공지사항', ''.G5_USER_ADMIN_URL.'/bbs_board.php?bo_table=notice', 'notice')
     //,array('985200', '특근신청', ''.G5_USER_ADMIN_URL.'/bbs_board.php?bo_table=overtime', 'overtime')
     ,array('985300', '데이터생성', ''.G5_USER_ADMIN_URL.'/_data_index.php', '_data_index')
