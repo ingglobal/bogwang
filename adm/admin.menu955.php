@@ -1,7 +1,7 @@
 <?php
 $menu["menu955"] = array (
+    array('955000', '통계/보고', ''.G5_USER_ADMIN_URL.'/kpi_output.php', 'kpi_output')
     /*
-    array('955000', '통계/보고', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
     ,array('955100', '작업자별 실적현황', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
     ,array('955100', '유실집계현황', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
     ,array('955100', '생산일보', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
@@ -9,7 +9,7 @@ $menu["menu955"] = array (
     ,array('955100', '작업실적종합집계', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
     ,array('955100', '일일통계', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
     */
-    array('955400', 'KPI 보고서', G5_USER_ADMIN_URL.'/report/kpi_output.php', 'kpi_output')
+    ,array('955400', 'KPI보고', G5_USER_ADMIN_URL.'/report/kpi_output.php', 'kpi_output')
     /*
     ,array('955410', '생산보고서', G5_USER_ADMIN_URL.'/report/kpi_output.php', 'kpi_output',1)
     ,array('955415', '알람보고서', G5_USER_ADMIN_URL.'/report/kpi_alarm.php', 'kpi_alarm',1)
@@ -22,5 +22,5 @@ $menu["menu955"] = array (
     ,array('955450', 'UPH보고서', G5_USER_ADMIN_URL.'/report/kpi_uph.php', 'kpi_uph',1)
     ,array('955460', '생산원가보고서', G5_USER_ADMIN_URL.'/report/kpi_cost.php', 'kpi_cost',1)
     */
-    ,array('955500', 'M-ERP 보고서', G5_USER_ADMIN_URL.'/kpi_index.php?tab_idx=1', 'merp_index')
+    ,array('955500', 'M-ERP보고', G5_USER_ADMIN_URL.'/kpi_index.php?tab_idx=1', 'merp_index')
 );

@@ -1625,10 +1625,9 @@ if(!function_exists('get_set_options_select')){
 function get_set_options_select($set_variable, $start=0, $end=200, $selected="",$sub_menu)
 {
     global $g5,$auth;
-
     // 삭제 권한이 있으면 전부
     if(!auth_check($auth[$sub_menu],'d',1)) {
-        return $g5[$set_variable.'_options_value'];
+        return $g5[$set_variable.'_value_options'];
     }
     
     if(is_array($g5[$set_variable.'_value'])) {

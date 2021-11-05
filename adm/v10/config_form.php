@@ -100,6 +100,13 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 			</td>
 		</tr>
 		<tr>
+			<th scope="row">부서 mb_7</th>
+			<td colspan="3">
+				<?php echo help('1=구매원가,2=생산관리,3=품질개발') ?>
+				<input type="text" name="set_mb_parts" value="<?php echo $g5['setting']['set_mb_parts'] ?>" id="set_mb_parts" required class="required frm_input" style="width:60%;">
+			</td>
+		</tr>
+		<tr>
 			<th scope="row">업체분류</th>
 			<td colspan="3">
 				<?php echo help('electricity=전기,electronic=전자,facility=설비,food=식품,parts=자재') ?>
@@ -303,6 +310,34 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
             <td colspan="3">
                 <?php echo help('OneSignal > Settings > Keys & IDs : REST API KEY'); ?>
                 <input type="text" name="set_onesignal_key" value="<?php echo $g5['setting']['set_onesignal_key']; ?>" class="frm_input" style="width:60%;">
+            </td>
+        </tr>
+		<tr>
+			<th scope="row">메뉴권한종류 mb_8</th>
+			<td colspan="3">
+				<?php echo help('adm=총괄관리권한,adm_production=생산관리권한,adm_quality=품질관리권한') ?>
+				<input type="text" name="set_mb_auth" value="<?php echo $g5['setting']['set_mb_auth'] ?>" id="set_mb_auth" required class="required frm_input" style="width:60%;">
+			</td>
+		</tr>
+		<tr>
+            <th scope="row">총괄관리메뉴권한</th>
+            <td>
+                <?php echo help('총괄관리자의 메뉴 접근권한입니다.') ?>
+                <textarea name="set_admin_auth" id="set_admin_auth" style="width:50%;"><?php echo get_text($g5['setting']['set_admin_auth']); ?></textarea>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row">생산관리메뉴권한</th>
+            <td>
+                <?php echo help('생산관리자의 메뉴 접근권한입니다.') ?>
+                <textarea name="set_admin_production_auth" id="set_admin_production_auth" style="width:50%;"><?php echo get_text($g5['setting']['set_admin_production_auth']); ?></textarea>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row">품질관리메뉴권한</th>
+            <td>
+                <?php echo help('품질관리자의 메뉴 접근권한입니다.') ?>
+                <textarea name="set_admin_quality_auth" id="set_admin_quality_auth" style="width:50%;"><?php echo get_text($g5['setting']['set_admin_quality_auth']); ?></textarea>
             </td>
         </tr>
         <tr>

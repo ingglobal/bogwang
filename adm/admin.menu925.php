@@ -2,7 +2,7 @@
 $menu["menu925"] = array (
     array('925000', '설비관리', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
     ,array('925100', '설비목록', ''.G5_USER_ADMIN_URL.'/mms_list.php', 'mms_list')
-    ,array('915180', 'iMP 정보', ''.G5_USER_ADMIN_URL.'/imp_list.php', 'imp_list')
+    ,array('925180', 'iMP 정보', ''.G5_USER_ADMIN_URL.'/imp_list.php', 'imp_list')
     ,array('925120', '계획정비', ''.G5_BBS_URL.'/board.php?bo_table=plan', 'plan')
     ,array('925130', '정비이력', G5_BBS_URL.'/board.php?bo_table=maintain', 'maintain')
     //,array('925140', '부품재고', G5_BBS_URL.'/board.php?bo_table=parts', 'parts')

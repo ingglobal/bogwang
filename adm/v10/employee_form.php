@@ -123,6 +123,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
 <input type="hidden" name="page" value="<?php echo $page ?>">
 <input type="hidden" name="token" value="">
 <input type="hidden" name="ser_trm_idxs" value="<?php echo $ser_trm_idxs ?>">
+<input type="hidden" name="mb_4" value="<?php echo $mb['mb_4'] ?>">
 
 <div class="tbl_frm01 tbl_wrap">
     <table>
@@ -259,9 +260,16 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
     <tr style="display:<?php if(!$member['mb_manager_yn']) echo 'none';?>;">
         <th scope="row"><label for="mb_nick">닉네임<strong class="sound_only">필수</strong></label></th>
         <td><input type="text" name="mb_nick" value="<?php echo $mb['mb_nick'] ?>" id="reg_mb_nick" required class="required frm_input" size="15"  maxlength="20" <?php if(auth_check($auth[$sub_menu],'d',1)) echo 'readonly';?>></td>
-        <th scope="row">디폴트업체번호</th>
-        <td><input type="text" name="mb_4" value="<?php echo $mb['mb_4'] ?>" class="frm_input" size="3"></td>
+        <th scope="row">메뉴권한</th>
+        <td>
+            <select name="mb_8" id="mb_8" title="권한선택">
+				<option value="">권한선택</option>
+                <?php echo get_set_options_select('set_mb_auth',1, 200, $mb['mb_8'], $sub_menu) ?>
+			</select>
+			<script>$('select[name=mb_8]').val('<?=$mb['mb_8']?>').attr('selected','selected');</script>
+		</td>
     </tr>
+    
     <tr style="display:<?php if(!$member['mb_manager_yn']) echo 'none';?>;">
         <th scope="row">푸시키</th>
         <td colspan="3">
