@@ -315,7 +315,7 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
 		<tr>
 			<th scope="row">메뉴권한종류 mb_8</th>
 			<td colspan="3">
-				<?php echo help('adm=총괄관리권한,adm_production=생산관리권한,adm_quality=품질관리권한') ?>
+				<?php echo help('adm=총괄관리권한,adm_production=생산관리권한,adm_quality=품질관리권한,normal=일반사원권한') ?>
 				<input type="text" name="set_mb_auth" value="<?php echo $g5['setting']['set_mb_auth'] ?>" id="set_mb_auth" required class="required frm_input" style="width:60%;">
 			</td>
 		</tr>

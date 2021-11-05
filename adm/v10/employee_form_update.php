@@ -48,7 +48,8 @@ $sql_common = "  mb_name = '{$_POST['mb_name']}',
                  mb_1 = '{$_POST['mb_1']}',
                  mb_4 = '{$_POST['mb_4']}',
                  mb_5 = '{$_POST['mb_5']}',
-                 mb_6 = '{$_POST['mb_6']}'
+                 mb_6 = '{$_POST['mb_6']}',
+                 mb_8 = '{$_POST['mb_8']}'
 ";
 
 if ($w == '') {
@@ -68,37 +69,7 @@ if ($w == '') {
     sql_query($sql,1);
     //echo $sql;
 
-    // 메뉴 접근 권한 설정
-    $set_values = explode("\n", $g5['setting']['set_employee_auth']);
-    foreach ($set_values as $set_value) {
-        list($key, $value) = explode('=', trim($set_value));
-        if($key&&$value) {
-            // echo $key.' / '.$value.'<br>';
 
-            $au1 = sql_fetch(" SELECT * FROM {$g5['auth_table']} WHERE mb_id = '".$mb_id."' AND au_menu = '".$key."' ",1);
-            // 존재하면 업데이트
-            if($au1['au_menu']) {
-                $sql = "UPDATE {$g5['auth_table']} SET
-                            au_auth = '".$value."'
-                        WHERE mb_id = '".$mb_id."' AND au_menu = '".$key."'
-                ";
-                //echo $sql.'<br>';
-                sql_query($sql,1);
-            }
-            // 없으면 생성
-            else {
-                $sql = "INSERT INTO {$g5['auth_table']} SET
-                            mb_id = '".$mb_id."'
-                            , au_menu = '".$key."'
-                            , au_auth = '".$value."'
-                ";
-                //echo $sql.'<br>';
-                sql_query($sql,1);
-            }
-
-        }
-    }
-    unset($set_values);unset($set_value);
 
 }
 else if ($w == 'u') {
@@ -151,6 +122,48 @@ else {
 }
 
 
+
+// 메뉴 접근 권한 설정
+//$g5['setting']['set_admin_auth']
+//$g5['setting']['set_admin_production_auth']
+//$g5['setting']['set_admin_quality_auth']
+if($_POST['mb_8'] == 'adm'){
+    $set_values = explode("\n", $g5['setting']['set_admin_auth']);
+}
+else if($_POST['mb_8'] == 'adm_production'){
+    $set_values = explode("\n", $g5['setting']['set_admin_production_auth']);
+}
+else if($_POST['mb_8'] == 'adm_quality'){
+    $set_values = explode("\n", $g5['setting']['set_admin_quality_auth']);
+}
+else if($_POST['mb_8'] == 'normal'){
+    $set_values = explode("\n", $g5['setting']['set_employee_auth']);
+}
+else{
+    $set_values = array();
+}
+
+$adsql = " DELETE FROM {$g5['auth_table']} WHERE mb_id = '".$mb_id."' ";
+sql_query($adsql);
+
+if(count($set_values)){   
+    foreach ($set_values as $set_value) {
+        list($key, $value) = explode('=', trim($set_value));
+        if($key&&$value) {           
+            $sql = "INSERT INTO {$g5['auth_table']} SET
+                        mb_id = '".$mb_id."'
+                        , au_menu = '".$key."'
+                        , au_auth = '".$value."'
+            ";
+            //echo $sql.'<br>';
+            sql_query($sql,1);   
+        }
+    }
+}
+unset($set_values);unset($set_value);
+
+
+/*
 // 접속 첫페이지가 품질정보 입력페이지인 경우 권한을 줘야 합니다.
 if($_REQUEST['mb_first_page']=='manual_quality_input.php') {
     $set_input_auth[] = '960650=r,w';
@@ -189,7 +202,7 @@ for($i=0;$i<sizeof($set_input_auth);$i++) {
 
     }
 }
-
+*/
 
 
 
