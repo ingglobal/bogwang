@@ -17,8 +17,11 @@ $data = json_decode(stripslashes($_POST['serialized']),true);
 // exit;
 function create_categories(&$arr, $parent_id=0) {
     global $g5;
-    
+
     foreach($arr as $key => $item) {
+		//id값이 셋팅되어 있지 않으면 빈값이므로 건너띈다.
+        if(!array_key_exists('id',$item)) continue;
+		
         $item['parent_id'] = $parent_id;
         $list = array();
         $list = $item;
@@ -36,7 +39,7 @@ function create_categories(&$arr, $parent_id=0) {
 
         // 하위가 있으면 재귀함수
         if(isset($item['children'])){
-            create_categories($item['children'], $list['id']); 
+            create_categories($item['children'], $list['id']);
         }
     }
 }
@@ -47,7 +50,7 @@ create_categories($data, 0);
 if(is_array($g5['bit_idxs']))
     $sql_bit_idx = " AND bit_idx NOT IN (".implode(',',$g5['bit_idxs']).") ";
 
-$sql = "DELETE FROM {$g5['bom_item_table']} 
+$sql = "DELETE FROM {$g5['bom_item_table']}
         WHERE bom_idx = '".$_POST['bom_idx']."'
             {$sql_bit_idx}
 ";
