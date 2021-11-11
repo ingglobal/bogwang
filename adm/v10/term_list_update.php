@@ -6,10 +6,10 @@ check_demo();
 
 auth_check($auth[$sub_menu],"w");
 
-//print_r2($trm_idx);
-//echo "<br>==========<br>";
-//print_r2($trm_status);
-//exit;
+// print_r2($trm_idx);
+// echo "<br>==========<br>";
+// print_r2($trm_status);
+// exit;
 
 //-- depth 설정 및 공백 체크
 $prev_depth = 0;
@@ -23,7 +23,7 @@ for($i=0;$i<sizeof($trm_depth);$i++) {
 	if(trim($trm_name[$i]) == "") {
 		alert('조직명이 공백인 항목이 있습니다. \n\n확인하시고 다시 진행해 주세요.');
 	}
-	$prev_depth = $trm_depth[$i]; 
+	$prev_depth = $trm_depth[$i];
 }
 //print_r2($trm_status);
 //exit;
@@ -37,7 +37,7 @@ $depth_array = array();
 $idx_array = array();	// 부모 idx를 입력하기 위한 정의
 $prev_depth = 0;
 for($i=0;$i<sizeof($trm_name);$i++) {
-    
+
 	//-- leaf node(마지막노드) 체크 / $depth_array[$trm_depth[$i]] = 1
 	$depth_array[$trm_depth[$i]]++;	// 형제 갯수를 체크
 	if($trm_depth[$i] < $prev_depth) {
@@ -58,7 +58,7 @@ for($i=0;$i<sizeof($trm_name);$i++) {
         }
     }
     //$trm['more']['val1'] = '111';   // 추가 필드가 있으면 추가
-    //$trm['more']['set_policy_content'] = base64_encode($set_policy_content[$i]);    // 줄바꿈포함 내용이 들어가는 경우, 사용자단 사용은 stripslashes(base64_decode($board['set_policy_content'])) 
+    //$trm['more']['set_policy_content'] = base64_encode($set_policy_content[$i]);    // 줄바꿈포함 내용이 들어가는 경우, 사용자단 사용은 stripslashes(base64_decode($board['set_policy_content']))
     $trm_more[$i] = addslashes(serialize($trm['more']));
     unset($trm['more']);
 
@@ -69,19 +69,19 @@ for($i=0;$i<sizeof($trm_name);$i++) {
     // 업체번호
 	$com_idx[$i] = $com_idx ? $com_idx : 0 ;
 
-    
+
 	//echo $trm_name[$i].'->'.$trm_depth[$i].":::";
 	//echo 'depth_array['.$trm_depth[$i].']카운트 -> '.$depth_array[$trm_depth[$i]].' | ';
-	//echo "INSERT INTO {$g5['term_table']} (trm_idx,trm_idx_parent,trm_country,trm_name,trm_taxonomy,trm_content,trm_sort,trm_left,trm_right,trm_status,trm_reg_dt) 
+	//echo "INSERT INTO {$g5['term_table']} (trm_idx,trm_idx_parent,trm_country,trm_name,trm_taxonomy,trm_content,trm_sort,trm_left,trm_right,trm_status,trm_reg_dt)
 	//				VALUES ('$trm_idx[$i]','".$idx_array[$trm_depth[$i]-1]."','ko_KR','$trm_name[$i]','".$taxonomy."','$trm_content[$i]','$i', 1, 2, '".$trm_status[$i]."', now())
 	//				ON DUPLICATE KEY UPDATE trm_idx_parent = '".$idx_array[$trm_depth[$i]-1]."', trm_name = '$trm_name[$i]', trm_content = '$trm_content[$i]', trm_sort = '$i', trm_left = 1, trm_right = 2 ";
 	//echo "<br><br>";
 	//continue;
 	//echo $trm_status[$i];
-	
+
 	//-- 맨 처음 항목 입력 left=1, right=2 설정
 	if($i == 0) {
-		$sql = "INSERT INTO {$g5['term_table']} (trm_idx,trm_idx_parent,com_idx,trm_country,trm_name,trm_name2,trm_type,trm_taxonomy,trm_content,trm_sort,trm_left,trm_right,trm_more,trm_status,trm_reg_dt) 
+		$sql = "INSERT INTO {$g5['term_table']} (trm_idx,trm_idx_parent,com_idx,trm_country,trm_name,trm_name2,trm_type,trm_taxonomy,trm_content,trm_sort,trm_left,trm_right,trm_more,trm_status,trm_reg_dt)
 					VALUES ('$trm_idx[$i]','".$idx_array[$trm_depth[$i]-1]."','$com_idx[$i]','ko_KR','$trm_name[$i]','$trm_name2[$i]','$trm_type[$i]','".$taxonomy."','$trm_content[$i]','$i', 1, 2, '".$trm_more[$i]."', '".$trm_status[$i]."', now())
 					ON DUPLICATE KEY UPDATE trm_idx_parent = '".$idx_array[$trm_depth[$i]-1]."'
                                             , com_idx = '$com_idx[$i]'
@@ -107,7 +107,7 @@ for($i=0;$i<sizeof($trm_name);$i++) {
 			sql_query("SELECT @myLeft := trm_left FROM {$g5['term_table']} WHERE trm_idx = '".$idx_array[$trm_depth[$i]-1]."' ");
 			sql_query("UPDATE {$g5['term_table']} SET trm_right = trm_right + 2 WHERE trm_right > @myLeft AND trm_taxonomy = '".$taxonomy."' ");
 			sql_query("UPDATE {$g5['term_table']} SET trm_left = trm_left + 2 WHERE trm_left > @myLeft AND trm_taxonomy = '".$taxonomy."' ");
-			$sql = "INSERT INTO {$g5['term_table']} (trm_idx, trm_idx_parent, com_idx, trm_country, trm_name, trm_name2, trm_type, trm_taxonomy, trm_content, trm_sort, trm_left, trm_right, trm_more, trm_status, trm_reg_dt) 
+			$sql = "INSERT INTO {$g5['term_table']} (trm_idx, trm_idx_parent, com_idx, trm_country, trm_name, trm_name2, trm_type, trm_taxonomy, trm_content, trm_sort, trm_left, trm_right, trm_more, trm_status, trm_reg_dt)
 						VALUES ('$trm_idx[$i]','".$idx_array[$trm_depth[$i]-1]."','$com_idx[$i]','ko_KR','$trm_name[$i]','$trm_name2[$i]','$trm_type[$i]','".$taxonomy."','".$trm_content[$i]."','$i',@myLeft + 1,@myLeft + 2, '".$trm_more[$i]."', '".$trm_status[$i]."', now())
 						ON DUPLICATE KEY UPDATE trm_idx_parent = '".$idx_array[$trm_depth[$i]-1]."'
 							, com_idx = '$com_idx[$i]'
@@ -129,11 +129,11 @@ for($i=0;$i<sizeof($trm_name);$i++) {
 			//echo '친구idx -> '.$idx_array[$trm_depth[$i]];
 			//$sql = "SELECT @myRight := trm_right FROM {$g5['term_table']} WHERE trm_idx = '".$idx_array[$trm_depth[$i]]."' ";
 			//echo $sql.'<br><br>';
-	
+
 			sql_query("SELECT @myRight := trm_right FROM {$g5['term_table']} WHERE trm_idx = '".$idx_array[$trm_depth[$i]]."' ");
 			sql_query("UPDATE {$g5['term_table']} SET trm_right = trm_right + 2 WHERE trm_right > @myRight AND trm_taxonomy = '".$taxonomy."' ");
 			sql_query("UPDATE {$g5['term_table']} SET trm_left = trm_left + 2 WHERE trm_left > @myRight AND trm_taxonomy = '".$taxonomy."' ");
-			$sql = "INSERT INTO {$g5['term_table']} (trm_idx, trm_idx_parent, com_idx, trm_country, trm_name, trm_name2, trm_type, trm_taxonomy, trm_content, trm_sort, trm_left, trm_right, trm_more, trm_status, trm_reg_dt) 
+			$sql = "INSERT INTO {$g5['term_table']} (trm_idx, trm_idx_parent, com_idx, trm_country, trm_name, trm_name2, trm_type, trm_taxonomy, trm_content, trm_sort, trm_left, trm_right, trm_more, trm_status, trm_reg_dt)
 						VALUES ('$trm_idx[$i]','".$idx_array[$trm_depth[$i]-1]."','$com_idx[$i]','ko_KR','$trm_name[$i]','$trm_name2[$i]','$trm_type[$i]','".$taxonomy."','".$trm_content[$i]."','$i',@myRight + 1,@myRight + 2, '".$trm_more[$i]."', '".$trm_status[$i]."', now())
 						ON DUPLICATE KEY UPDATE trm_idx_parent = '".$idx_array[$trm_depth[$i]-1]."'
 							, com_idx = '$com_idx[$i]'
@@ -151,9 +151,9 @@ for($i=0;$i<sizeof($trm_name);$i++) {
 			echo $sql.'<br><br>';
 		}
 	}
-	
+
 	//echo "<br><br>";
-	$prev_depth = $trm_depth[$i]; 
+	$prev_depth = $trm_depth[$i];
 	$idx_array[$trm_depth[$i]] = $trm_idx[$i];	//-- left, right 기준 값 저장
 	$idx_array[$trm_depth[$i]] = sql_insert_id();	//-- left, right 기준 값 저장
 }

@@ -84,7 +84,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_CSS_URL.'/nestable.
             $row['com_customer'] = get_table('company','com_idx',$row['com_idx_customer']);
             $row['bit_count'] = $row['bit_count'] ?: 1;
             // print_r2($row);
-            
+
             if($row['bit_depth']<$depth) {
                 for($j=0;$j<$depth-$row['bit_depth'];$j++) {
                     echo '</ol></li>'.PHP_EOL;
@@ -110,7 +110,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_CSS_URL.'/nestable.
                 echo '<ol class="dd-list">'.PHP_EOL;
             else
                 echo '</li>'.PHP_EOL;
-            
+
             $depth = $row['bit_depth'];
         }
         if( $i == 0 ) {
@@ -124,7 +124,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_CSS_URL.'/nestable.
         ?>
         </ol>
         </div>
-        
+
         <div style="clear:both;"></div>
         <div class="btn_control">
             <!-- ========================================= -->
@@ -222,12 +222,12 @@ var resultOutput = function(arr, obj) {
 function list_update(obj) {
     var array = [],
         items = obj.children(itemNodeName);
-        
+
     items.each(function() {
         var li = $(this),
             item = $.extend({}, li.data()),
             sub = li.children(listNodeName);
-            
+        if(!item.id) return true;   
         // depth 속성 추가
         var li_depth = li.parents('.dd-list').length - 1;
         item.depth = li_depth;
@@ -235,15 +235,15 @@ function list_update(obj) {
         item.bom_idx_child = li.find('.'+contentClass).first().attr('bom_idx_child');
         item.bit_count = li.find('.'+contentClass).first().find('span.bit_count').text();
         // item.bit_2 = li.find('.'+contentClass).first().attr('bit_2');
-    
+
         if (includeContent) {
             var content = li.find('.' + contentClass).html();
-    
+
             if (content) {
                 item.content = content;
             }
         }
-    
+
         if (sub.length) {
             item.children = list_update(sub);
         }
@@ -264,7 +264,7 @@ $(document).on('click','.dd3-content',function(e){
         //console.log('있다.');
         var this_value = $(this).find('input').val();
         $(this).find('span').html( this_value );
-        
+
         printOutput();
     }
     // 아니면 input 박스 추가해서 내용 변경할 수 있도록 한다.
@@ -274,7 +274,7 @@ $(document).on('click','.dd3-content',function(e){
         $(this).find('span.bit_count').html('<input type="" name="" value="'+this_value+'" class="dd3-content-input">');
         $(this).find('span input').select().focus();
     }
-    
+
 });
 
 // 내용수정 input 클릭하면 div 에 영향을 주지 않게 stopPropagation
@@ -303,7 +303,7 @@ $(document).on('click','.dd3-content .add_items img',function(e){
         // }
         printOutput();
     }
-    
+
 });
 
 
@@ -316,7 +316,7 @@ $(document).on('click','#del-item',function(e){
         });
         naviLastId = 0; // id 초기화
         printOutput();
-    }    
+    }
 });
 
 // 항목추가 함수
@@ -358,7 +358,7 @@ function form01_submit(f) {
         printOutput();
         return false;
     }
-    
+
     // // 적용할 항목이 한개 이상이어야 한다.
     // if( $('.dd-item').length <= 0 ) {
     //     alert('구성품을 추가해 주세요.');
