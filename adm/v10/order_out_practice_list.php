@@ -12,7 +12,7 @@ $sql_common = " FROM {$g5['order_out_practice_table']} AS oop
     LEFT JOIN {$g5['order_practice_table']} AS orp ON orp.orp_idx = oop.orp_idx
     LEFT JOIN {$g5['order_out_table']} AS oro ON oop.oro_idx = oro.oro_idx
     LEFT JOIN {$g5['order_table']} AS ord ON oro.ord_idx = ord.ord_idx
-"; 
+";
 
 $where = array();
 // 디폴트 검색조건 (used 제외)
@@ -35,8 +35,8 @@ if ($stx != "") {
             break;
         case ( $sfl == 'customer_name') :
             //업체명에 관련된 모든 com_idx값들을 가져온다.
-            $csql = " SELECT GROUP_CONCAT(com_idx) AS com_idxs FROM {$g5['company_table']} 
-                            WHERE com_name LIKE '%{$stx}%' 
+            $csql = " SELECT GROUP_CONCAT(com_idx) AS com_idxs FROM {$g5['company_table']}
+                            WHERE com_name LIKE '%{$stx}%'
                                 AND com_level = 2
                                 AND com_status NOT IN('trash','delete','del')
             ";
@@ -210,14 +210,16 @@ $('.data_blank').on('click',function(e){
         <th scope="col">출하계획<br>납품수량</th>
         <th scope="col">과부족</th>
         <th scope="col">지시수량</th>
-        <th scope="col">시간1<br>08:00~10:00</th>
-        <th scope="col">시간2<br>10:10~12:00</th>
-        <th scope="col">시간3<br>13:00~15:00</th>
-        <th scope="col">시간4<br>15:10~17:00</th>
-        <th scope="col">시간5<br>17:10~19:00</th>
-        <th scope="col">시간6<br>19:10~21:00</th>
-        <th scope="col">시간7<br>21:10~23:00</th>
-        <th scope="col">시간8<br>23:10~01:00</th>
+        <th scope="col">시간1<br>08:00<br>~10:00</th>
+        <th scope="col">시간2<br>10:10<br>~12:00</th>
+        <th scope="col">시간3<br>13:00<br>~15:00</th>
+        <th scope="col">시간4<br>15:10<br>~17:00</th>
+        <th scope="col">시간5<br>17:10<br>~19:00</th>
+        <th scope="col">시간6<br>19:10<br>~21:00</th>
+        <th scope="col">시간7<br>21:10<br>~23:00</th>
+        <th scope="col">시간8<br>23:10<br>~01:00</th>
+        <th scope="col">시간9<br>01:10<br>~03:00</th>
+        <th scope="col">시간10<br>03:10<br>~05:00</th>
         <th scope="col">상태</th>
         <th scope="col">관리</th>
     </tr>
@@ -225,7 +227,7 @@ $('.data_blank').on('click',function(e){
     <tbody>
     <?php
     for ($i=0; $row=sql_fetch_array($result); $i++) {
-        
+
 
         $s_mod = '<a href="./order_out_practice_form.php?'.$qstr.'&amp;w=u&amp;oop_idx='.$row['oop_idx'].'" class="btn btn_03">수정</a>';
         //$s_copy = '<a href="./order_out_practice_form.php?'.$qstr.'&w=c&oop_idx='.$row['oop_idx'].'" class="btn btn_03" style="margin-right:5px;">복제</a>';
@@ -259,7 +261,7 @@ $('.data_blank').on('click',function(e){
         <td class="td_ord_idx"><a href="./order_out_practice_list.php?sfl=oop.ord_idx&stx=<?=$row['ord_idx']?>"><?=$row['ord_idx']?></a></td>
         <td class="td_orp_idx"><a href="./order_out_practice_list.php?sfl=oop.orp_idx&stx=<?=$row['orp_idx']?>"><?=$row['orp_idx']?></a></td>
         <td class="td_orp_start_date">
-            
+
             <a href="./order_out_practice_list.php?sfl=oop.ord_idx&stx=<?=$row['ord_idx']?>"><?=substr($row['orp_start_date'],2,8)?></a>
         </td>
         <td class="td_trm_idx_line"><a href="./order_practice_list.php?sfl=oop.orp_idx&stx=<?=$row['orp_idx']?>"><?=$g5['line_name'][$row['trm_idx_line']]?></a></td>
@@ -298,6 +300,8 @@ $('.data_blank').on('click',function(e){
         <td class="td_oop_6"><input type="text" oop="6" oop_idx="<?=$row['oop_idx']?>" name="oop_6[<?=$row['oop_idx']?>]" value="<?=$row['oop_6']?>" class="tbl_input shf_one oop_6_<?=$row['oro_idx']?>" style="width:45px;text-align:right;"></td>
         <td class="td_oop_7"><input type="text" oop="7" oop_idx="<?=$row['oop_idx']?>" name="oop_7[<?=$row['oop_idx']?>]" value="<?=$row['oop_7']?>" class="tbl_input shf_one oop_7_<?=$row['oro_idx']?>" style="width:45px;text-align:right;"></td>
         <td class="td_oop_8"><input type="text" oop="8" oop_idx="<?=$row['oop_idx']?>" name="oop_8[<?=$row['oop_idx']?>]" value="<?=$row['oop_8']?>" class="tbl_input shf_one oop_8_<?=$row['oro_idx']?>" style="width:45px;text-align:right;"></td>
+        <td class="td_oop_9"><input type="text" oop="9" oop_idx="<?=$row['oop_idx']?>" name="oop_9[<?=$row['oop_idx']?>]" value="<?=$row['oop_9']?>" class="tbl_input shf_one oop_9_<?=$row['oro_idx']?>" style="width:45px;text-align:right;"></td>
+        <td class="td_oop_10"><input type="text" oop="10" oop_idx="<?=$row['oop_idx']?>" name="oop_10[<?=$row['oop_idx']?>]" value="<?=$row['oop_10']?>" class="tbl_input shf_one oop_10_<?=$row['oro_idx']?>" style="width:45px;text-align:right;"></td>
         <td class="td_orp_status td_oop_status_<?=$row['oop_idx']?>"">
             <input type="hidden" name="oop_status[<?php echo $row['oop_idx'] ?>]" class="oop_status_<?php echo $row['oop_idx'] ?>" value="<?php echo $row['oop_status']?>">
             <input type="text" value="<?php echo $g5['set_oop_status_value'][$row['oop_status']]?>" readonly class="tbl_input readonly oop_status_name_<?php echo $row['oop_idx'] ?>" style="width:60px;text-align:center;">
@@ -340,11 +344,11 @@ $("input[name*=_date],input[id*=_date]").datepicker({ changeMonth: true, changeY
 $(".tbl_head01 tbody tr").on({
     mouseenter: function () {
         $('tr[tr_id='+$(this).attr('tr_id')+']').find('td').css('background','#0b1938');
-        
+
     },
     mouseleave: function () {
         $('tr[tr_id='+$(this).attr('tr_id')+']').find('td').css('background','unset');
-    }    
+    }
 });
 
 var first_no = '';
@@ -356,7 +360,7 @@ $('.chkdiv_btn').on('click',function(e){
         if(first_no == ''){
             first_no = 0;
         }
-        //first_no정보가 있으면 first_no부터 second_no까지 체크를 선택한다. 
+        //first_no정보가 있으면 first_no부터 second_no까지 체크를 선택한다.
         else{
             ;
         }
@@ -400,7 +404,7 @@ $('.shf_one').on('keyup',function(e){
     var ask = e.keyCode;
     var oop_idx = $(e.target).attr('oop_idx');
     var oop_n = $(e.target).attr('oop');
-    
+
     var RegExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+┼<>@\#$%&\'\"\\\(\=]/gi; //특수문자 패턴
     var instr = $(this).val();
     if(RegExp.test(instr)){
@@ -439,7 +443,9 @@ function calsum(oop_idx){
     var oop6 = ($('input[name="oop_6['+oop_idx+']"]').val() != '') ? Number($('input[name="oop_6['+oop_idx+']"]').val()) : 0;
     var oop7 = ($('input[name="oop_7['+oop_idx+']"]').val() != '') ? Number($('input[name="oop_7['+oop_idx+']"]').val()) : 0;
     var oop8 = ($('input[name="oop_8['+oop_idx+']"]').val() != '') ? Number($('input[name="oop_8['+oop_idx+']"]').val()) : 0;
-    var oopt = oop1 + oop2 + oop3 + oop4 + oop5 + oop6 + oop7 + oop8;
+    var oop9 = ($('input[name="oop_9['+oop_idx+']"]').val() != '') ? Number($('input[name="oop_9['+oop_idx+']"]').val()) : 0;
+    var oop10 = ($('input[name="oop_10['+oop_idx+']"]').val() != '') ? Number($('input[name="oop_10['+oop_idx+']"]').val()) : 0;
+    var oopt = oop1 + oop2 + oop3 + oop4 + oop5 + oop6 + oop7 + oop8 + oop9 + oop10;
     var oop_input = $('input[name="oop_count['+oop_idx+']"]');
     //과부족.lack_oop_idx = 전일재고.prev_stock_oop_idx + 생산지시수량.oop_count_oop_idx - 출하계획납품수량.oro_count_oop_idx
     var lack_cnt = Number($('.prev_stock_'+oop_idx).text()) + oopt - Number($('.oro_count_'+oop_idx).text());
@@ -481,7 +487,7 @@ function slet_input(f){
             $('.td_oop_status_'+chk_idx[idx]).find('input[type="text"]').val(o_status_name);
         }
     }
-}    
+}
 
 function form01_submit(f)
 {
