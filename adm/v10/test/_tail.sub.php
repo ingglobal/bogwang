@@ -1,5 +1,5 @@
 </div><!--#test_container-->
-<div id="sql_tail">
+<div id="test_tail">
     epcs.co.kr@copyright
 </div>
 <?php
