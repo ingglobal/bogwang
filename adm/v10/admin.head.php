@@ -8,12 +8,12 @@ $g5_debug['php']['begin_time'] = $begin_time = get_microtime();
 $files = glob(G5_ADMIN_PATH.'/css/admin_extend_*');
 if (is_array($files)) {
     foreach ((array) $files as $k=>$css_file) {
-        
+
         $fileinfo = pathinfo($css_file);
         $ext = $fileinfo['extension'];
-        
+
         if( $ext !== 'css' ) continue;
-        
+
         $css_file = str_replace(G5_ADMIN_PATH, G5_ADMIN_URL, $css_file);
         add_stylesheet('<link rel="stylesheet" href="'.$css_file.'">', $k);
     }
@@ -24,7 +24,7 @@ include_once(G5_PATH.'/head.sub.php');
 function print_menu1($key, $no='')
 {
     global $menu;
-    
+
     $str = print_menu2($key, $no);
 
     return $str;
@@ -64,16 +64,16 @@ function print_menu1($key, $no='')
 function print_menu2($key, $no='')
 {
     global $menu, $auth_menu, $is_admin, $auth, $g5, $sub_menu;
-    
+
     $str .= "<ul>";
     for($i=1; $i<count($menu[$key]); $i++)
     {
         if ($is_admin != 'super' && (!array_key_exists($menu[$key][$i][0],$auth) || !strstr($auth[$menu[$key][$i][0]], 'r')))
             continue;
-        
+
         if (($menu[$key][$i][4] == 1 && $gnb_grp_style == false) || ($menu[$key][$i][4] != 1 && $gnb_grp_style == true)) $gnb_grp_div = 'gnb_grp_div';
         else $gnb_grp_div = '';
-        
+
         if ($menu[$key][$i][4] == 1) $gnb_grp_style = 'gnb_grp_style';
         else $gnb_grp_style = '';
 
@@ -139,6 +139,8 @@ function imageview(id, w, h)
         <div id="tnb">
             <ul>
                 <?php if($is_admin=='super') { ?>
+                    <li class="tnb_li"><a href="<?php echo G5_USER_ADMIN_TEST_URL ?>" class="tnb_sql">TEST</a></li>
+                    <li class="tnb_li"><a href="<?php echo G5_USER_ADMIN_SQL_URL ?>" class="tnb_sql">SQL</a></li>
                     <li class="tnb_li"><a href="<?php echo G5_USER_ADMIN_URL ?>/?device=mobile" class="tnb_mobile">Mobile</a></li>
                 <?php } ?>
                 <li class="tnb_li"><a href="<?php echo G5_SHOP_URL ?>/" class="tnb_shop" target="_blank" title="쇼핑몰 바로가기">쇼핑몰 바로가기</a></li>
@@ -202,7 +204,7 @@ $(function($){
     });
 
     $("#btn_gnb").click(function(){
-        
+
         var $this = $(this);
 
         try {
