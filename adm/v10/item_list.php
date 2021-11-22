@@ -180,17 +180,16 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
     <?php if (!auth_check($auth[$sub_menu],'d')) { ?>
        <a href="<?=G5_URL?>/device/itm_ing/form.php" target="_blank" class="btn btn_02">생산시작</a>
        <a href="<?=G5_URL?>/device/itm_error/form.php" target="_blank" class="btn btn_02">검수</a>
-       <a href="<?=G5_URL?>/device/itm_error/form.php" target="_blank" class="btn btn_02">완제품코드매칭</a>
-       <a href="<?=G5_URL?>/device/itm_error/form.php" target="_blank" class="btn btn_02" style="margin-right:200px;">출하</a>
+       <a href="<?=G5_URL?>/device/itm_finish/form.php" target="_blank" class="btn btn_02">완제품코드매칭</a>
+       <a href="<?=G5_URL?>/device/itm_label/form.php" target="_blank" class="btn btn_02">빠레트라벨링</a>
+       <a href="<?=G5_URL?>/device/itm_delivery/form.php" target="_blank" class="btn btn_02" style="margin-right:200px;">출하</a>
     <?php } ?>
     <?php if (!auth_check($auth[$sub_menu],'w')) { ?>
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
     <a href="./item_form.php" id="member_add" class="btn btn_01">추가하기</a>
     <?php } ?>
-
 </div>
-
 
 </form>
 

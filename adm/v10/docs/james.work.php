@@ -527,3 +527,28 @@ ORDER BY bit.bit_num DESC, bit.bit_reply
 
 
 
+$sql = "SELECT bom.bom_idx, com_idx_customer, bom.bom_name, bom_part_no, bom_price, bom_status
+            , bit1.bit_idx, bit1.bom_idx_child, bit1.bit_reply, bit1.bit_count
+            , COUNT(bit2.bit_idx) AS group_count
+        FROM {$g5['bom_item_table']} AS bit1
+            JOIN {$g5['bom_item_table']} AS bit2
+            LEFT JOIN {$g5['bom_table']} AS bom ON bom.bom_idx = bit2.bom_idx_child
+        WHERE bit1.bom_idx = '".$bom_idx."' AND bit2.bom_idx = '".$bom_idx."'
+            AND bit1.bit_num = bit2.bit_num
+            AND bit2.bit_reply LIKE CONCAT(bit1.bit_reply,'%')
+        GROUP BY bit1.bit_num, bit1.bit_reply
+        ORDER BY bit1.bit_num DESC, bit1.bit_reply
+";
+SELECT bom.bom_idx, com_idx_customer, bom.bom_name, bom_part_no, bom_price, bom_status, bom_min_cnt
+      , bit1.bit_idx, bit1.bom_idx_child, bit1.bit_reply, bit1.bit_count 
+      , COUNT(bit2.bit_idx) AS group_count
+FROM g5_1_bom_item AS bit1 
+  JOIN g5_1_bom_item AS bit2
+  LEFT JOIN g5_1_bom AS bom ON bom.bom_idx = bit2.bom_idx_child
+WHERE bit1.bom_idx = '300' AND bit2.bom_idx = '300'
+  AND bit1.bit_num = bit2.bit_num AND bit2.bit_reply LIKE CONCAT(bit1.bit_reply,'%')
+GROUP BY bit1.bit_num, bit1.bit_reply
+ORDER BY bit1.bit_num DESC, bit1.bit_reply
+
+
+SELECT * FROM g5_1_item WHERE itm_barcode != '' AND itm_status = 'ing' ORDER BY RAND() LIMIT 1

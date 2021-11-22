@@ -6,24 +6,7 @@ include_once('./_common.php');
 
 include(G5_PATH.'/head.sub.php');
 
-$arr['token'] = $_REQUEST['token'];
-if(is_array($_REQUEST)) {
-    foreach($_REQUEST as $k1 => $v1) {
-        if($k1=='token')
-            continue;
-//        echo $k1.$v1.'<br>';
-//        $arr[$k1][$i] = $v1;
-//        print_r2($v1);
-
-        foreach($v1 as $k2 => $v2) {
-            $arr['list'][$k2][$k1] = $v2;
-//            echo $k1.'/'.$k2.'/'.$v2.'<br>';
-        }
-        $i++;
-    }
-}
-//print_r2($arr);
-//exit;
+$arr = $_REQUEST;
 ?>
 <style>
     #hd_login_msg {display:none;}
@@ -51,6 +34,7 @@ if(is_array($_REQUEST)) {
 <hr>
 <button type="submit" id="btn_submit">등록하기</button>
 </form>
+<div id="result" style="margin-top:20px;">
 
 
 <script>
@@ -70,7 +54,8 @@ $(document).on('click','#btn_submit',function(e) {
                 alert(res.meta.message);
             }
             else {
-                alert('데이터 입력 성공, 입력값은 관리자단에서 확인해 주세요.\n(요소검사: 결과값을 확인하세요.)');
+                alert('데이터 입력 성공, 하단에 표시됩니다.\n(요소검사쪽에서 결과를 확인하실 수도 있습니다.)');
+                $('#result').text(JSON.stringify(res.meta));
             }
             console.log(res);
         },
