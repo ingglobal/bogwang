@@ -21,7 +21,7 @@ include_once('./_head.php');
 
 $sql_common = " FROM {$g5_table_name} AS ".$pre."
                     LEFT JOIN {$g5['code_table']} AS cod ON cod.cod_idx = arm.cod_idx
-"; 
+";
 
 $where = array();
 $where[] = " ".$pre."_status NOT IN ('trash','delete') AND arm_cod_type IN ('a','p','p2') ";   // 디폴트 검색조건
@@ -92,11 +92,11 @@ $sql = " SELECT SQL_CALC_FOUND_ROWS ".$pre.".*
 		{$sql_common}
 		{$sql_search}
         {$sql_order}
-		LIMIT {$from_record}, {$rows} 
+		LIMIT {$from_record}, {$rows}
 ";
 // echo $sql;
 $result = sql_query($sql,1);
-$count = sql_fetch_array( sql_query(" SELECT FOUND_ROWS() as total ") ); 
+$count = sql_fetch_array( sql_query(" SELECT FOUND_ROWS() as total ") );
 $total_count = $count['total'];
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 
@@ -113,7 +113,7 @@ $items1 = array(
     ,"mms_idx"=>array("설비명",0,0,0,'16%')
     ,"cod_name"=>array("알람내용",0,0,0,'25%')
     ,"trm_idx_category"=>array("분류",0,0,0)
-    ,"com_idx"=>array("업체번호",0,0,0)
+    //,"com_idx"=>array("업체번호",0,0,0)
     ,"arm_reg_dt"=>array("발생일시",0,0,0)
 );
 
@@ -141,7 +141,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
     $sql2 = "SELECT mms_idx, mms_name
             FROM {$g5['mms_table']}
             WHERE com_idx = '".$_SESSION['ss_com_idx']."'
-            ORDER BY mms_idx       
+            ORDER BY mms_idx
     ";
     // echo $sql2.'<br>';
     $result2 = sql_query($sql2,1);
@@ -177,7 +177,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
 </form>
 <script>
 function sch_submit(f){
-    
+
     if(f.st_date.value && f.en_date.value){
         var st_d = new Date(f.st_date.value+' '+f.st_time.value);
         var en_d = new Date(f.en_date.value+' '+f.en_time.value);
@@ -240,7 +240,7 @@ function sch_submit(f){
         $row['com'] = sql_fetch(" SELECT com_name FROM {$g5['company_table']} WHERE com_idx = '".$row['com_idx']."' ");
         $row['mms'] = sql_fetch(" SELECT mms_name FROM {$g5['mms_table']} WHERE mms_idx = '".$row['mms_idx']."' ");
         // print_r2($row);
-        
+
         // 발송리스트
         $sql2 = " SELECT * FROM {$g5['alarm_send_table']} WHERE arm_idx = '".$row['arm_idx']."' ";
         $rs2 = sql_query($sql2,1);
@@ -254,7 +254,7 @@ function sch_submit(f){
         // 수정 및 발송 버튼
         $s_mod = '<a href="./'.$fname.'_form.php?'.$qstr.'&w=u&'.$pre.'_idx='.$row[$pre.'_idx'].'" class="btn btn_03">수정</a>';
         $s_set = '<a href="./error_code_form.php?&w=u&cod_idx='.$row['cod_idx'].'" class="btn btn_03">설정</a>';
-        
+
         $bg = 'bg'.($i%2);
         // 1번 라인 ================================================================================
         echo '<tr class="'.$bg.' tr_'.$row[$pre.'status'].'" tr_id="'.$row[$pre.'_idx'].'">'.PHP_EOL;
@@ -309,7 +309,7 @@ function sch_submit(f){
             }
         }
         echo '<td class="td_mngsmall" style="display:'.$manager_display.'">'.$s_set.'</td>'.PHP_EOL;
-        echo '</tr>'.PHP_EOL;	
+        echo '</tr>'.PHP_EOL;
 	}
 	if ($i == 0)
 		echo '<tr><td colspan="20" class="empty_table">자료가 없습니다.</td></tr>';
@@ -375,7 +375,7 @@ $(function(e) {
         yearRange: "c-99:c+99",
         //maxDate: "+0d"
     });
-    
+
     // 마우스 hover 설정
     $(".tbl_head01 tbody tr").on({
         mouseenter: function () {
@@ -383,14 +383,14 @@ $(function(e) {
             //console.log($(this).attr('od_id')+' mouseenter');
             //$(this).find('td').css('background','red');
             $('tr[tr_id='+$(this).attr('tr_id')+']').find('td').css('background','#0b1938');
-            
+
         },
         mouseleave: function () {
             //stuff to do on mouse leave
             //console.log($(this).attr('od_id')+' mouseleave');
             //$(this).find('td').css('background','unset');
             $('tr[tr_id='+$(this).attr('tr_id')+']').find('td').css('background','unset');
-        }    
+        }
     });
 
 });
@@ -434,7 +434,7 @@ function form01_submit(f)
 		}
 		else {
 			$('input[name="w"]').val('d');
-		} 
+		}
 	}
     return true;
 }
