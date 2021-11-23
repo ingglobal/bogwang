@@ -141,7 +141,7 @@ function imageview(id, w, h)
                 <?php if($is_admin=='super') { ?>
                     <li class="tnb_li"><a href="<?php echo G5_USER_ADMIN_TEST_URL ?>" class="tnb_sql">TEST</a></li>
                     <li class="tnb_li"><a href="<?php echo G5_USER_ADMIN_SQL_URL ?>" class="tnb_sql">SQL</a></li>
-                    <li class="tnb_li"><a href="<?php echo G5_USER_ADMIN_URL ?>/?device=mobile" class="tnb_mobile">Mobile</a></li>
+                    <!--li class="tnb_li"><a href="<?php //echo G5_USER_ADMIN_URL ?>/?device=mobile" class="tnb_mobile">Mobile</a></li-->
                 <?php } ?>
                 <li class="tnb_li"><a href="<?php echo G5_SHOP_URL ?>/" class="tnb_shop" target="_blank" title="쇼핑몰 바로가기">쇼핑몰 바로가기</a></li>
                 <li class="tnb_li"><a href="<?php echo G5_URL ?>/" class="tnb_community" target="_blank" title="커뮤니티 바로가기">커뮤니티 바로가기</a></li>

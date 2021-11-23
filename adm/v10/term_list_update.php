@@ -49,7 +49,7 @@ for($i=0;$i<sizeof($trm_name);$i++) {
 	}
 
     $trm = get_table_meta('term','trm_idx',$trm_idx[$i]);
-    print_r2($trm);
+    //print_r2($trm);
     // trm_more
     $unser = unserialize(stripslashes($trm['trm_more']));
     if( is_array($unser) ) {
@@ -96,7 +96,7 @@ for($i=0;$i<sizeof($trm_name);$i++) {
                                             , trm_right = 2
 		";
 		sql_query($sql,1);
-		echo $sql.'<br><br>';
+		//echo $sql.'<br><br>';
 	}
 	else {
 
@@ -122,7 +122,7 @@ for($i=0;$i<sizeof($trm_name);$i++) {
 							, trm_right = @myLeft + 2
 			";
 			sql_query($sql,1);
-			echo $sql.'<br><br>';
+			//echo $sql.'<br><br>';
 		}
 		//-- leaf_node가 아니면 동 레벨 idx 참조해서 left, right 생성
 		else {
