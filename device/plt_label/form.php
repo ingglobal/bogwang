@@ -15,7 +15,7 @@ if(!$itm['itm_idx']) {
 }
 
 $plt_count_array = array(50,80,100);
-$plt_btn_type_array = array('print','out','cancel');
+$plt_btn_type_array = array('print','out','print','out','print','out','cancel');
 $plt_count = $plt_count_array[rand(0,sizeof($plt_count_array)-1)];
 ?>
 <style>

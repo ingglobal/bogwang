@@ -20,7 +20,9 @@ else if($getData[0]['plt_barcode']) {
 
     $arr = $getData[0];
 
-    $arr['plt_status'] = 'ok';
+    // 버튼상태값: 출력(print)/출하처리(out)/출하취소(cancel)
+    $arr['btn_array'] = array("print"=>"finish","out"=>"delivery","cancel"=>"finish");
+    $arr['plt_status'] = $arr['btn_array'][$arr['plt_btn_type']];
     $arr['plt_dt'] = strtotime(preg_replace('/\./','-',$arr['plt_date'])." ".$arr['plt_time']);
     $arr['plt_date1'] = date("Y-m-d",$arr['plt_dt']);   // 2 or 4 digit format(20 or 2020) no problem.
     $arr['st_time'] = strtotime($arr['plt_date1']." 00:00:00"); // 해당 날짜의 시작
@@ -29,68 +31,115 @@ else if($getData[0]['plt_barcode']) {
     $arr['plt_date_stat'] = date("Y-m-d",$arr['plt_dt2']);   // 2 or 4 digit format(20 or 2020) no problem.
     $table_name = 'g5_1_pallet';
 
-    // 바코드 분리
-    $arr['plt_barcodes'] = explode("_",$arr['plt_barcode']);
-    // print_r2($arr['plt_barcodes']);
-    $arr['plt_barcode_count'] = $arr['plt_barcodes'][0].'_'.$arr['plt_barcodes'][1].'_';
-    $arr['plt_barcode_part_no'] = $arr['plt_barcodes'][0].'_'.$arr['plt_barcodes'][1].'_'.$arr['plt_barcodes'][2].'_';
-    $arr['plt_part_no'] = $arr['plt_barcodes'][2];
-    $arr['plt_count'] = $arr['plt_barcodes'][3];
+    // 취소인 경우
+    if($arr['plt_btn_type']=='cancel') {
 
-    $sql = " SELECT * FROM {$g5['bom_table']} WHERE bom_part_no = '".$arr['plt_part_no']."' ";
-    $bom = sql_fetch($sql);
-
-    // 공통요소
-    $sql_common = " com_idx = '".$g5['setting']['set_com_idx']."'
-                    , bom_idx = '".$bom['bom_idx']."'
-                    , bom_part_no = '".$arr['plt_part_no']."'
-                    , plt_barcode = '".$arr['plt_barcode']."'
-                    , plt_count = '".$arr['plt_count']."'
-                    , plt_status = '".$arr['plt_status']."'
-                    , plt_update_dt = '".G5_TIME_YMDHIS."'
-    ";
-
-    // 중복체크
-    $sql = "SELECT plt_idx FROM {$table_name}
-            WHERE plt_barcode LIKE '".$arr['plt_barcode_count']."%'
-            ORDER BY plt_idx LIMIT 1
-    ";
-    //echo $sql_dta.'<br>';
-    $plt = sql_fetch($sql,1);
-    // 정보 업데이트(same pallet)
-    if($plt['plt_idx']) {
-
-        // 중복체크(same part_no), if part_no also is same, it is the same pallet. All you need is the update the db.
         $sql = "SELECT plt_idx FROM {$table_name}
-                WHERE plt_barcode LIKE '".$arr['plt_barcode_part_no']."%'
+                WHERE plt_barcode = '".$arr['plt_barcode']."'
         ";
-        //echo $sql_dta.'<br>';
-        $plt2 = sql_fetch($sql,1);
-        // 정보 업데이트
-        if($plt2['plt_idx']) {
-            $sql = "UPDATE {$table_name} SET 
-                        {$sql_common}
-                        , plt_history = CONCAT(plt_history,'\n".$arr['plt_status']."|".G5_TIME_YMDHIS."')
-                    WHERE plt_idx = '".$plt2['plt_idx']."'
+        //echo $sql.'<br>';
+        $plt = sql_fetch($sql,1);
+        if($plt['plt_idx']) {
+            // 이전에 설정했던 제품(item) 설정 모두 초기화
+            $ar['plt_idx'] = $plt['plt_idx'];
+            pallet_item_reset($ar);
+            unset($ar);
+        }
+
+    }
+    // 취소가 아닌 경우
+    else {
+
+        // 바코드 분리
+        $arr['plt_barcodes'] = explode("_",$arr['plt_barcode']);
+        // print_r2($arr['plt_barcodes']);
+        $arr['plt_barcode_count'] = $arr['plt_barcodes'][0].'_'.$arr['plt_barcodes'][1].'_';
+        $arr['plt_barcode_part_no'] = $arr['plt_barcodes'][0].'_'.$arr['plt_barcodes'][1].'_'.$arr['plt_barcodes'][2].'_';
+        $arr['plt_part_no'] = $arr['plt_barcodes'][2];
+        $arr['plt_count'] = $arr['plt_barcodes'][3];
+
+        $sql = " SELECT * FROM {$g5['bom_table']} WHERE bom_part_no = '".$arr['plt_part_no']."' ";
+        $bom = sql_fetch($sql);
+
+        // 공통요소
+        $sql_common = " com_idx = '".$g5['setting']['set_com_idx']."'
+                        , bom_idx = '".$bom['bom_idx']."'
+                        , bom_part_no = '".$arr['plt_part_no']."'
+                        , plt_barcode = '".$arr['plt_barcode']."'
+                        , plt_count = '".$arr['plt_count']."'
+                        , plt_status = '".$arr['plt_status']."'
+                        , plt_update_dt = '".G5_TIME_YMDHIS."'
+        ";
+
+        // 중복체크
+        $sql = "SELECT plt_idx FROM {$table_name}
+                WHERE plt_barcode LIKE '".$arr['plt_barcode_count']."%'
+                ORDER BY plt_idx LIMIT 1
+        ";
+        //echo $sql.'<br>';
+        $plt = sql_fetch($sql,1);
+        // 정보 업데이트(same pallet), 파레트는 같지만 다른 part_no 일 수 있음
+        if($plt['plt_idx']) {
+
+            // 중복체크(same part_no)
+            $sql = "SELECT plt_idx FROM {$table_name}
+                    WHERE plt_barcode LIKE '".$arr['plt_barcode_part_no']."%'
             ";
-            sql_query($sql,1);
-            $result_arr['code'] = 200;
-            $result_arr['message'] = "Updated OK!";
+            //echo $sql_dta.'<br>';
+            $plt2 = sql_fetch($sql,1);
+            // 정보 업데이트, if part_no is also same, All you need is just update.
+            if($plt2['plt_idx']) {
+                $sql = "UPDATE {$table_name} SET 
+                            {$sql_common}
+                            , plt_history = CONCAT(plt_history,'\n".$arr['plt_status']."|".G5_TIME_YMDHIS."')
+                        WHERE plt_idx = '".$plt2['plt_idx']."'
+                ";
+                sql_query($sql,1);
+                $plt_idx = $plt['plt_idx'];
+                $result_arr['code'] = 200;
+                $result_arr['message'] = "Updated OK!";
+
+                // 이전에 설정했던 제품(item) 설정 모두 초기화, 갯수가 많아지든 작아지든 관계없이 이전 연결설정정을 일단 초기화
+                $ar['plt_idx'] = $plt_idx;
+                pallet_item_reset($ar);
+                unset($ar);
+
+            }
+            // 정보 입력, same pallet, new part_no
+            else {
+                // 부모 idx 
+                $arr['plt_idx_parent'] = $plt['plt_idx'];
+
+                $sql = "INSERT INTO {$table_name} SET 
+                        {$sql_common}
+                        , plt_idx_parent = '".$arr['plt_idx_parent']."'
+                        , plt_history = ".$arr['plt_status']."|".G5_TIME_YMDHIS."'
+                        , plt_reg_dt = '".G5_TIME_YMDHIS."'
+                ";
+                sql_query($sql,1);
+                $plt_idx = sql_insert_id();
+                $result_arr['code'] = 200;
+                $result_arr['message'] = "Inserted OK!";        
+            }
+            // echo $sql.'<br>';
+            $result_arr['plt_idx'] = $plt_idx;   // 고유번호
+            $result_arr['plt_status'] = $arr['plt_status'];   // 상태값
 
         }
-        // 정보 입력
+        // 정보 입력 (new pallet, new part_no)
         else {
-            // 부모 idx 
-            $arr['plt_idx_parent'] = $plt['plt_idx'];
-
+            
             $sql = "INSERT INTO {$table_name} SET 
-                    {$sql_common}
-                    , plt_idx_parent = '".$arr['plt_idx_parent']."'
-                    , plt_history = ".$arr['plt_status']."|".G5_TIME_YMDHIS."'
-                    , plt_reg_dt = '".G5_TIME_YMDHIS."'
+                        {$sql_common}
+                        , plt_history = '".$arr['plt_status']."|".G5_TIME_YMDHIS."'
+                        , plt_reg_dt = '".G5_TIME_YMDHIS."'
             ";
             sql_query($sql,1);
             $plt_idx = sql_insert_id();
+
+            // 부모 idx update
+            sql_query(" UPDATE {$table_name} SET plt_idx_parent = '".$plt_idx."' WHERE plt_idx = '".$plt_idx."' ");
+
             $result_arr['code'] = 200;
             $result_arr['message'] = "Inserted OK!";        
         }
@@ -98,60 +147,25 @@ else if($getData[0]['plt_barcode']) {
         $result_arr['plt_idx'] = $plt_idx;   // 고유번호
         $result_arr['plt_status'] = $arr['plt_status'];   // 상태값
 
-    }
-    // 정보 입력 (new pallet)
-    else {
-        
-        $sql = "INSERT INTO {$table_name} SET 
-                    {$sql_common}
-                    , plt_history = '".$arr['plt_status']."|".G5_TIME_YMDHIS."'
-                    , plt_reg_dt = '".G5_TIME_YMDHIS."'
-        ";
-        sql_query($sql,1);
-        $plt_idx = sql_insert_id();
-
-        // 부모 idx update
-        sql_query(" UPDATE {$table_name} SET plt_idx_parent = '".$plt_idx."' WHERE plt_idx = '".$plt_idx."' ");
-
-        $result_arr['code'] = 200;
-        $result_arr['message'] = "Inserted OK!";        
-    }
-    // echo $sql.'<br>';
-    $result_arr['plt_idx'] = $plt_idx;   // 고유번호
-    $result_arr['plt_status'] = $arr['plt_status'];   // 상태값
 
 
+        // 제품(item) 처리, 앞에서부터 차례대로 처리
+        $sql = "SELECT * FROM {$g5['item_table']}
+                WHERE bom_part_no = '".$arr['plt_part_no']."' AND itm_status = 'finish' ORDER BY itm_idx LIMIT ".$arr['plt_count'];
+        $rs = sql_query($sql,1);
+        // echo $sql.'<br>';
+        for ($i=0; $row=sql_fetch_array($rs); $i++) {
 
-    // 제품(item) 처리, 앞에서부터 차례대로 처리
-    $sql = "SELECT * FROM {$g5['item_table']}
-            WHERE bom_part_no = '".$arr['plt_part_no']."' AND itm_status = 'finish' ORDER BY itm_idx LIMIT ".$arr['plt_count'];
-    $rs = sql_query($sql,1);
-    // echo $sql.'<br>';
-    for ($i=0; $row=sql_fetch_array($rs); $i++) {
+            // 제품 & 자재들 상태 전체 변경
+            $ar['itm_status'] = $arr['plt_status'];
+            $ar['itm_idx'] = $row['itm_idx'];
+            $ar['plt_idx'] = $plt_idx;
+            update_itm_status($ar);
+            unset($ar);
+            
+        }
 
-        // 상태값 = 출고완료
-        $row['itm_status'] = 'delivery';
-
-        $sql1 = "UPDATE {$g5['item_table']} SET
-                    itm_history = CONCAT(itm_history,'\n".$row['itm_status']."|".G5_TIME_YMDHIS."')
-                    , itm_status = '".$row['itm_status']."'
-                    , itm_update_dt = '".G5_TIME_YMDHIS."'
-                WHERE itm_idx = '".$row['itm_idx']."'
-        ";
-        // echo $sql1.'<br>';
-        sql_query($sql1,1);
-
-        // 연결된 자재의 모든 상태값을 변경
-        $sql1 = "UPDATE {$g5['material_table']} SET
-                    mtr_status = '".$row['itm_status']."'
-                    , mtr_history = CONCAT(mtr_history,'\n".$row['itm_status']."|".G5_TIME_YMDHIS."')
-                    , mtr_update_dt = '".G5_TIME_YMDHIS."'
-                WHERE itm_idx = '".$row['itm_idx']."'
-        ";
-        // echo $sql1.'<br>';
-        sql_query($sql1,1);
-        
-    }
+    }   // // 취소가 아닌 경우
 
 }
 else {

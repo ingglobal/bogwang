@@ -1,6 +1,69 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
+// item 상태 변경 함수 (material 상태도 함께 변경)
+if(!function_exists('update_itm_status')){
+function update_itm_status($arr) {
+    global $g5;
+
+    $sql = "UPDATE {$g5['item_table']} SET
+                itm_history = CONCAT(itm_history,'\n".$arr['itm_status']."|".G5_TIME_YMDHIS."')
+                , plt_idx = '".$arr['plt_idx']."'
+                , itm_status = '".$arr['itm_status']."'
+                , itm_update_dt = '".G5_TIME_YMDHIS."'
+            WHERE itm_idx = '".$arr['itm_idx']."'
+    ";
+    // echo $sql.'<br>';
+    sql_query($sql,1);
+
+    // 연결된 자재의 모든 상태값을 변경
+    $sql = "UPDATE {$g5['material_table']} SET
+                mtr_status = '".$arr['itm_status']."'
+                , mtr_history = CONCAT(mtr_history,'\n".$arr['itm_status']."|".G5_TIME_YMDHIS."')
+                , mtr_update_dt = '".G5_TIME_YMDHIS."'
+            WHERE itm_idx = '".$arr['itm_idx']."'
+    ";
+    // echo $sql.'<br>';
+    sql_query($sql,1);
+ 
+    return $arr['itm_idx'];
+}
+}
+
+// item 상태 초기화 함수 (material 상태도 함께 변경)
+// 상태값을 finish가 아닌 다른 값으로 바꾸려면 상태값을 배열로 넘겨주면 됨 $arr['itm_status'] = 'delivery';
+if(!function_exists('pallet_item_reset')){
+function pallet_item_reset($arr) {
+    global $g5;
+
+    // 상태값이 없으면 finish
+    $arr['itm_status'] = $arr['itm_status'] ?: 'finish';
+
+    // 연결된 자재의 모든 상태값을 변경
+    $sql = "UPDATE {$g5['material_table']} SET
+                mtr_status = '".$arr['itm_status']."'
+                , mtr_history = CONCAT(mtr_history,'\n".$arr['itm_status']."|".G5_TIME_YMDHIS."')
+                , mtr_update_dt = '".G5_TIME_YMDHIS."'
+            WHERE itm_idx = (SELECT itm_idx FROM {$g5['item_table']} WHERE plt_idx = '".$arr['plt_idx']."' )
+    ";
+    // echo $sql.'<br>';
+    sql_query($sql,1);
+
+    $sql = "UPDATE {$g5['item_table']} SET
+                itm_history = CONCAT(itm_history,'\n".$arr['itm_status']."|".G5_TIME_YMDHIS."')
+                , plt_idx = '0'
+                , itm_status = '".$arr['itm_status']."'
+                , itm_update_dt = '".G5_TIME_YMDHIS."'
+            WHERE plt_idx = '".$arr['plt_idx']."'
+    ";
+    // echo $sql.'<br>';
+    sql_query($sql,1);
+ 
+    return $arr['itm_idx'];
+}
+}
+
+
 // 자재 재고 계산 함수
 // oop_idx(출하-실행계획idx)만 있으면: 출하-실행계획(order_out_practice) 차원에서 재고계산
 // orp_idx(실행계획idx)가 있으면: 실행계획(order_practice) 차원에서 재고계산 (다중 제품에 대해서 전체 계산)
