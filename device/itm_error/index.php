@@ -20,7 +20,6 @@ else if($getData[0]['itm_barcode']) {
 
     $arr = $getData[0];
 
-    $arr['itm_barcode'] = $arr['itm_barcode'];
     $arr['itm_status'] = $arr['itm_error_code'];
     $arr['itm_dt'] = strtotime(preg_replace('/\./','-',$arr['itm_date'])." ".$arr['itm_time']);
     $arr['itm_date1'] = date("Y-m-d",$arr['itm_dt']);   // 2 or 4 digit format(20 or 2020) no problem.
@@ -38,10 +37,10 @@ else if($getData[0]['itm_barcode']) {
     }
     else {
         // 히스토리
-        $arr['itm_history'] = $itm['itm_history'].'\n'.$arr['itm_status'].'|'.G5_TIME_YMDHIS;
+        // $arr['itm_history'] = $itm['itm_history'].'\n'.$arr['itm_status'].'|'.G5_TIME_YMDHIS;
 
         $sql = "UPDATE {$table_name} SET
-                    itm_history = '".$arr['itm_history']."'
+                    itm_history = CONCAT(itm_history,'\n".$arr['itm_status']."|".G5_TIME_YMDHIS."')
                     , itm_status = '".$arr['itm_status']."'
                     , itm_update_dt = '".G5_TIME_YMDHIS."'
                 WHERE itm_idx = '".$itm['itm_idx']."'
@@ -53,6 +52,18 @@ else if($getData[0]['itm_barcode']) {
 
         $result_arr['itm_idx'] = $itm['itm_idx'];   // 고유번호
         $result_arr['itm_status'] = $arr['itm_status'];   // 상태값
+
+
+        // 연결된 자재의 모든 상태값을 변경
+        $sql = "UPDATE {$g5['material_table']} SET
+                    mtr_status = '".$arr['itm_status']."'
+                    , mtr_history = CONCAT(mtr_history,'\n".$arr['itm_status']."|".G5_TIME_YMDHIS."')
+                    , mtr_update_dt = '".G5_TIME_YMDHIS."'
+                WHERE itm_idx = '".$itm['itm_idx']."'
+        ";
+        // echo $sql.'<br>';
+        sql_query($sql,1);
+        
     }
 }
 else {

@@ -232,6 +232,22 @@ CREATE TABLE `g5_1_bom_item` (
   PRIMARY KEY (`bit_idx`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+// 빠레트
+CREATE TABLE `g5_1_pallet` (
+  `plt_idx` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '파레트idx',
+  `plt_idx_parent` bigint(20) NOT NULL DEFAULT '0' COMMENT '파레트idx부모',
+  `com_idx` bigint(20) NOT NULL DEFAULT '0' COMMENT '업체번호',
+  `bom_idx` bigint(20) NOT NULL DEFAULT '0' COMMENT 'BOMidx',
+  `bom_part_no` varchar(100) DEFAULT '' COMMENT '파트넘버',
+  `plt_barcode` varchar(100) DEFAULT '' COMMENT '바코드',
+  `plt_count` int(11) NOT NULL DEFAULT '0' COMMENT '갯수',
+  `plt_status` varchar(20) DEFAULT 'pending' COMMENT '상태',
+  `plt_reg_dt` datetime DEFAULT '0000-00-00 00:00:00' COMMENT '등록일시',
+  `plt_update_dt` datetime DEFAULT '0000-00-00 00:00:00' COMMENT '수정일시',
+  PRIMARY KEY (`plt_idx`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
 
 SELECT bop_price, bop_start_date 
 FROM g5_1_bom_price

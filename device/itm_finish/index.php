@@ -8,206 +8,67 @@ include_once('./_common.php');
 //echo $_REQUEST['shf_type'][0];
 $rawBody = file_get_contents("php://input"); // 본문을 불러옴
 $getData = array(json_decode($rawBody,true)); // 데이터를 변수에 넣고
+// print_r2($getData);
+// echo $getData[0]['imp_idx'];
+// exit;
 
 // 토큰 비교
 if(!check_token1($getData[0]['token'])) {
 	$result_arr = array("code"=>499,"message"=>"token error");
 }
-else if(is_array($getData[0]['list'])) {
+else if($getData[0]['itm_barcode']) {
 
-    for($i=0;$i<sizeof($getData[0]['list']);$i++) {
-        $arr = $getData[0]['list'][$i];
+    $arr = $getData[0];
 
-        $arr['itm_status'] = 'ing';
-        $arr['itm_dt'] = strtotime(preg_replace('/\./','-',$arr['itm_date'])." ".$arr['itm_time']);
-        $arr['itm_date1'] = date("Y-m-d",$arr['itm_dt']);   // 2 or 4 digit format(20 or 2020) no problem.
-        $arr['st_time'] = strtotime($arr['itm_date1']." 00:00:00"); // 해당 날짜의 시작
-        $arr['en_time'] = strtotime($arr['itm_date1']." 23:59:59"); // 해당 날짜의 끝
-        $arr['itm_dt2'] = strtotime(preg_replace('/\./','-',$arr['itm_date2'])." 00:00:00");    // statistics date
-        $arr['itm_date_stat'] = date("Y-m-d",$arr['itm_dt2']);   // 2 or 4 digit format(20 or 2020) no problem.
-        $table_name = 'g5_1_data_output_'.$arr['mms_idx'];
+    $arr['itm_status'] = $arr['itm_status_code'];
+    $arr['itm_dt'] = strtotime(preg_replace('/\./','-',$arr['itm_date'])." ".$arr['itm_time']);
+    $arr['itm_date1'] = date("Y-m-d",$arr['itm_dt']);   // 2 or 4 digit format(20 or 2020) no problem.
+    $arr['st_time'] = strtotime($arr['itm_date1']." 00:00:00"); // 해당 날짜의 시작
+    $arr['en_time'] = strtotime($arr['itm_date1']." 23:59:59"); // 해당 날짜의 끝
+    $arr['itm_dt2'] = strtotime(preg_replace('/\./','-',$arr['itm_date2'])." 00:00:00");    // statistics date
+    $arr['itm_date_stat'] = date("Y-m-d",$arr['itm_dt2']);   // 2 or 4 digit format(20 or 2020) no problem.
+    // $table_name = 'g5_1_item_'.$arr['mms_idx'];  // 향후 테이블 분리가 필요하면..
+    $table_name = 'g5_1_item';
 
-        // 통계일자 추출을 위한 교대기준 (data/cache/mms-setting.php, 설정은 user.07.default.php)
-        $arr['mms_set_output'] = $g5['mms'][$arr['mms_idx']]['output'];
-        if($arr['itm_date_stat'] == '0000-00-00') {
-            // shift(교대기준) && 2교대 이상 && 오전입력 이라면 전일 통계일자로 합산해야 함
-            if($arr['mms_set_output'] == 'shift' && $arr['itm_shf_no'] > 1 && substr($arr['itm_time'],0,2) < 12) {
-                $arr['itm_date_stat'] = date("Y-m-d",$arr['itm_dt2']-86400);    // 하루를 뺴야 함
-            }
-        }
-
-
-        // checkout db table exists and create if not exists.
-        $sql = "SELECT EXISTS (
-                    SELECT 1 FROM Information_schema.tables
-                    WHERE TABLE_SCHEMA = '".G5_MYSQL_DB."'
-                    AND TABLE_NAME = '".$table_name."'
-                ) AS flag
-        ";
-        // echo $sql.'<br>';
-        $tb1 = sql_fetch($sql,1);
-        if(!$tb1['flag']) {
-            $file = file('./sql_write.sql');
-            $file = get_db_create_replace($file);
-            $sql = implode("\n", $file);
-            $source = array('/__TABLE_NAME__/', '/;/');
-            $target = array($table_name, '');
-            $sql = preg_replace($source, $target, $sql);
-            sql_query($sql, FALSE);
-        }
-
-        // 공통요소
-        $sql_common[$i] = " dta_shf_no = '".$arr['itm_shf_no']."'
-                        , dta_mmi_no = '".$arr['itm_mmi_no']."'
-                        , dta_group = '".$arr['itm_group']."'
-                        , dta_defect = '".$arr['itm_defect']."'
-                        , dta_defect_type = '".$arr['itm_defect_type']."'
-                        , dta_dt = '".$arr['itm_dt']."'
-                        , dta_date = '".$arr['itm_date_stat']."'
-                        , dta_value = '".$arr['itm_value']."'
-        ";
-
-        // 중복체크
-        $sql_dta = "   SELECT dta_idx FROM {$table_name}
-                        WHERE dta_defect = '".$arr['itm_defect']."'
-                            AND dta_group = '".$arr['itm_group']."'
-                            AND dta_defect_type = '".$arr['itm_defect_type']."'
-                            AND dta_dt = '".$arr['itm_dt']."'
-        ";
-        //echo $sql_dta.'<br>';
-		$dta = sql_fetch($sql_dta,1);
-        
-		// 정보 업데이트
-		if($dta['itm_idx']) {
-			
-			$sql = "UPDATE {$table_name} SET 
-						{$sql_common[$i]}
-						, dta_update_dt = '".G5_SERVER_TIME."'
-					WHERE dta_idx = '".$dta['itm_idx']."'";
-			sql_query($sql,1);
-            $result_arr[$i]['code'] = 200;
-            $result_arr[$i]['message'] = "Updated OK!";
-
-		}
-        // 정보 입력
-        else{
-
-			$sql = "INSERT INTO {$table_name} SET 
-						{$sql_common[$i]}
-						, dta_reg_dt = '".G5_SERVER_TIME."'
-						, dta_update_dt = '".G5_SERVER_TIME."'
-            ";
-			sql_query($sql,1);
-//            echo $sql.'<br>';
-            $dta['itm_idx'] = sql_insert_id();
-            $result_arr[$i]['code'] = 200;
-            $result_arr[$i]['message'] = "Inserted OK!";
-        
-        }
-        $result_arr[$i]['itm_idx'] = $dta['itm_idx'];   // 고유번호
-
-        
-        // 일간 sum 합계 입력
-        $sum_common = " dta_shf_no = '".$arr['itm_shf_no']."'
-                        AND dta_mmi_no = '".$arr['itm_mmi_no']."'
-                        AND dta_group = '".$arr['itm_group']."'
-                        AND dta_defect = '".$arr['itm_defect']."'
-                        AND dta_defect_type = '".$arr['itm_defect_type']."'
-        ";
-        $sql = "SELECT SUM(dta_value) AS dta_sum
-                FROM {$table_name}
-                WHERE {$sum_common}
-                    AND dta_dt >= '".$arr['st_time']."' AND dta_dt <= '".$arr['en_time']."'
-        ";
-        // echo $sql.'<br>';
-        $sum1 = sql_fetch($sql,1); // 일 합계 데이터값 추출
-        // if($arr['mms_idx']==18) {
-        //     sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='sum_calculate',  mta_value = '".addslashes($sql)."' ");
-        //     sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='sum_value',  mta_value = '".$sum1['itm_sum']."' ");
-        // }
-
-        // 있으면 업데이트, 없으면 생성
-        $sql_sum = "SELECT dta_idx
-                    FROM {$g5['data_output_sum_table']} 
-                    WHERE {$sum_common}
-                        AND mms_idx = '".$arr['mms_idx']."'
-                        AND dta_date = '".$arr['itm_date_stat']."'
-        ";
-        // sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='sum_check', mta_value = '".addslashes($sql_sum)."' ");
-        //echo $sql_sum.'<br>';
-		$sum = sql_fetch($sql_sum,1);
-		// 정보 업데이트
-		if($sum['itm_idx']) {
-            $sql = "UPDATE {$g5['data_output_sum_table']} SET
-                        dta_value = '".$sum1['itm_sum']."'
-                    WHERE {$sum_common}
-                        AND mms_idx = '".$arr['mms_idx']."'
-                        AND dta_date = '".$arr['itm_date_stat']."'
-            ";
-            // sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='update', mta_value = '".addslashes($sql)."' ");
-            $result = sql_query($sql);
-        }
-        else {
-            // Get a mms_item price which is the most nearest one from now back.
-            $sql = "SELECT mms_idx, mmi_no, mip_price, mip_start_date
-                    FROM g5_1_mms_item_price AS mip
-                        LEFT JOIN g5_1_mms_item AS mmi ON mmi.mmi_idx = mip.mmi_idx
-                    WHERE mmi_status NOT IN ('trash','delete')
-                        AND mms_idx = '".$arr['mms_idx']."'
-                        AND mmi_no = '".$arr['itm_mmi_no']."'
-                    ORDER BY mip_start_date DESC
-                    LIMIT 1
-            ";
-            $mip1 = sql_fetch($sql,1);
-
-            $sql = " INSERT INTO {$g5['data_output_sum_table']} SET
-                        com_idx = '".$arr['com_idx']."'
-                        , imp_idx = '".$arr['imp_idx']."'
-                        , mms_idx = '".$arr['mms_idx']."'
-                        , mmg_idx = '".$g5['mms'][$arr['mms_idx']]['mmg_idx']."'
-                        , dta_shf_no = '".$arr['itm_shf_no']."'
-                        , dta_mmi_no = '".$arr['itm_mmi_no']."'
-                        , dta_mmi_no_price = '".$mip1['mip_price']."'
-                        , dta_group = '".$arr['itm_group']."'
-                        , dta_defect = '".$arr['itm_defect']."'
-                        , dta_defect_type = '".$arr['itm_defect_type']."'
-                        , dta_message = '".$arr['itm_message']."'
-                        , dta_date = '".$arr['itm_date_stat']."'
-                        , dta_value = '".$sum1['itm_sum']."'
-            ";
-            // sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='insert', mta_value = '".addslashes($sql)."' ");
-            $result = sql_query($sql);
-        }
-        // if($arr['mms_idx']==18) {
-        //     sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='sum_update',  mta_value = '".addslashes($sql)."' ");
-        // }
-
-
-        // 기종 정보 체크 & 입력
-        $sql_item = "   SELECT mmi_idx FROM {$g5['mms_item_table']}
-                        WHERE mms_idx = '".$arr['mms_idx']."'
-                            AND mmi_no = '".$arr['itm_mmi_no']."'
-        ";
-        //echo $sql_dta.'<br>';
-		$mmi = sql_fetch($sql_item,1);
-		// Insert if not exists.
-		if(!$mmi['mmi_idx']) {
-			$sql = "INSERT INTO {$g5['mms_item_table']} SET 
-                        mms_idx = '".$arr['mms_idx']."'
-                        , mmi_no = '".$arr['itm_mmi_no']."'
-                        , mmi_name = '".$arr['itm_mmi_no']."번'
-                        , mmi_status = 'ok'
-						, mmi_start_date = '".G5_TIME_YMD."'
-						, mmi_reg_dt = '".G5_TIME_YMDHIS."'
-						, mmi_update_dt = '".G5_TIME_YMDHIS."'
-            ";
-			sql_query($sql,1);
-//            echo $sql.'<br>';
-        
-        }
-
+    $sql = " SELECT * FROM {$g5['item_table']} WHERE itm_barcode = '".$arr['itm_barcode']."' ";
+    $itm = sql_fetch($sql);
+    if(!$itm['itm_idx']) {
+        $result_arr = array("code"=>490,"message"=>"item not exists.");
     }
-	
+    else if($itm['itm_com_barcode']!=$arr['itm_com_barcode']) {
+        $result_arr = array("code"=>480,"message"=>"item barcode not matched.");
+    }
+    else {
+        // 히스토리
+        // $arr['itm_history'] = $itm['itm_history'].'\n'.$arr['itm_status'].'|'.G5_TIME_YMDHIS;
+        $arr['itm_status'] = 'finish';
+
+        $sql = "UPDATE {$table_name} SET
+                    itm_history = CONCAT(itm_history,'\n".$arr['itm_status']."|".G5_TIME_YMDHIS."')
+                    , itm_status = '".$arr['itm_status']."'
+                    , itm_update_dt = '".G5_TIME_YMDHIS."'
+                WHERE itm_idx = '".$itm['itm_idx']."'
+        ";
+        // echo $sql.'<br>';
+        sql_query($sql,1);
+        $result_arr['code'] = 200;
+        $result_arr['message'] = "Updated OK!";
+
+        $result_arr['itm_idx'] = $itm['itm_idx'];   // 고유번호
+        $result_arr['itm_status'] = $arr['itm_status'];   // 상태값
+
+
+        // 연결된 자재의 모든 상태값을 변경
+        $sql = "UPDATE {$g5['material_table']} SET
+                    mtr_status = '".$arr['itm_status']."'
+                    , mtr_history = CONCAT(mtr_history,'\n".$arr['itm_status']."|".G5_TIME_YMDHIS."')
+                    , mtr_update_dt = '".G5_TIME_YMDHIS."'
+                WHERE itm_idx = '".$itm['itm_idx']."'
+        ";
+        // echo $sql.'<br>';
+        sql_query($sql,1);
+        
+    }
 }
 else {
 	$result_arr = array("code"=>599,"message"=>"error");

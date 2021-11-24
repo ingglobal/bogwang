@@ -35,7 +35,7 @@ $defect_type_array = array('error_stitch','error_wrinkle','error_fabric','error_
 <table>
 	<caption>등록정보</caption>
 	<tr><td>바코드</td><td><input type="text" name="itm_barcode" value="<?=$itm['itm_barcode']?>" style="width:370px;"></td></tr>
-	<tr><td>불량바코드</td><td><input type="text" name="itm_error_code" value="<?=$defect_type_array[rand(0,sizeof($defect_type_array)-1)]?>" style="width:370px;"></td></tr>
+	<tr><td>불량코드</td><td><input type="text" name="itm_error_code" value="<?=$defect_type_array[rand(0,sizeof($defect_type_array)-1)]?>" style="width:370px;"></td></tr>
 	<tr><td>날짜</td><td><input type="text" name="itm_date" value="<?=date("y.m.d",time())?>"></td></tr>
 	<tr><td>시간</td><td><input type="text" name="itm_time" value="<?=date("H:i:s",time()-rand(0,86400))?>"></td></tr>
 </table>

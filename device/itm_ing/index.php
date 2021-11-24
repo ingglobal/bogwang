@@ -65,7 +65,7 @@ else if($getData[0]['bom_part_no']) {
     $arr['itm_history'] = $arr['itm_status'].'|'.G5_TIME_YMDHIS;
 
     // 공통요소
-    $sql_common[$i] = " com_idx = '".$g5['setting']['set_com_idx']."'
+    $sql_common = " com_idx = '".$g5['setting']['set_com_idx']."'
                     , bom_idx = '".$oop['bom_idx']."'
                     , orp_idx = '".$oop['orp_idx']."'
                     , bom_part_no = '".$arr['bom_part_no']."'
@@ -88,7 +88,7 @@ else if($getData[0]['bom_part_no']) {
     // 정보 업데이트
     if($itm['itm_idx']) {
         $sql = "UPDATE {$table_name} SET 
-                    {$sql_common[$i]}
+                    {$sql_common}
                     , itm_update_dt = '".G5_TIME_YMDHIS."'
                 WHERE itm_idx = '".$itm['itm_idx']."'
         ";
@@ -100,7 +100,7 @@ else if($getData[0]['bom_part_no']) {
     // 정보 입력
     else{
         $sql = "INSERT INTO {$table_name} SET 
-                    {$sql_common[$i]}
+                    {$sql_common}
                     , itm_reg_dt = '".G5_TIME_YMDHIS."'
                     , itm_update_dt = '".G5_TIME_YMDHIS."'
         ";
