@@ -49,6 +49,7 @@ function pallet_item_reset($arr) {
     // echo $sql.'<br>';
     sql_query($sql,1);
 
+    // 제품 정보 초기화
     $sql = "UPDATE {$g5['item_table']} SET
                 itm_history = CONCAT(itm_history,'\n".$arr['itm_status']."|".G5_TIME_YMDHIS."')
                 , plt_idx = '0'

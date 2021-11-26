@@ -44,6 +44,12 @@ else if($getData[0]['plt_barcode']) {
             $ar['plt_idx'] = $plt['plt_idx'];
             pallet_item_reset($ar);
             unset($ar);
+
+            // 파레트 레코드 삭제
+            $sql = " DELETE FROM {$g5['pallet_table']} WHERE plt_idx = '".$arr['plt_idx']."' ";
+            // echo $sql.'<br>';
+            sql_query($sql,1);
+
         }
         $result_arr['code'] = 200;
         $result_arr['message'] = "Canceled OK!";        
@@ -60,6 +66,7 @@ else if($getData[0]['plt_barcode']) {
         $arr['plt_part_no'] = $arr['plt_barcodes'][2];
         $arr['plt_count'] = $arr['plt_barcodes'][3];
 
+        // bom 정보 추출
         $sql = " SELECT * FROM {$g5['bom_table']} WHERE bom_part_no = '".$arr['plt_part_no']."' ";
         $bom = sql_fetch($sql);
 
@@ -73,7 +80,7 @@ else if($getData[0]['plt_barcode']) {
                         , plt_update_dt = '".G5_TIME_YMDHIS."'
         ";
 
-        // 중복체크
+        // 파레트 중복체크  LIKE '211018_001_%'
         $sql = "SELECT plt_idx FROM {$table_name}
                 WHERE plt_barcode LIKE '".$arr['plt_barcode_count']."%'
                 ORDER BY plt_idx LIMIT 1
@@ -83,7 +90,7 @@ else if($getData[0]['plt_barcode']) {
         // 정보 업데이트(same pallet), 파레트는 같지만 다른 part_no 일 수 있음
         if($plt['plt_idx']) {
 
-            // 중복체크(same part_no)
+            // 중복체크(same part_no)  LIKE '211018_001_C89460-CG930SIT_%'
             $sql = "SELECT plt_idx FROM {$table_name}
                     WHERE plt_barcode LIKE '".$arr['plt_barcode_part_no']."%'
             ";

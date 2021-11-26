@@ -50,9 +50,7 @@ else if($getData[0]['bom_part_no']) {
     }
 
     $oop = get_table_meta('order_out_practice','oop_idx',$arr['oop_idx']);
-
-    $sql = " SELECT * FROM {$g5['bom_table']} WHERE bom_idx = '".$oop['bom_idx']."' ";
-    $bom = sql_fetch($sql);
+    $bom = get_table_meta('bom','bom_idx',$oop['bom_idx']);
 
     // 외부 라벨 추출
     if(strlen($arr['itm_barcode'])>40) {
@@ -136,7 +134,10 @@ else if($getData[0]['bom_part_no']) {
         $ar['bom_min_cnt'] = $row['bom_min_cnt'];
 
         // 현재고
-        $sql1 = " SELECT COUNT(mtr_idx) AS cnt FROM {$g5['material_table']} WHERE bom_part_no = '".$row['bom_part_no']."' ";
+        $sql1 = "   SELECT COUNT(mtr_idx) AS cnt FROM {$g5['material_table']}
+                    WHERE bom_part_no = '".$row['bom_part_no']."'
+                        AND mtr_status IN ('pending','stock','ready')
+        ";
         $row1 = sql_fetch($sql1,1);
         $ar['itm_stock'] = $row1['cnt'];
 

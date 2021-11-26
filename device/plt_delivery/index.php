@@ -46,7 +46,7 @@ else if($getData[0]['plt_barcode']) {
             unset($ar);
         }
         $result_arr['code'] = 200;
-        $result_arr['message'] = "Canceled OK!";        
+        $result_arr['message'] = "Canceled OK!";
 
     }
     // 취소가 아닌 경우
