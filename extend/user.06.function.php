@@ -44,7 +44,7 @@ function pallet_item_reset($arr) {
                 mtr_status = '".$arr['itm_status']."'
                 , mtr_history = CONCAT(mtr_history,'\n".$arr['itm_status']."|".G5_TIME_YMDHIS."')
                 , mtr_update_dt = '".G5_TIME_YMDHIS."'
-            WHERE itm_idx = (SELECT itm_idx FROM {$g5['item_table']} WHERE plt_idx = '".$arr['plt_idx']."' )
+            WHERE itm_idx IN (SELECT itm_idx FROM {$g5['item_table']} WHERE plt_idx = '".$arr['plt_idx']."' )
     ";
     // echo $sql.'<br>';
     sql_query($sql,1);

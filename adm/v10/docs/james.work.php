@@ -568,3 +568,6 @@ ORDER BY bit1.bit_num DESC, bit1.bit_reply
 
 
 SELECT * FROM g5_1_item WHERE itm_barcode != '' AND itm_status = 'ing' ORDER BY RAND() LIMIT 1
+
+SELECT * FROM g5_1_item
+WHERE bom_part_no = '88700-J9110PUR' AND itm_status = 'finish' ORDER BY itm_idx LIMIT 100

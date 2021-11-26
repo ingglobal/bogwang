@@ -12,6 +12,7 @@ $arr = $_REQUEST;
     #hd_login_msg {display:none;}
     table tr td {border:solid 1px #ddd;padding:10px;}
     button {background:#ff8b37;padding:10px 20px;font-size:1.5em;border-radius:4px;}
+    #btn_submit {cursor:pointer;}
 </style>
 
 <form id="form02" action="./index.php">
@@ -46,7 +47,9 @@ $(document).on('click','#btn_submit',function(e) {
         data : "<?=addslashes(json_encode($arr));?>",
         dataType:'json',
         timeout:10000, 
-        beforeSend:function(){},
+        beforeSend:function(){
+            $('#btn_submit').attr("disabled", true);
+        },
         success:function(res){
 //            var items;
 //            for(items in res) { alert(items +': '+ res[items]); }
@@ -54,6 +57,7 @@ $(document).on('click','#btn_submit',function(e) {
                 alert(res.meta.message);
             }
             else {
+                $('#btn_submit').attr("disabled", false);
                 alert('데이터 입력 성공, 하단에 표시됩니다.\n(요소검사쪽에서 결과를 확인하실 수도 있습니다.)');
                 $('#result').text(JSON.stringify(res.meta));
             }

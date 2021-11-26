@@ -98,6 +98,7 @@ else if($getData[0]['plt_barcode']) {
             $plt2 = sql_fetch($sql,1);
             // 정보 업데이트, if part_no is also same, All you need is just update.
             if($plt2['plt_idx']) {
+        
                 $sql = "UPDATE {$table_name} SET 
                             {$sql_common}
                             , plt_history = CONCAT(plt_history,'\n".$arr['plt_status']."|".G5_TIME_YMDHIS."')
@@ -155,7 +156,6 @@ else if($getData[0]['plt_barcode']) {
         // echo $sql.'<br>';
         $result_arr['plt_idx'] = $plt_idx;   // 고유번호
         $result_arr['plt_status'] = $arr['plt_status'];   // 상태값
-
 
 
         // 제품(item) 처리, 앞에서부터 차례대로 처리
