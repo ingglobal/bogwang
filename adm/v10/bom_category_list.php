@@ -88,7 +88,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 
 </form>
 
-<form name="fcategorylist" method="post" action="./bom_category_list_update.php" autocomplete="off">
+<form name="fcategorylist" method="post" action="./bom_category_list_update.php" onsubmit="return form01_submit(this);" autocomplete="off">
 <input type="hidden" name="sst" value="<?php echo $sst; ?>">
 <input type="hidden" name="sod" value="<?php echo $sod; ?>">
 <input type="hidden" name="sfl" value="<?php echo $sfl; ?>">
@@ -168,6 +168,9 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 </div>
 
 <div class="btn_fixed_top">
+    <?php if($member['mb_level'] >= 10){ ?>
+    <input type="submit" name="act_button" value="분류환경변수설정반영" onclick="document.pressed=this.value" class="btn_02 btn">
+    <?php } ?>
     <input type="submit" value="일괄수정" class="btn_02 btn">
 
     <?php if ($is_admin == 'super') {?>
@@ -200,6 +203,20 @@ $(function() {
         );
     });
 });
+
+function form01_submit(f)
+{
+    if(document.pressed == "일괄수정") {
+        ;
+    }
+    else if(document.pressed == "분류환경변수설정반영") {
+        if(!confirm("\"환경설정 > 솔루션설정\"에서 1차분류,2차분류,3차분류,4차분류에 설정한 값으로 새로 반영이 됩니다.\n기존설정내용과 순서의 차이가 있으면 각 제품(BOM)에서의 분류값을 다시 확인/설정을 해야 할 수 있습니다.\n정말로 환경설정값으로 반영하시겠습니까?")) {
+            return false;
+        }
+    }
+
+    return true;
+}
 </script>
 
 <?php

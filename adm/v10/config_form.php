@@ -313,6 +313,34 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
             </td>
         </tr>
 		<tr>
+            <th scope="row">1차분류(카테고리1)</th>
+            <td>
+                <?php echo help('1차분류를 ex)cat1_name=카테고리1설명 이와같이 작성하고 구분은 줄바꿈으로 세로로 나열하세요.<br>(가능한 기존의 작성 순서를 지켜주시고 만약 순서를 변경 하였을시 각 제품(BOM)의 설정된 카테고리도 변경해야 할 수 있습니다.)') ?>
+                <textarea name="set_cat_1" id="set_cat_1" style="width:50%;height:200px;"><?php echo get_text($g5['setting']['set_cat_1']); ?></textarea>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row">2차분류(카테고리2)</th>
+            <td>
+                <?php echo help('2차분류를 ex)cat2_name=카테고리2설명 이와같이 작성하고 구분은 줄바꿈으로 세로로 나열하세요.<br>(가능한 기존의 작성 순서를 지켜주시고 만약 순서를 변경 하였을시 각 제품(BOM)의 설정된 카테고리도 변경해야 할 수 있습니다.)') ?>
+                <textarea name="set_cat_2" id="set_cat_2" style="width:50%;height:200px;"><?php echo get_text($g5['setting']['set_cat_2']); ?></textarea>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row">3차분류(카테고리3)</th>
+            <td>
+                <?php echo help('3차분류를 ex)cat3_name=카테고리3설명 이와같이 작성하고 구분은 줄바꿈으로 세로로 나열하세요.<br>(가능한 기존의 작성 순서를 지켜주시고 만약 순서를 변경 하였을시 각 제품(BOM)의 설정된 카테고리도 변경해야 할 수 있습니다.)') ?>
+                <textarea name="set_cat_3" id="set_cat_3" style="width:50%;height:200px;"><?php echo get_text($g5['setting']['set_cat_3']); ?></textarea>
+            </td>
+        </tr>
+		<tr>
+            <th scope="row">4차분류(카테고리4)</th>
+            <td>
+                <?php echo help('4차분류를 ex)cat4_name=카테고리4설명 이와같이 작성하고 구분은 줄바꿈으로 세로로 나열하세요.<br>(가능한 기존의 작성 순서를 지켜주시고 만약 순서를 변경 하였을시 각 제품(BOM)의 설정된 카테고리도 변경해야 할 수 있습니다.)') ?>
+                <textarea name="set_cat_4" id="set_cat_4" style="width:50%;height:200px;"><?php echo get_text($g5['setting']['set_cat_4']); ?></textarea>
+            </td>
+        </tr>
+		<tr>
 			<th scope="row">메뉴권한종류 mb_8</th>
 			<td colspan="3">
 				<?php echo help('adm=총괄관리권한,adm_production=생산관리권한,adm_quality=품질관리권한,normal=일반사원권한') ?>

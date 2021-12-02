@@ -71,6 +71,13 @@ if ($_POST['act_button'] == "선택수정") {
 } else if ($_POST['act_button'] == "선택삭제") {
 
     foreach($_POST['chk'] as $oro_idx_v){
+        //1. 생산실행에 ord_idx가 있으면 삭제할 수 없다.
+        $ori_sql = " SELECT COUNT(*) AS cnt FROM {$g5['order_out_practice_table']} WHERE oro_idx = '".$oro_idx_v."' AND oop_status NOT IN('del','delete','cancel','trash') ";
+        $ori = sql_fetch($ori_sql);
+        if($ori['cnt']){
+            alert('생산실행에 등록된 출하데이터는 삭제할 수 없습니다.');
+            exit;
+        }
         /*
         $sql = "UPDATE {$g5['order_out_table']} SET
                     oro_status = 'trash'
