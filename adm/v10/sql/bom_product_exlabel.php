@@ -137,24 +137,23 @@ if($start){
             $i++;
         }
     }
-
-
+    
+    /*
     if(count($insArr)){
         $i = 0;
-        $ins_sql = " INSERT {$tblb} (`com_idx`,`bct_id`,`bom_name`,`bom_type`,`bom_status`,`bom_reg_dt`,`bom_update_dt`) VALUES ";
+        $ins_sql = " INSERT {$tblb} (`com_idx`,`bct_id`,`bom_name`,`bom_part_no`,`bom_type`,`bom_status`,`bom_reg_dt`,`bom_update_dt`) VALUES ";
         foreach($insArr as $k => $v){
             $ins_sql .= ($i == 0) ? '' : ',';
             $ins_sql .= "
-                ('{$_SESSION['ss_com_idx']}','{$v['cat']}','{$v['pnm']}','product','pending','".G5_TIME_YMDHIS."','".G5_TIME_YMDHIS."')
+                ('{$_SESSION['ss_com_idx']}','{$v['cat']}','{$v['pnm']}','{$k}','product','pending','".G5_TIME_YMDHIS."','".G5_TIME_YMDHIS."')
             ";
             $i++;
         }
-
+        //echo $ins_sql;
         sql_query($ins_sql,1);
     }
-
     echo "완료!";
-    
+    */
 }
 else{
     echo '[시작]버튼을 눌러야 실행됩니다.';

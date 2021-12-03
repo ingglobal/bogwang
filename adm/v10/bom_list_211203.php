@@ -108,6 +108,23 @@ $qstr .= '&sca='.$sca.'&ser_bom_type='.$ser_bom_type; // 추가로 확장해서 
 </select>
 <script>$('select[name="ser_bom_type"]').val('<?=$ser_bom_type?>');</script>
 
+<label for="sca" class="sound_only">분류선택</label>
+<select name="sca" id="sca">
+    <option value="">전체분류</option>
+    <?php
+    $sql1 = "   SELECT * FROM {$g5['bom_category_table']}
+                WHERE com_idx = '".$_SESSION['ss_com_idx']."'
+                ORDER BY bct_id, bct_order
+    ";
+    $result1 = sql_query($sql1);
+    for ($i=0; $row1=sql_fetch_array($result1); $i++) {
+        $len = strlen($row1['bct_id']) / 2 - 1;
+        for ($j=0; $j<$len; $j++) { $row1['nbsp'] .= '&nbsp;&nbsp;&nbsp;'; } // 들여쓰기공백
+        echo '<option value="'.$row1['bct_id'].'" '.get_selected($sca, $row1['bct_id']).'>'.$row1['nbsp'].$row1['bct_name'].'</option>'.PHP_EOL;
+    }
+    ?>
+</select>
+
 <label for="sfl" class="sound_only">검색대상</label>
 <select name="sfl" id="sfl">
     <option value="bom_part_no"<?php echo get_selected($_GET['sfl'], "bom_part_no"); ?>>P/NO</option>
