@@ -138,7 +138,7 @@ if($start){
         }
     }
     
-    /*
+    
     if(count($insArr)){
         $i = 0;
         $ins_sql = " INSERT {$tblb} (`com_idx`,`bct_id`,`bom_name`,`bom_part_no`,`bom_type`,`bom_status`,`bom_reg_dt`,`bom_update_dt`) VALUES ";
@@ -153,7 +153,7 @@ if($start){
         sql_query($ins_sql,1);
     }
     echo "완료!";
-    */
+    
 }
 else{
     echo '[시작]버튼을 눌러야 실행됩니다.';

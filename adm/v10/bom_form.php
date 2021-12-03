@@ -1,7 +1,7 @@
 <?php
 $sub_menu = "915130";
 include_once('./_common.php');
-
+include_once(G5_USER_ADMIN_LIB_PATH.'/category.lib.php');
 auth_check($auth[$sub_menu],'w');
 
 // 변수 설정, 필드 구조 및 prefix 추출
@@ -13,10 +13,11 @@ $fname = preg_replace("/_form/","",$g5['file_name']); // _form을 제외한 파�
 $qstr .= '&sca='.$sca.'&ser_bom_type='.$ser_bom_type; // 추가로 확장해서 넘겨야 할 변수들
 
 // 분류선택 박스(리스트 내부 사용)
-$sql = "SELECT * 
-        FROM {$g5['bom_category_table']}
-        WHERE com_idx = '".$_SESSION['ss_com_idx']."'
-        ORDER BY bct_id, bct_order
+/*
+$sql = " SELECT * 
+            FROM {$g5['bom_category_table']}
+            WHERE com_idx = '".$_SESSION['ss_com_idx']."'
+            ORDER BY bct_id, bct_order
 ";
 $result = sql_query($sql,1);
 
@@ -30,7 +31,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
     }
     $category_select .= '<option value="'.$row['bct_id'].'">'.$cat_name.'</option>'.PHP_EOL;
 }
-
+*/
 
 if ($w == '') {
     $sound_only = '<strong class="sound_only">필수</strong>';
@@ -169,10 +170,14 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
 	<tr> 
 		<th scope="row">카테고리</th>
 		<td>
-            <select name="bct_id" id="bct_id">
+            <?php
+            $cat = new category_list($_SESSION['ss_com_idx'],${$pre}['bct_id']);
+            echo $cat->run();
+            ?>
+            <!--select name="bct_id" id="bct_id">
                 <option value="">선택하세요</option>
-                <?php echo conv_selected_option($category_select, ${$pre}['bct_id']); ?>
-            </select>
+                <?php //echo conv_selected_option($category_select, ${$pre}['bct_id']); ?>
+            </select-->
 		</td>
 		<th scope="row">거래처</th>
 		<td>
