@@ -449,29 +449,29 @@ $(document).on('click','.list_mms_table',function(e){
     this_img = $('<img src="'+this_li.attr('mms_img_src')+'">');
     $('.data_left').find('.mms_image').empty().append( this_img );
     
-    // 생산기종
+    // 생산기종
     $('.data_left').find('.mms_mmi_no').text( this_li.find('.mms_mmi_no').text() );
 
-    // 일생산
+    // 일생산
     $('.data_left').find('.daily_output').text( this_li.find('.daily_output').text() );
 
-    // 달성율
+    // 달성율
     $('.data_left').find('.daily_output_rate').text( this_li.find('.daily_output_rate').text() );
 
-    // 장비이상
+    // 장비이상
     $('.data_left').find('.daily_error_count').text( this_li.find('.daily_error_count').text() );
 
-    // 예지알람
+    // 예지알람
     $('.data_left').find('.daily_alarm_count').text( this_li.find('.daily_alarm_count').text() );
 
-    // 가동시간
+    // 가동시간
     $('.data_left').find('.daily_run_time_hour').text( this_li.find('table').data('daily_run_time_hour') );
 
-    // 합격
+    // 합격
     this_daily_output_success = this_li.find('table').data('daily_output_success') || 0;
     $('.data_left').find('.daily_output_success').text( thousand_comma(this_daily_output_success) );
 
-    // 불량
+    // 불량
     this_daily_output_defect = this_li.find('table').data('daily_output_defect') || 0;
     $('.data_left').find('.daily_output_defect').text( thousand_comma(this_daily_output_defect) );
 
@@ -485,6 +485,7 @@ $(document).on('click','.list_mms_table',function(e){
 
     // 프레임 이동
     $('#data_right').attr('src', './iframe.<?=$g5['file_name']?>.php?mms_idx='+my_mms_idx);
+    
     // $('#data_right').attr('src', './iframe.<?=preg_replace("/index/","graph",$g5['file_name'])?>.php?mms_idx='+my_mms_idx);
 
 });

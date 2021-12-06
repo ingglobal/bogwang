@@ -155,7 +155,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
 	$row['indent'] = ($row['depth']) ? $row['depth']*50:10;
 	
 	//-- 하위 열기 닫기
-	$row['sub_toggle'] = ($row[depth]==0) ? '<a href="#">닫기</a>':'-';
+	$row['sub_toggle'] = ($row['depth']==0) ? '<a href="#">닫기</a>':'-';
 	
 	$usechecked = ($row['mmg_status'] == 'ok') ? '':'checked';
 	$status_txt = ($row['mmg_status'] == 'ok') ? 'ok':'hide';
