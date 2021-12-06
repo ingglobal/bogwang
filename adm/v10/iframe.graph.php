@@ -955,7 +955,7 @@ $(function(e) {
     if(!$mbd_idx) {
     ?>
         $.ajax({
-            url:'//icmms.co.kr/device/json/output.default.php',
+            url:'//bogwang.epcs.co.kr/device/json/output.default.php',
             data:{"token":"1099de5drf09","mms_idx":"<?=$mms_idx?>"},
             dataType:'json', timeout:10000, beforeSend:function(){}, success:function(res){
                 // console.log(res);

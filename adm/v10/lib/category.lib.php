@@ -18,11 +18,25 @@ class category_list {
         //global $g5, $config, $member, $default;
         global $g5;
 
-		$split_arr = str_split($this->bct_id, 2);
-		$cat1 = (count($split_arr) >= 1) ? $split_arr[0] : '';
-		$cat2 = (count($split_arr) >= 2) ? $split_arr[0].$split_arr[1] : '';
-		$cat3 = (count($split_arr) >= 3) ? $split_arr[0].$split_arr[1].$split_arr[2] : '';
-		$cat4 = (count($split_arr) >= 4) ? $split_arr[0].$split_arr[1].$split_arr[2].$split_arr[3] : '';
+		$cats = category_tree_array($this->bct_id);
+		/*
+		[0] => 1c
+		[1] => 1c10
+		[2] => 1c103m
+		[3] => 1c103m14
+		*/
+		$cats1 = array();
+		$cats2 = array();
+		$cats3 = array();
+		$cats4 = array();
+		for($i=0;$i<4;$i++){
+			if($cats[$i]){
+				$csql = " SELECT  ";
+			}
+			else{
+				echo 'no';
+			}
+		}
 
 		$file = G5_USER_ADMIN_SKIN_PATH.'/category/category.skin.php';
 		$category_list_call_url = G5_USER_ADMIN_SKIN_URL.'/category/ajax/category_call.php';

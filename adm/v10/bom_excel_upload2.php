@@ -28,7 +28,7 @@ function func_update_bom($arr) {
         // print_r3($sql);
         $com = sql_fetch($sql,1);
         // 거래처 정보 없으면 생성
-        if(!$com['com_idx_provider']) {
+        if(!$com['com_idx_customer']) {
             $sql = "INSERT INTO {$g5['company_table']} SET
                         com_idx_par = '".$_SESSION['ss_com_idx']."'
                         , com_name = '".addslashes($arr['com_name'])."'
@@ -40,19 +40,19 @@ function func_update_bom($arr) {
                         , com_update_dt = '".G5_TIME_YMDHIS."'
             ";
             sql_query($sql,1);
-            $com['com_idx_provider'] = sql_insert_id();
+            $com['com_idx_customer'] = sql_insert_id();
         }
 
     }
     // 완제품인 경우, 거래처 com_idx = MY com_idx
     else if($arr['bom_type']=='product') {
-        $com['com_idx_provider'] = $_SESSION['ss_com_idx'];
+        $com['com_idx_customer'] = $_SESSION['ss_com_idx'];
     }
     // 거래처 정보 =======================================================
 
 
     $sql_common = " com_idx = '".$_SESSION['ss_com_idx']."',
-                    com_idx_provider = '".$com['com_idx_provider']."',
+                    com_idx_customer = '".$com['com_idx_customer']."',
                     bct_id = '".$arr['bct_id']."',
                     bom_name = '".addslashes($arr['bom_name'])."',
                     bom_type = '".$arr['bom_type']."',
@@ -194,7 +194,6 @@ for($i=0;$i<=sizeof($allData[0]);$i++) {
     // 초기화
     unset($arr);
 
-    
     // 파트 넘버가 존재해야 함
     // 해당 라인만 추출
     if(!preg_match("/[가-힝]/",$allData[0][$i][1])
@@ -244,8 +243,6 @@ for($i=0;$i<=sizeof($allData[0]);$i++) {
     $ar = $arr[$i][0];
     $bom_child = func_update_bom($ar);
     unset($ar);
-    
-    $bom_childs[$i][] = $bom_child;
 
     // print_r3($bom_par);  // 부모 bom_idx
 
@@ -292,16 +289,8 @@ for($i=0;$i<=sizeof($allData[0]);$i++) {
         // bom_item_table 데이터 입력 =======================
 
     }
-    else{
-        print_r3('slf');
-        if($i != 0){
-            //엑셀파일의 자재레코드 제거되었을 경우 부모/자식 관계를 제거한다
-            print_r3($bom_childs[$i]);
-        }
-    }
     $idx--; // 자재 일련번호 증가(음수)
 
-    
 
     // 메시지 보임
     if($arr[$i][0]['bom_part_no']) {
