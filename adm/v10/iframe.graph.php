@@ -1,5 +1,6 @@
 <?php
 include_once('./_common.php');
+// 그래프를 추출하는 파일입니다. x1, x2....>>>>graph<<<... max
 
 // mms_idx 는 반드시 존재해야 한다.
 if(!$mms_idx)
@@ -262,7 +263,7 @@ else {
            chr_amp_slider.slider("option", "max", chr_amp);
            chr_amp_slider.slider("option", "value", chr_amp);
         }
-        // 이동값 설정
+        // 이동값 설정
         if(chr_move<chr_move_slider.slider("option","min")) {
            alert('이동 최소값은 '+chr_move_slider.slider("option","min")+'입니다.');
            return false;
@@ -315,7 +316,7 @@ var graphs2 = [], seriesOptions = [], data_series = [], graph_type = 'spline', g
 // graphs attr in in chart div
 // 변수가 바뀌면 graph_id를 바꿔줘야 합니다. 테스트하려면 주석 해제 후 [확인]만 하면 됩니다.
 // graphs[0] = {
-//     dta_data_url: "icmms.co.kr/device/json",
+//     dta_data_url: "bogwang.epcs.co.kr/device/json",
 //     dta_json_file: "measure",
 //     dta_group: "mea",
 //     mms_idx: 7,
@@ -333,7 +334,7 @@ var graphs2 = [], seriesOptions = [], data_series = [], graph_type = 'spline', g
 //     graph_id: 'bWVhc3VyZV9tZWFfN18xXzBfMF8wXzAsMV8wXw'
 // };
 // graphs[1] = {
-//     dta_data_url: "icmms.co.kr/device/json",
+//     dta_data_url: "bogwang.epcs.co.kr/device/json",
 //     dta_json_file: "output",
 //     dta_group: "product",
 //     mms_idx: 7,

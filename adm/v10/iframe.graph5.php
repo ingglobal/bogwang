@@ -305,7 +305,7 @@ var graphs2 = [], seriesOptions = [], data_series = [], graph_type = 'spline', g
 // graphs attr in in chart div
 // 변수가 바뀌면 graph_id를 바꿔줘야 합니다. 테스트하려면 주석 해제 후 [확인]만 하면 됩니다.
 // graphs[0] = {
-//     dta_data_url: "icmms.co.kr/device/json",
+//     dta_data_url: "bogwang.epcs.co.kr/device/json",
 //     dta_json_file: "measure",
 //     dta_group: "mea",
 //     mms_idx: 7,
@@ -322,7 +322,7 @@ var graphs2 = [], seriesOptions = [], data_series = [], graph_type = 'spline', g
 //     graph_id: 'bWVhc3VyZV9tZWFfN18xXzBfMF8wXzAsMV8wXw'
 // };
 // graphs[1] = {
-//     dta_data_url: "icmms.co.kr/device/json",
+//     dta_data_url: "bogwang.epcs.co.kr/device/json",
 //     dta_json_file: "output",
 //     dta_group: "product",
 //     mms_idx: 7,
