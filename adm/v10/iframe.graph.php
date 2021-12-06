@@ -1,5 +1,6 @@
 <?php
 include_once('./_common.php');
+// 그래프를 추출하는 파일입니다. x1, x2....>>>>graph<<<... max
 
 // mms_idx 는 반드시 존재해야 한다.
 if(!$mms_idx)
@@ -262,7 +263,7 @@ else {
            chr_amp_slider.slider("option", "max", chr_amp);
            chr_amp_slider.slider("option", "value", chr_amp);
         }
-        // 이동값 설정
+        // 이동값 설정
         if(chr_move<chr_move_slider.slider("option","min")) {
            alert('이동 최소값은 '+chr_move_slider.slider("option","min")+'입니다.');
            return false;
