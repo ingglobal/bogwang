@@ -690,7 +690,7 @@ $seconds_text = array(
 );
 
 // default data_url
-$g5['set_data_url'] = 'icmms.co.kr';
+$g5['set_data_url'] = 'bogwang.epcs.co.kr';
 
 // 코드타입 (r,a,p)
 $set_values = explode(',', preg_replace("/\s+/", "", $g5['setting']['set_cod_type']));
