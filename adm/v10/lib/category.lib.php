@@ -30,12 +30,7 @@ class category_list {
 		$cats3 = array();
 		$cats4 = array();
 		for($i=0;$i<4;$i++){
-			if($cats[$i]){
-				$csql = " SELECT  ";
-			}
-			else{
-				echo 'no';
-			}
+			$csql = " SELECT bct_id,bct_name FROM {$g5['bom_category_table']} WHERE com_idx = '' ";
 		}
 
 		$file = G5_USER_ADMIN_SKIN_PATH.'/category/category.skin.php';

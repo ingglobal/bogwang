@@ -59,27 +59,27 @@ include_once(G5_PATH.'/head.sub.php');
 //include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
 // jquery-ui css
-/*
+
 add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_JS_URL.'/jquery-ui-1.12.1/jquery-ui.min.css">', 1);
 add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_JS_URL.'/jquery-ui-1.12.1/jquery-ui.structure.min.css">', 1);
 add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_JS_URL.'/jquery-ui-1.12.1/jquery-ui.theme.min.css">', 1);
 add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_JS_URL.'/bwg_timepicker.css">', 1);
 add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_JS_URL.'/colpick/colpick.css">', 1);
-*/
+
 // 사용자 설정 css
 if(is_file(G5_USER_ADMIN_CSS_PATH.'/user.css')) add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_CSS_URL.'/user.css">',1);
 // 팝업창 관련 css
 if(is_file(G5_USER_ADMIN_CSS_PATH.'/user_popup.css')) add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_CSS_URL.'/user_popup.css">',1);
-/*
+
 add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/jquery-ui-1.12.1/jquery-ui.min.js"></script>',1);
 add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/bwg_datepicker.js"></script>',1);
 add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/bwg_timepicker.js"></script>',1);
 add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/colpick/colpick.js"></script>',1);
-*/
+
 add_javascript('<script src="'.G5_USER_ADMIN_URL.'/js/common.js"></script>', 0);
 echo PHP_EOL;
 ?>
-<!--script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script-->
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
 <script>
 var g5_user_admin_url = "<?php echo G5_USER_ADMIN_URL; ?>";
