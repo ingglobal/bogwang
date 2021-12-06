@@ -75,6 +75,7 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
     display: unset;
     margin: -8px 0 0 -8px;
 }
+.td_itm_history {width:190px !important;}
 </style>
 
 <div class="local_ov01 local_ov">
@@ -160,7 +161,7 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
         <td class="td_itm_plt"><?=$row['itm_plt']?></td><!-- PLT -->
         <td class="td_itm_defect"><?=($row['itm_defect'])?'불량품':'양품'?></td><!-- 품질 -->
         <td class="td_itm_location"><?=$g5['location_name'][$row['trm_idx_location']]?></td><!-- 위치 -->
-        <td class="td_itm_history"><?=$row['itm_history']?></td><!-- 히스토리 -->
+        <td class="td_itm_history"><?=nl2br($row['itm_history'])?></td><!-- 히스토리 -->
         <td class="td_itm_status"><?=$g5['set_itm_status_value'][$row['itm_status']]?></td><!-- 상태 -->
         <td class="td_mng">
             <?=($row['itm_type']!='material')?$s_bom:''?><!-- 자재가 아닌 경우만 BOM 버튼 -->

@@ -231,12 +231,14 @@ for($i=0;$i<=sizeof($allData[0]);$i++) {
 
     // 완제품 있으면 먼저 생성 (부모 코드가 있어야 함)
     if(is_array($arr[$i][1])) {
+        print_r3($bom_childs[$bom_par]);
         // print_r3('parent');
         $ar = $arr[$i][1];
         $bom_par = func_update_bom($ar);
         unset($ar);
 
         $idx = -1; // 자재 일련번호(bit_num)
+
     }
 
     // print_r3('child');
@@ -246,6 +248,9 @@ for($i=0;$i<=sizeof($allData[0]);$i++) {
 
     // print_r3($bom_par);  // 부모 bom_idx
 
+
+    
+    $bom_childs[$bom_par][] = $bom_child;    
 
     // // 자재인 경우는 bom_item 테이블을 구성해야 함
     if($arr[$i][0]['bom_type']=='material') {
