@@ -92,15 +92,15 @@ include_once('./_head.sub.php');
     .div_title .spsn_mms_group {position:absolute;top:1px;right:10px;}
     .btn_mesaure, .btn_product {
         cursor:pointer;margin:2px 2px 2px 0;
-        border: solid 1px #ddd;
+        border: solid 1px #095D9D;
         border-radius: 15px;
         padding: 0 10px;
-        background: #fff;
+        background: #095D9D;
     }
     .div_measure, .div_product {padding:2px 0;}
     .div_product {margin-top:7px;}
     .div_measure {margin-bottom:30px;}
-    .btn_mesaure:hover, .btn_product:hover {color:yellow;background: #000;}
+    .btn_mesaure:hover, .btn_product:hover {color:yellow;background: #084C8C;}
     #spinner {display:none;}
     .tbl_head01 tbody td {
         text-align:left;
