@@ -119,6 +119,22 @@ function func_update_bom($arr) {
 }
 
 
+// 엑셀 자재 삭제 처리 함후
+if(!function_exists('func_delete_bom_item')){
+function func_delete_bom_item($arr) {
+    global $g5,$demo;
+
+    $sql = "DELETE FROM {$g5['bom_item_table']}
+            WHERE bom_idx = '".$arr['bom_idx']."'
+                AND bom_idx_child NOT IN (".implode(',',$bom_child_arr).")
+    ";
+    sql_query($sql,1);
+
+    return $arr['bom_idx'];
+}
+}
+
+
 // ref: https://github.com/PHPOffice/PHPExcel
 require_once G5_LIB_PATH."/PHPExcel-1.8/Classes/PHPExcel.php"; // PHPExcel.php을 불러옴.
 $objPHPExcel = new PHPExcel();
@@ -232,27 +248,27 @@ for($i=0;$i<=sizeof($allData[0]);$i++) {
 
     // 완제품 있으면 먼저 생성 (부모 코드가 있어야 함)
     if(is_array($arr[$i][1])) {
-        print_r3($bom_childs[$bom_par]);
+        // 엑셀 삭제 처리
+        // print_r3($bom_childs[$bom_par]);
+        $ar['bom_idx'] = $bom_par;
+        $ar['bom_child_arr'] = $bom_childs[$bom_par];
+        func_delete_bom_item($arr);
+        unset($ar);
+
         // print_r3('parent');
         $ar = $arr[$i][1];
         $bom_par = func_update_bom($ar);
         unset($ar);
 
         $idx = -1; // 자재 일련번호(bit_num)
-
     }
 
     // print_r3('child');
     $ar = $arr[$i][0];
     $bom_child = func_update_bom($ar);
     unset($ar);
-    
-    $bom_childs[$i][] = $bom_child;
 
     // print_r3($bom_par);  // 부모 bom_idx
-
-
-    
     $bom_childs[$bom_par][] = $bom_child;    
 
     // // 자재인 경우는 bom_item 테이블을 구성해야 함
@@ -297,13 +313,6 @@ for($i=0;$i<=sizeof($allData[0]);$i++) {
         // bom_item_table 데이터 입력 =======================
 
     }
-    else{
-        print_r3('slf');
-        if($i != 0){
-            //엑셀파일의 자재레코드 제거되었을 경우 부모/자식 관계를 제거한다
-            print_r3($bom_childs[$i]);
-        }
-    }
     $idx--; // 자재 일련번호 증가(음수)
 
     
@@ -332,6 +341,13 @@ for($i=0;$i<=sizeof($allData[0]);$i++) {
         echo "<script> document.all.cont.innerHTML = ''; </script>\n";
 
 }
+// 엑셀 삭제 처리, for문 전체 돌고 나서 마지막 처리
+// print_r3($bom_childs[$bom_par]);
+$ar['bom_idx'] = $bom_par;
+$ar['bom_child_arr'] = $bom_childs[$bom_par];
+func_delete_bom_item($arr);
+unset($ar);
+
 
 
 
