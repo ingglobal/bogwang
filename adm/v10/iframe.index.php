@@ -51,6 +51,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_URL.'/js/slick-1.8.1/slic
 <script src="<?php echo G5_URL?>/lib/highcharts/Highstock/code/highstock.js"></script>
 <script src="<?php echo G5_URL?>/lib/highcharts/Highstock/code/modules/data.js"></script>
 <script src="<?php echo G5_URL?>/lib/highcharts/Highstock/code/modules/exporting.js"></script>
+<script src="<?php echo G5_URL?>/lib/highcharts/Highstock/code/themes/high-contrast-dark.js"></script>
+<!-- gray.js / dark-unica.js / high-contrast-dark.js / dark-blue.js -->
 <script src="<?php echo G5_URL?>/lib/highcharts/moment.js"></script><!-- 다양한 시간 표현을 위한 플러그인 -->
 
 <script>
