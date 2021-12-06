@@ -1,5 +1,5 @@
 <?php
-if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가 
+if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 
 // 게시판을 관리자단에서도 봐야 되서 추가 설정: 디폴트는 _common.php단에서 admin.lib.php 호출
@@ -15,7 +15,7 @@ if( $board['gr_id']=='intra') {
     // 인트라 게시판은 직원전용
     if ($member['mb_level'] < 4)
         alert('접근이 불가능한 게시판입니다.',G5_URL);
-    
+
 
     //qstr 조건 추가 { -------------------
     // 공통 qstr
@@ -73,14 +73,13 @@ if( $board['gr_id']=='intra' && ($g5['file_name'] == 'board' || $g5['file_name']
     if(is_file(G5_USER_ADMIN_CSS_PATH.'/board.css')) add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_CSS_URL.'/board.css">',1);
 }
 
-add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/jquery-ui-1.12.1/jquery-ui.min.js"></script>',1);
+add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/jquery-ui-1.12.1/jquery-ui.min.js"></script>',0);
 add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/bwg_datepicker-ko.js"></script>',1);
 add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/bwg_datepicker.js"></script>',1);
 add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/bwg_timepicker.js"></script>',1);
 add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/colpick/colpick.js"></script>',1);
 add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/datetimepicker/jquery.datetimepicker.full.min.js"></script>',1);
 ?>
-
 <script>
 var g5_user_admin_url = "<?php echo G5_USER_ADMIN_URL; ?>";
 var g5_user_admin_ajax_url = "<?php echo G5_USER_ADMIN_AJAX_URL; ?>";

@@ -124,9 +124,11 @@ if(!function_exists('func_delete_bom_item')){
 function func_delete_bom_item($arr) {
     global $g5,$demo;
 
+    if(!$arr['bom_idx'] || !$arr['bom_child_arr']) return false;
+
     $sql = "DELETE FROM {$g5['bom_item_table']}
             WHERE bom_idx = '".$arr['bom_idx']."'
-                AND bom_idx_child NOT IN (".implode(',',$bom_child_arr).")
+                AND bom_idx_child NOT IN (".implode(',',$arr['bom_child_arr']).")
     ";
     sql_query($sql,1);
 
@@ -252,7 +254,7 @@ for($i=0;$i<=sizeof($allData[0]);$i++) {
         // print_r3($bom_childs[$bom_par]);
         $ar['bom_idx'] = $bom_par;
         $ar['bom_child_arr'] = $bom_childs[$bom_par];
-        func_delete_bom_item($arr);
+        func_delete_bom_item($ar);
         unset($ar);
 
         // print_r3('parent');
@@ -345,7 +347,7 @@ for($i=0;$i<=sizeof($allData[0]);$i++) {
 // print_r3($bom_childs[$bom_par]);
 $ar['bom_idx'] = $bom_par;
 $ar['bom_child_arr'] = $bom_childs[$bom_par];
-func_delete_bom_item($arr);
+func_delete_bom_item($ar);
 unset($ar);
 
 
