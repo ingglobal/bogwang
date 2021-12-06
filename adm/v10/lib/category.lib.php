@@ -29,10 +29,28 @@ class category_list {
 		$cats2 = array();
 		$cats3 = array();
 		$cats4 = array();
+		
 		for($i=0;$i<4;$i++){
-			$csql = " SELECT bct_id,bct_name FROM {$g5['bom_category_table']} WHERE com_idx = '' ";
+			$csql = " SELECT bct_id,bct_name FROM {$g5['bom_category_table']} WHERE com_idx = '{$_SESSION['ss_com_idx']}' AND bct_id REGEXP '^.{".(($i==0)?2:strlen($cats[$i]))."}$' ";
+			$csql .= ($i == 0) ? "" : " AND bct_id LIKE '{$cats[$i-1]}%' ";
+			//echo $csql;
+			$cres = sql_query($csql,1);
+			if($cres->num_rows){
+				//${'cats'.($i+1)}
+				for($j=0;$crow=sql_fetch_array($cres);$j++){
+					${'cats'.($i+1)}[$crow['bct_id']] = $crow['bct_name'];
+				}
+			}
 		}
-
+		echo $this->bct_id."<br>";
+		print_r2($cats1);
+		echo $this->bct_id."<br>";
+		print_r2($cats2);
+		echo $this->bct_id."<br>";
+		print_r2($cats3);
+		echo $this->bct_id."<br>";
+		print_r2($cats4);
+		
 		$file = G5_USER_ADMIN_SKIN_PATH.'/category/category.skin.php';
 		$category_list_call_url = G5_USER_ADMIN_SKIN_URL.'/category/ajax/category_call.php';
 
