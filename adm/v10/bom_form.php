@@ -14,7 +14,7 @@ $qstr .= '&sca='.$sca.'&ser_bom_type='.$ser_bom_type; // 추가로 확장해서 
 
 // 분류선택 박스(리스트 내부 사용)
 /*
-$sql = " SELECT * 
+$sql = " SELECT *
             FROM {$g5['bom_category_table']}
             WHERE com_idx = '".$_SESSION['ss_com_idx']."'
             ORDER BY bct_id, bct_order
@@ -96,7 +96,7 @@ for ($i=0;$i<sizeof($check_array);$i++) {
 	${$check_array[$i].'_'.${$pre}[$check_array[$i]]} = ' checked';
 }
 
-$html_title = ($w=='')?'추가':'수정'; 
+$html_title = ($w=='')?'추가':'수정';
 $g5['title'] = '제품(BOM) '.$html_title;
 include_once ('./_head.php');
 ?>
@@ -167,16 +167,11 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
             <script>$('select[name="<?=$pre?>_type"]').val('<?=${$pre}[$pre.'_type']?>');</script>
 		</td>
     </tr>
-	<tr> 
+	<tr>
 		<th scope="row">카테고리</th>
 		<td>
             <?php
-            $cat = new category_list($_SESSION['ss_com_idx'],${$pre}['bct_id']);
-            echo $cat->run();
-
-            $cat = new category_list($_SESSION['ss_com_idx'],'',true,0);
-            $cat->set_id('bct_id2');
-            $cat->set_name('bct_id2');
+            $cat = new category_list(${$pre}['bct_id']);
             echo $cat->run();
             ?>
 		</td>
@@ -345,7 +340,7 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
                 echo '</ul>'.PHP_EOL;
             }
             ?>
-        </td>	
+        </td>
     </tr>
     <tr>
         <th scope="row"><label for="multi_file2">모니터 이미지파일#2</label></th>
@@ -361,7 +356,7 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
                 echo '</ul>'.PHP_EOL;
             }
             ?>
-        </td>	
+        </td>
     </tr>
     <tr>
         <th scope="row"><label for="multi_file3">모니터 이미지파일#3</label></th>
@@ -377,7 +372,7 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
                 echo '</ul>'.PHP_EOL;
             }
             ?>
-        </td>	
+        </td>
     </tr>
     <tr>
         <th scope="row"><label for="multi_file4">모니터 이미지파일#4</label></th>
@@ -393,7 +388,7 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
                 echo '</ul>'.PHP_EOL;
             }
             ?>
-        </td>	
+        </td>
     </tr>
     <tr>
         <th scope="row"><label for="multi_file5">모니터 이미지파일#5</label></th>
@@ -409,7 +404,7 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
                 echo '</ul>'.PHP_EOL;
             }
             ?>
-        </td>	
+        </td>
     </tr>
     <tr>
         <th scope="row"><label for="multi_file6">모니터 이미지파일#6</label></th>
@@ -425,7 +420,7 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
                 echo '</ul>'.PHP_EOL;
             }
             ?>
-        </td>	
+        </td>
     </tr>
     <?php } ?>
 	</tbody>
@@ -440,7 +435,7 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
 
 <script>
 $(function() {
-    <?php if($w == 'u' && ${$pre}['bom_type'] == 'product'){ ?>   
+    <?php if($w == 'u' && ${$pre}['bom_type'] == 'product'){ ?>
     var bom_file_cnt = $('.bom_file').length;
     for(var i=1; i<=bom_file_cnt; i++){
         $('#multi_file'+i).MultiFile({
