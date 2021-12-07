@@ -1,7 +1,7 @@
 <?php
 include_once('./_common.php');
 
-if($is_member && $is_admin){
+if($is_member && $is_auth){
     goto_url(G5_USER_ADMIN_URL);
     return;
 }

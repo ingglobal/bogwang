@@ -173,11 +173,12 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
             <?php
             $cat = new category_list($_SESSION['ss_com_idx'],${$pre}['bct_id']);
             echo $cat->run();
+
+            $cat = new category_list($_SESSION['ss_com_idx'],'',true,0);
+            $cat->set_id('bct_id2');
+            $cat->set_name('bct_id2');
+            echo $cat->run();
             ?>
-            <!--select name="bct_id" id="bct_id">
-                <option value="">선택하세요</option>
-                <?php //echo conv_selected_option($category_select, ${$pre}['bct_id']); ?>
-            </select-->
 		</td>
 		<th scope="row">거래처</th>
 		<td>
