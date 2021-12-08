@@ -32,7 +32,7 @@ try {
 	$sheetsCount = $objPHPExcel -> getSheetCount();
 
 	// 시트Sheet별로 읽기
-	for($i = 0; $i < $sheetsCount; $i++) {       
+	for($i = 0; $i < $sheetsCount; $i++) {
         $objPHPExcel -> setActiveSheetIndex($i);
         $sheet = $objPHPExcel -> getActiveSheet();
         $highestRow = $sheet -> getHighestRow();   			           // 마지막 행
@@ -86,12 +86,16 @@ foreach($allData as $av){
 }
 /*
 echo $com_idx."<br>";
-echo $com_idx_customer."<br>";
-echo $ord_ship_date."<br>";
+print_r2($dateArr);
 echo 'headArr<br>';
 print_r2($headArr);
+*/
+/*
 echo 'ordArr<br>';
+print_r2($ordArr);
+echo 'gstArr<br>';
 print_r2($gstkArr);
+exit;
 */
 //고객사 재고가 등록된 배열을 기반으로 고객사재고 DB에 등록
 foreach($gstkArr as $pno => $pvl){
@@ -140,7 +144,7 @@ foreach($ordArr as $ok => $ov){
     }
     if(!$tcnt) continue;
     //$ok = [2021-08-19]
-    
+
     //해당 날짜가 등록 되어 있는지 확인
     $osql = sql_fetch(" SELECT ord_idx FROM {$g5['order_table']} WHERE ord_date = '{$ok}' AND ord_status NOT IN('delete','del','cancel','trash') ");
     $ord_idx = $osql['ord_idx'];
@@ -187,7 +191,7 @@ foreach($ordArr as $ok => $ov){
                             ori_price = '{$ori_price}',
                             ori_status = 'ok',
                             ori_update_dt = '".G5_TIME_YMDHIS."'
-                        WHERE ori_idx = '{$ori_idx}'      
+                        WHERE ori_idx = '{$ori_idx}'
                     ";
                     sql_query($sql_it,1);
                 }
@@ -202,7 +206,7 @@ foreach($ordArr as $ok => $ov){
                             ori_price = '{$ori_price}',
                             ori_status = 'ok',
                             ori_reg_dt = '".G5_TIME_YMDHIS."',
-                            ori_update_dt = '".G5_TIME_YMDHIS."'        
+                            ori_update_dt = '".G5_TIME_YMDHIS."'
                     ";
                     sql_query($sql_it,1);
                     $ori_idx = sql_insert_id();
@@ -287,7 +291,7 @@ foreach($ordArr as $ok => $ov){
                         ori_price = '{$ori_price}',
                         ori_status = 'ok',
                         ori_reg_dt = '".G5_TIME_YMDHIS."',
-                        ori_update_dt = '".G5_TIME_YMDHIS."'        
+                        ori_update_dt = '".G5_TIME_YMDHIS."'
                 ";
                 sql_query($sql_it,1);
                 //$ori_idx = sql_insert_id();

@@ -404,7 +404,11 @@ $('.data_blank').on('click',function(e){
         <tr>
             <td>
                 <p style="padding:10px 0 6px;">작업지시번호</p>
-                <input type="text" name="orp_order_no" id="orp_order_no" class="frm_input">
+                <?php
+                $tdcode = preg_replace('/[ :-]*/','',G5_TIME_YMDHIS);
+                $orp_order_no = "ORP-".$tdcode;
+                ?>
+                <input type="text" name="orp_order_no" id="orp_order_no" value="<?=$orp_order_no?>" readonly class="frm_input readonly">
             </td>
         </tr>
         <tr>
