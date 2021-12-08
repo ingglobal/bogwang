@@ -50,6 +50,7 @@ else if ($w == 'u') {
 		alert('존재하지 않는 자료입니다.');
     // print_r3(${$pre});
     $com = get_table_meta('company','com_idx',$bom['com_idx_customer']);
+    $com2 = get_table_meta('company','com_idx',$bom['com_idx_provider']);
 
     // 가격 (오늘날짜 기준가격)
     ${$pre}['bom_price'] = get_bom_price(${$pre."_idx"});
@@ -117,6 +118,8 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
 .MultiFile-wrap .MultiFile-list > .MultiFile-label .MultiFile-remove::after{content:'×';display:block;position:absolute;left:0;top:0;width:20px;height:20px;border:1px solid #ccc;border-radius:50%;font-size:14px;line-height:20px;text-align:center;}
 .MultiFile-wrap .MultiFile-list > .MultiFile-label > span{}
 .MultiFile-wrap .MultiFile-list > .MultiFile-label > span span.MultiFile-label{display:inline-block;font-size:14px;border:1px solid #444;background:#333;padding:2px 5px;border-radius:3px;line-height:1.2em;margin-top:5px;}
+#sp_notice,#sp_ex_notice{color:yellow;margin-left:10px;}
+#sp_notice.sp_error,#sp_ex_notice.sp_error{color:red;}
 </style>
 
 <form name="form01" id="form01" action="./<?=$g5['file_name']?>_update.php" onsubmit="return form01_submit(this);" method="post" enctype="multipart/form-data" autocomplete="off">
@@ -175,33 +178,25 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
             echo $cat->run();
             ?>
 		</td>
-		<th scope="row">거래처</th>
+		<th scope="row">납품회사(고객처)</th>
 		<td>
-            <input type="hidden" name="com_idx_customer" value="<?=$bom['com_idx_customer']?>"><!-- 거래처번호 -->
+            <input type="hidden" name="com_idx_customer" value="<?=$bom['com_idx_customer']?>"><!-- 고객처번호 -->
 			<input type="text" name="com_name" value="<?php echo $com['com_name'] ?>" id="com_name" class="frm_input required" required readonly>
-            <a href="./customer_select.php?file_name=<?php echo $g5['file_name']?>" class="btn btn_02" id="btn_customer">거래처찾기</a>
+            <a href="./customer_select.php?file_name=<?php echo $g5['file_name']?>" class="btn btn_02" id="btn_customer">고객처찾기</a>
 		</td>
     </tr>
     <tr>
-        <?php
-        $ar['id'] = 'bom_part_no';
-        $ar['name'] = '고유번호';
-        $ar['type'] = 'input';
-        $ar['value'] = ${$pre}[$ar['id']];
-        $ar['required'] = 'required';
-        $ar['width'] = '150px';
-        echo create_td_input($ar);
-        unset($ar);
-        ?>
-        <?php
-        $ar['id'] = 'bom_maker';
-        $ar['name'] = '메이커';
-        $ar['type'] = 'input';
-        $ar['width'] = '120px';
-        $ar['value'] = ${$pre}[$ar['id']];
-        echo create_td_input($ar);
-        unset($ar);
-        ?>
+        <th scope="row">제품코드(P/NO)</th>
+        <td>
+            <input type="text" name="bom_part_no" value="<?php echo ${$pre}['bom_part_no'] ?>" id="bom_part_no" required class="frm_input required" style="width:150px;" onkeyup="javascript:chk_Code(this)">
+            <span id="sp_notice"></span>
+        </td>
+        <th scope="row">공급회사(매입처)</th>
+		<td>
+            <input type="hidden" name="com_idx_provider" value="<?=$bom['com_idx_provider']?>"><!-- 고객처번호 -->
+			<input type="text" name="com_name2" value="<?php echo $com2['com_name'] ?>" id="com_name2" class="frm_input required" required readonly>
+            <a href="./customer_select.php?file_name=<?php echo $g5['file_name']?>&provider=1" class="btn btn_02" id="btn_provider">공급처찾기</a>
+		</td>
     </tr>
     <tr>
         <?php
@@ -266,17 +261,11 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
     </tr>
     <?php if(${$pre}['bom_type'] == 'product'){ ?>
     <tr>
-        <?php
-        $ar['id'] = 'bom_ex_label';
-        $ar['name'] = '고객업체(외부)라벨';
-        $ar['type'] = 'input';
-        $ar['width'] = '400px';
-        $ar['help'] = "고객업체에서 제공한 본제품에 해당하는 외부라벨의 정보를 입력하세요.";
-        $ar['value'] = ${$pre}[$ar['id']];
-        $ar['colspan'] = 3;
-        echo create_td_input($ar);
-        unset($ar);
-        ?>
+        <th scope="row">고객업체(외부)라벨</th>
+        <td colspan="3">
+            <input type="text" name="bom_ex_label" value="<?php echo ${$pre}['bom_ex_label'] ?>" id="bom_ex_label" class="frm_input" style="width:150px;text-transform:uppercase;" onkeyup="javascript:chk_exCode(this)">
+            <span id="sp_ex_notice"></span>
+        </td>
     </tr>
     <?php } ?>
     <tr class="tr_price" style="display:<?=($w=='u')?'none':''?>">
@@ -435,6 +424,11 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
 
 <script>
 $(function() {
+    //코드형식에 맞는지 확인
+    chk_Code(document.getElementById('bom_part_no'));
+    chk_exCode(document.getElementById('bom_ex_label'));
+
+
     <?php if($w == 'u' && ${$pre}['bom_type'] == 'product'){ ?>
     var bom_file_cnt = $('.bom_file').length;
     for(var i=1; i<=bom_file_cnt; i++){
@@ -463,6 +457,14 @@ $(function() {
 		winCustomerSelect = window.open(href, "winCustomerSelect", "left=300,top=150,width=550,height=600,scrollbars=1");
         winCustomerSelect.focus();
 	});
+
+    // 공급처찾기 버튼 클릭
+    $("#btn_provider").click(function(e) {
+        e.preventDefault();
+        var href = $(this).attr('href');
+        winProviderSelect = window.open(href, "winProviderSelect", "left=300,top=150,width=550,height=600,scrollbars=1");
+        winProviderSelect.focus();
+    });
 
     // 가격 입력 쉼표 처리
 	$(document).on( 'keyup','input[name$=_price], #bom_moq, #bom_lead_time',function(e) {
@@ -508,7 +510,99 @@ function chk_Number(object){
     });
 }
 
+function chk_Code(object){
+    var ex = /[\{\}\[\]\/?.,;:|\)*~`!^\+┼<>@\#$%&\'\"\\\(\=ㄱ-ㅎㅏ-ㅣ가-힣]*/g;
+    var hx = /[A-Z0-9-_]{3,20}/;
+    //var pt = /^[^-_][a-zA-Z0-9]+[-_]?[a-zA-Z0-9]+[-_]?[a-zA-Z0-9]+[^-_]$/;
+    //var hx = /^[^-_][a-zA-Z0-9]+[-][a-zA-Z0-9]+[-][a-zA-Z0-9]+[^-_]$/; //한국수지만의 패턴
+    object.value = object.value.replace(ex,"");//-_제외한 특수문자,한글입력 불가
+    var str = object.value; 
+    
+    if(hx.test(str)){
+        var bom_idx = '<?=${$pre."_idx"}?>';
+        var com_chk_url = './ajax/bom_part_no_overlap_chk.php';
+        var st = $.trim(str.toUpperCase());
+        var msg = '등록 가능한 코드입니다.';
+        object.value = st;
+        document.getElementById('sp_notice').textContent = msg;
+        $('#sp_notice').removeClass('sp_error');
+        //디비에 bom_part_no가 존재하는지 확인하고 존재하면 에러를 발생
+        //console.log(st);
+        $.ajax({
+            type : 'POST',
+            url : com_chk_url,
+            dataType : 'text',
+            data : {'bom_idx' : bom_idx,'bom_part_no' : st},
+            success : function(res){
+                //console.log(res);
+                if(res == 'ok'){
+                    document.getElementById('sp_notice').textContent = '등록 가능한 코드입니다.';
+                    $('#sp_notice').removeClass('sp_error');
+                }
+                else if(res == 'overlap'){
+                    document.getElementById('sp_notice').textContent = '이미 등록된 코드입니다.';
+                    $('#sp_notice').removeClass('sp_error');
+                    $('#sp_notice').addClass('sp_error');
+                }
+                else if(res == 'same'){
+                    document.getElementById('sp_notice').textContent = '제품코드 설정완료';
+                    $('#sp_notice').removeClass('sp_error');
+                }
+            },
+            error : function(xmlReq){
+                alert('Status: ' + xmlReq.status + ' \n\rstatusText: ' + xmlReq.statusText + ' \n\rresponseText: ' + xmlReq.responseText);
+            }
+        });
+    }
+    else {
+        document.getElementById('sp_notice').textContent = '코드규칙에 맞지않습니다.';
+        $('#sp_notice').removeClass('sp_error');
+        $('#sp_notice').addClass('sp_error');
+    }
+}
+
+
+function chk_exCode(object){
+    var ex = /[\{\}\[\]\/?.,;:|\)*~`!^\+┼<>@\#$%&\'\"\\\(\=ㄱ-ㅎㅏ-ㅣ가-힣]*/g;
+    var hx = /[A-Z0-9-_]{5,20}/;
+    //var pt = /^[^-_][a-zA-Z0-9]+[-_]?[a-zA-Z0-9]+[-_]?[a-zA-Z0-9]+[^-_]$/;
+    //var hx = /^[^-_][a-zA-Z0-9]+[-][a-zA-Z0-9]+[-][a-zA-Z0-9]+[^-_]$/; //한국수지만의 패턴
+    object.value = object.value.replace(ex,"");//-_제외한 특수문자,한글입력 불가
+    var str = object.value; 
+    
+    if(hx.test(str)){
+        var st = $.trim(str.toUpperCase());
+        var msg = '등록 가능한 외부라벨코드입니다.';
+        object.value = st;
+        document.getElementById('sp_ex_notice').textContent = msg;
+        $('#sp_ex_notice').removeClass('sp_error');
+    }
+    else {
+        if(str){
+            document.getElementById('sp_ex_notice').textContent = '코드규칙에 맞지않습니다.';
+            $('#sp_ex_notice').removeClass('sp_error');
+            $('#sp_ex_notice').addClass('sp_error');
+        }
+        else {
+            document.getElementById('sp_ex_notice').textContent = '코드가 입력되지 않았습니다.';
+            $('#sp_ex_notice').removeClass('sp_error');
+        }
+    }
+}
+
 function form01_submit(f) {
+
+    if($('#sp_notice').hasClass('sp_error')){
+        alert('올바른 제품코드를 입력해 주세요.');
+        $('input[name="bom_part_no"]').focus();
+        return false;
+    }
+
+    if($('#sp_ex_notice').hasClass('sp_error')){
+        alert('올바른 외부라벨 코드를 입력해 주세요.');
+        $('input[name="bom_ex_label"]').focus();
+        return false;
+    }
 
     return true;
 }

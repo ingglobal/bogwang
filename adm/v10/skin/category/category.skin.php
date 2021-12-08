@@ -1,3 +1,7 @@
+<?php
+$len = strlen($this->value);
+$no = ($len == 0)?0:$len / 2;
+?>
 <div id="dv_<?=$this->id?>">
     <input type="hidden" id="<?=$this->id?>" name="<?=$this->name?>" value="<?=$this->value?>">
     <select id="<?=$this->id1?>" no="1" class="frm_input bct1<?=$this->required_str?><?=$this->readonly_str?>"<?=$this->required_str?><?=$this->readonly_str?><?=$this->readonly_scr?>>
@@ -34,6 +38,8 @@
     </select>
 </div>
 <script>
+var <?=$d?>_len = '<?=$len?>';
+var <?=$d?>_no = '<?=$no?>';
 var <?=$d?>_did = '#dv_<?=$this->id?>';
 var <?=$d?>_id = '#<?=$this->id?>';
 var <?=$d?>_id1 = '#<?=$this->id1?>';
@@ -46,6 +52,17 @@ var <?=$d?>_btn = '';
 var <?=$d?>_val = '';
 var <?=$d?>_call_url = '<?=$call_url?>';
 
+//초기설정
+if(<?=$d?>_no == '1') <?=$d?>_btn = $(<?=$d?>_id1);
+else if(<?=$d?>_no == '2') <?=$d?>_btn = $(<?=$d?>_id2);
+else if(<?=$d?>_no == '3') <?=$d?>_btn = $(<?=$d?>_id3);
+<?=$d?>_val = (<?=$d?>_btn != '')?<?=$d?>_btn.val():'';
+if(<?=$d?>_no == '1' || <?=$d?>_no == '2' || <?=$d?>_no == '3'){
+    <?=$d?>_sbtn_nxt = <?=$d?>_btn.next();
+    <?=$d?>_cat_call();
+} 
+
+//이벤트 시작
 <?=$d?>_event_on();
 
 function <?=$d?>_cat_call(){
@@ -95,6 +112,7 @@ function <?=$d?>_blank_select(){
 }
 
 function <?=$d?>_set_select(res){
+    <?=$d?>_sbtn_nxt.empty().html('<option value="">::'+<?=$d?>_sbtn_nxt.attr('no')+'차분류::</option>');
     $.each(res,function(idx,val){
         $('<option value="'+idx+'">'+val+'</option>').appendTo(<?=$d?>_sbtn_nxt);
     });

@@ -164,8 +164,13 @@ $('.btn_select').click(function(e){
     // 이전 파일의 폼에 따라 전달 내용 변경
     if($file_name == 'bom_form' || $file_name == 'order_form' || $file_name == 'order_list' || $file_name == 'order_out_form') {
     ?>
+    <?php if($provider){ ?>
+        $("input[name=com_idx_provider]", opener.document).val( $(this).closest('td').attr('com_idx') );
+        $("input[name=com_name2]", opener.document).val( $(this).closest('td').attr('com_name') );
+    <?php } else { ?>
         $("input[name=com_idx_customer]", opener.document).val( $(this).closest('td').attr('com_idx') );
         $("input[name=com_name]", opener.document).val( $(this).closest('td').attr('com_name') );
+    <?php } ?>
     <?php
     }
     // 대시보드 설비 추가 or 대시보드 설비그룹, 설비검색
