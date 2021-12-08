@@ -13,7 +13,9 @@ $sql_common = " FROM {$g5['bom_table']} AS bom
 "; 
 
 $where = array();
-$where[] = " bom_status NOT IN ('delete','trash') AND bom.com_idx = '".$_SESSION['ss_com_idx']."' ";   // 디폴트 검색조건
+$where[] = " bom_status NOT IN ('delete','trash') AND bom.com_idx = '".$_SESSION['ss_com_idx']."' AND bom_type NOT IN('product') ";// 디폴트 검색조건
+
+//echo $g5['file_name'];
 
 // 카테고리 검색
 if ($sca != "") {
@@ -87,21 +89,6 @@ include_once('./_head.sub.php');
     <input type="hidden" name="com_idx" value="<?php echo $_REQUEST['com_idx']; ?>">
 
     <div id="div_search">
-        <select name="sca" id="sca">
-            <option value="">전체분류</option>
-            <?php
-            $sql1 = "   SELECT * FROM {$g5['bom_category_table']}
-                        WHERE com_idx = '".$_SESSION['ss_com_idx']."'
-                        ORDER BY bct_id, bct_order
-            ";
-            $result1 = sql_query($sql1);
-            for ($i=0; $row1=sql_fetch_array($result1); $i++) {
-                $len = strlen($row1['bct_id']) / 2 - 1;
-                for ($j=0; $j<$len; $j++) { $row1['nbsp'] .= '&nbsp;&nbsp;&nbsp;'; } // 들여쓰기공백
-                echo '<option value="'.$row1['bct_id'].'" '.get_selected($sca, $row1['bct_id']).'>'.$row1['nbsp'].$row1['bct_name'].'</option>'.PHP_EOL;
-            }
-            ?>
-        </select>
         <select name="sfl" id="sfl">
             <option value="bom_name"<?php echo get_selected($_GET['sfl'], "bom_name"); ?>>품명</option>
             <option value="com_idx_customer"<?php echo get_selected($_GET['sfl'], "com_idx_customer"); ?>>거래처번호</option>
