@@ -194,8 +194,8 @@ include_once('./_top.kpi.php');
                         echo '
                             <tr class="'.$row['tr_class'].'">
                                 <td class="text_left" style="padding-left:'.(15+$row['indent']).'px;">'.$row['mmg_name'].'</td>
-                                <td class="text_right pr_5">'.number_format($row['target']).'</td><!-- 목표 -->
-                                <td class="text_right pr_5">'.number_format($row['output_sum']).'</td><!-- 생산 -->
+                                <td class="text_right pr_5">'.number_format($row['target']).'</td><!-- 목표 -->
+                                <td class="text_right pr_5">'.number_format($row['output_sum']).'</td><!-- 생산 -->
                                 <td class="text_right" style="color:'.$row['rate_color'].';">'.number_format($row['rate'], 1).'%</td><!-- 달성율 -->
                                 <td class="td_graph text_left pl_0">'.$row['graph_output'].$row['graph_target'].'</td>
                             </tr>
@@ -346,7 +346,7 @@ include_once('./_top.kpi.php');
                                 <td class="text_left">'.$g5['mms'][$row['item_name']]['mms_name'].'</td><!-- cache/mms-setting.php -->
                                 <td class="text_right pr_5">'.number_format($row['target']).'</td><!-- 목표 -->
                                 <td class="text_right pr_5"><a href="javascript:" mms_idx="'.$row['item_name'].'" class="link_mmd_product" st_date="'.$st_date.'" en_date="'.$en_date.'">'
-                                    .number_format($row['output_total']).'</a></td><!-- 생산 -->
+                                    .number_format($row['output_total']).'</a></td><!-- 생산 -->
                                 <td class="text_right pr_5">'.number_format($row['output_good']).'</td><!-- 양호 -->
                                 <td class="text_right pr_5">'.number_format($row['output_defect']).'</td><!-- 불량 -->
                                 <td class="td_graph text_left pl_0">'.$row['graph_good'].$row['graph_defect'].$row['graph_target'].'</td>
