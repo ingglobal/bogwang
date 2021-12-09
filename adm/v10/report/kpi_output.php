@@ -1427,6 +1427,7 @@ $(function(e) {
 
 
 <?php
+// 그래프 자바스크립트 _tail에서 호출합니다.
 include_once ('./_tail.php');
 ?>
 
