@@ -130,10 +130,6 @@ for($j=0;$row=sql_fetch_array($rs);$j++){
 // 목표추출 get target fetch
 // 전체기간 설정이 있는 경우는 마지막 부분에서 돌면서 없는 날짜 목표를 채워줍니다.
 $sql = "SELECT mms_idx, shf_idx, shf_period_type
-        , (shf_target_1+shf_target_2+shf_target_3) AS shf_target_sum
-        , shf_target_1
-        , shf_target_2
-        , shf_target_3
         , shf_start_dt AS db_shf_start_dt
         , shf_end_dt AS db_shf_end_dt
         , GREATEST('".$st_date." 00:00:00', shf_start_dt ) AS shf_start_dt
@@ -336,6 +332,7 @@ add_javascript('<script src="https://code.highcharts.com/highcharts.js"></script
 add_javascript('<script src="https://code.highcharts.com/modules/exporting.js"></script>',0);
 add_javascript('<script src="https://code.highcharts.com/modules/export-data.js"></script>',0);
 add_javascript('<script src="https://code.highcharts.com/modules/accessibility.js"></script>',0);
+add_javascript('<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/9.3.2/themes/high-contrast-dark.min.js"></script>',2);
 ?>
 <style>
 .td_graph {line-height:14px;}

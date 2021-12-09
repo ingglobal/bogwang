@@ -143,6 +143,9 @@ label[for^=set_] input[type=radio] {margin-right:2px;}
 .dta_unit_radio {display:inline-block;width:30px;text-align:center;padding:5px;border:solid 1px #ddd;}
 .dta_unit_radio.active {background: #6e6e6e;color:white;}
 .dta_unit_radio input {display:none;}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+    border: 1px solid #3c3c3c;
+}
 
 /* datepicker css */
 .ui-datepicker-title select {height:22px;}
