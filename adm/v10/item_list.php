@@ -178,7 +178,7 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 </div>
 
 <div class="btn_fixed_top">
-    <?php if (!auth_check($auth[$sub_menu],'d')) { ?>
+    <?php if ($is_admin){ //(!auth_check($auth[$sub_menu],'d')) { ?>
        <a href="<?=G5_URL?>/device/itm_ing/form.php" target="_blank" class="btn btn_02">생산시작</a>
        <a href="<?=G5_URL?>/device/itm_error/form.php" target="_blank" class="btn btn_02">검수</a>
        <a href="<?=G5_URL?>/device/itm_finish/form.php" target="_blank" class="btn btn_02">완제품코드매칭</a>

@@ -299,7 +299,7 @@ function sch_submit(f){
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn_02 btn" style="display:none;">
     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn_02 btn">
     <?php } ?>
-    <?php if(!auth_check($auth[$sub_menu],"w",1)) { ?>
+    <?php if($is_admin){ //(!auth_check($auth[$sub_menu],"w",1)) { ?>
     <a href="./<?=$fname?>_form.php" id="btn_add" class="btn btn_01">추가하기</a>
     <?php } ?>
 </div>
