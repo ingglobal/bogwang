@@ -259,7 +259,7 @@ $qstr .= '&sca='.$sca.'&ser_bom_type='.$ser_bom_type; // 추가로 확장해서 
         <td class="td_bom_items_title">
             자재 (구성품)
         </td>
-        <td class="td_bom_items" colspan="10">
+        <td class="td_bom_items" colspan="11">
             <?php
             if(is_array($row['parts_list'])) {
                 echo implode(" ",$row['parts_list']);

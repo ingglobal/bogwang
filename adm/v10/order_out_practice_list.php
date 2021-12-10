@@ -63,8 +63,8 @@ if ($where)
     $sql_search = ' WHERE '.implode(' AND ', $where);
 
 if (!$sst) {
-    $sst = "orp.orp_idx, oop.oop_idx";
-    $sod = "desc";
+    $sst = "orp.orp_idx desc, oop.oop_idx desc";
+    $sod = "";
 }
 
 $sql_order = " ORDER BY {$sst} {$sod} ";
@@ -324,8 +324,8 @@ $('.data_blank').on('click',function(e){
     <?php if (!auth_check($auth[$sub_menu],'w')) { ?>
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
-    <!--
     <a href="./order_out_practice_form.php" id="member_add" class="btn btn_01">추가하기</a>
+    <!--
     -->
     <?php } ?>
 

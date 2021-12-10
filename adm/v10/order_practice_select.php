@@ -46,8 +46,8 @@ if ($where)
     $sql_search = ' WHERE '.implode(' AND ', $where);
 
 if (!$sst) {
-    $sst = "orp_start_date, orp_reg_dt";
-    $sod = "DESC";
+    $sst = "orp_start_date desc, orp_reg_dt desc";
+    $sod = "";
 }
 $sql_order = " ORDER BY {$sst} {$sod} ";
 
@@ -192,8 +192,17 @@ $('.btn_select').click(function(e){
     ?>
         // 폼이 존재하면
         if( $("form[name=<?php echo $frm;?>]", opener.document).length > 0 ) {
-            $("input[name=orp_idx]", opener.document).val( $(this).closest('td').attr('orp_idx') );
-            $("input[name=line_name]", opener.document).val( $(this).closest('td').attr('line_name') );
+            $("input[name=orp_idx]", opener.document).val( $(this).closest('td').attr('orp_idx') ).attr('required',true);
+            $("input[name=line_name]", opener.document).val( $(this).closest('td').attr('line_name') ).attr('required',true).addClass('required');
+
+            //설비선택 해제
+            $("#trm_idx_line", opener.document).val('').attr('required',false).removeClass('required');
+            //생산담당자 해제
+            $("#mb_id", opener.document).val('').attr('required',false);
+            $("#mb_name", opener.document).val('').attr('required',false).removeClass('required');
+            //생산일정 해제
+            $("#orp_start_date", opener.document).val('').attr('required',false).removeClass('required');
+            $("#orp_end_date", opener.document).val('').attr('required',false).removeClass('required');
         }
         else {
             alert('값을 전달할 폼이 존재하지 않습니다.');

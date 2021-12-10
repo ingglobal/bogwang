@@ -213,8 +213,19 @@ function put_value(val1,val2,val3,val4,val_email,val_manager,val_hp,val_presiden
         $("#mb_password", window.opener.document).remove();
         <?php
     }
-    // 실행계획 폼
-    else if($file_name=='order_out_practice_form' || $file_name=='order_practice_form' || $file_name=='order_out_list') {
+    // 출하실행계획 폼
+    else if($file_name=='order_out_practice_form') {
+        ?>
+        $("input[name=mb_id]", opener.document).val( val1 ).attr('required',true);
+        $("input[name=mb_name]", opener.document).val( val2 ).attr('required',true).addClass('required');
+
+        //생산계획ID 해제
+        $("input[name=orp_idx]", opener.document).val("").attr('required',false);
+        $("input[name=line_name]", opener.document).val("").attr('required',false).removeClass('required');
+        <?php
+    }
+    //실행계획/출하목록 폼
+    else if($file_name=='order_practice_form' || $file_name=='order_out_list') {
         ?>
         $("input[name=mb_id]", opener.document).val( val1 );
         $("input[name=mb_name]", opener.document).val( val2 );

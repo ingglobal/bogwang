@@ -4,6 +4,28 @@ include_once("./_common.php");
 
 auth_check($auth[$sub_menu], 'w');
 
+$first_flag = ($orp_order_no && $trm_idx_line && $mb_id && $orp_start_date && $orp_end_date) ? true : false;
+if($first_flag){
+    $sql1 = " INSERT {$g5['order_practice_table']} SET
+                com_idx = '".$_SESSION['ss_com_idx']."',
+                orp_order_no = '".$orp_order_no."',
+                trm_idx_operation = '',
+                trm_idx_line = '".$trm_idx_line."',
+                shf_idx = '',
+                mb_id = '".$mb_id."',
+                orp_start_date = '".$orp_start_date."',
+                orp_done_date = '".$orp_end_date."',
+                orp_memo = '',
+                orp_status = 'confirm',
+                orp_reg_dt = '".G5_TIME_YMDHIS."',
+                orp_update_dt = '".G5_TIME_YMDHIS."'
+    ";
+    sql_query($sql1,1);
+    $orp_idx = sql_insert_id();
+}
+
+
+
 // 변수 설정, 필드 구조 및 prefix 추출
 $table_name = 'order_out_practice';
 $g5_table_name = $g5[$table_name.'_table'];
@@ -29,6 +51,9 @@ for($i=0;$i<sizeof($fields);$i++) {
     if(in_array($fields[$i],$skips)) {continue;}
     $sql_commons[] = " ".$fields[$i]." = '".$_POST[$fields[$i]]."' ";
 }
+
+//print_r2($sql_commons);exit;
+
 $sql_common = (is_array($sql_commons)) ? implode(",",$sql_commons) : '';
 
 //history 저장내용
@@ -50,7 +75,10 @@ if ($w == '' || $w == 'c') {
     ";
     sql_query($sql,1);
     ${$pre."_idx"} = sql_insert_id();
-    
+    if($first_flag){
+        $sql = " UPDATE {$g5_table_name} SET orp_idx = '{$orp_idx}' WHERE oop_idx = '".${$pre."_idx"}."' ";
+        sql_query($sql,1);
+    }
 }
 else if ($w == 'u') {
 

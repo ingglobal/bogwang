@@ -47,6 +47,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_CSS_URL.'/nestable.
 .div_bom_list {min-height:600px;padding:10px 20px;}
 #frame_bom_list {width:100%;min-height:600px;}
 .empty_table {background:#1e2531;}
+#sp_notice,#sp_ex_notice{color:yellow;margin-left:10px;}
+#sp_notice.sp_error,#sp_ex_notice.sp_error{color:red;}
 </style>
 
 <form name="form01" id="form01" action="./order_form_update.php" onsubmit="return form01_submit(this);" method="post" enctype="multipart/form-data" autocomplete="off">
@@ -98,6 +100,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_CSS_URL.'/nestable.
         <th scope="row"><label for="ord_date">수주일</label></th>
         <td colspan="3">
             <input type="text" name="ord_date" id="ord_date" value="<?=$ord['ord_date']?>" readonly required class="date frm_input readonly required" style="width:130px;">
+            <span id="sp_notice" class="sp_error">수주일을 입력해 주세요.</span>
         </td>
     </tr>
 	</tbody>
@@ -188,7 +191,13 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_CSS_URL.'/nestable.
 <script src="<?=G5_USER_ADMIN_JS_URL?>/nestable/jquery.nestable.js"></script>
 <script>
 $(function() {
-    $("input[name$=_date]").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-99:c+99" });
+    <?php if($w == ''){ ?>
+    $("input[name=ord_date]").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-99:c+99",
+    onSelect: function(date,datepicker){
+        chk_Code(date);
+    }
+    });
+    <?php } ?>
     // 가격 입력 쉼표 처리
 	$(document).on( 'keyup','input[name$=_price]',function(e) {
         if(!isNaN($(this).val().replace(/,/g,'')))
@@ -453,6 +462,33 @@ function chk_Number(object){
     });
 }
 
+
+function chk_Code(date){
+    var date_chk_url = './ajax/ord_date_overlap_chk.php';
+    $.ajax({
+        type : 'POST',
+        url : date_chk_url,
+        dataType : 'text',
+        data : {'ord_date' : date},
+        success : function(res){
+            //console.log(res);
+            if(res == 'ok'){
+                document.getElementById('sp_notice').textContent = '등록 가능한 날짜입니다.';
+                $('#sp_notice').removeClass('sp_error');
+            }
+            else if(res == 'overlap'){
+                document.getElementById('sp_notice').textContent = '이미 등록된 날짜입니다.';
+                $('#sp_notice').removeClass('sp_error');
+                $('#sp_notice').addClass('sp_error');
+            }
+        },
+        error : function(xmlReq){
+            alert('Status: ' + xmlReq.status + ' \n\rstatusText: ' + xmlReq.statusText + ' \n\rresponseText: ' + xmlReq.responseText);
+        }
+    });
+}
+
+
 function form01_submit(f) {
     // 폼에 input 박스가 한개라도 있으면 안 된다.
     // input 처리를 하고 return false
@@ -461,6 +497,12 @@ function form01_submit(f) {
         var this_value = $('.dd3-content input').val();
         $('.dd3-content input').closest('span').html( this_value );
         printOutput();
+        return false;
+    }
+
+    if($('#sp_notice').hasClass('sp_error')){
+        alert('등록가능한 수주일를 입력해 주세요.');
+        $('input[name="ord_date"]').focus();
         return false;
     }
 

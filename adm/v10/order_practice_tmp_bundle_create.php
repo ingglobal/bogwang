@@ -47,7 +47,7 @@ if($ord_no_sql['cnt'])
 
 foreach($chk_arr as $oro_idx_v1){
     //삭제,취소 등의 상태값이 아닌 생산실행 레코드가 있으면 중복 레코드를 생성하면 안된다.
-    $chk_sql = " SELECT COUNT(*) AS cnt FROM {$g5['order_practice_table']} AS orp 
+    $chk_sql = " SELECT COUNT(*) AS cnt FROM {$g5['order_practice_table']} AS orp
                     LEFT JOIN {$g5['order_out_practice_table']} AS oop ON orp.orp_idx = oop.orp_idx
                         WHERE oop.oro_idx = '{$oro_idx_v1}' AND orp.orp_status NOT IN('trash','del','delete','cancel') ";
     $chk_result = sql_fetch($chk_sql);
@@ -56,6 +56,7 @@ foreach($chk_arr as $oro_idx_v1){
 }
 
 //orp테이블에 1개의 레코드를 등록
+/*
 $sql1 = " INSERT {$g5['order_practice_table']} SET
             com_idx = '".$com_idx."',
             orp_order_no = '".$orp_order_no."',
@@ -69,6 +70,21 @@ $sql1 = " INSERT {$g5['order_practice_table']} SET
             orp_status = '".$orp_status."',
             orp_reg_dt = '".G5_TIME_YMDHIS."'
 ";
+ */
+$sql1 = " INSERT {$g5['order_practice_table']} SET
+            com_idx = '".$com_idx."',
+            orp_order_no = '".$orp_order_no."',
+            trm_idx_operation = '',
+            trm_idx_line = '".$trm_idx_line."',
+            shf_idx = '',
+            mb_id = '".$member['mb_id']."',
+            orp_start_date = '".$orp_start_date."',
+            orp_done_date = '',
+            orp_memo = '',
+            orp_status = 'confirm',
+            orp_reg_dt = '".G5_TIME_YMDHIS."',
+            orp_update_dt = '".G5_TIME_YMDHIS."'
+";
 sql_query($sql1,1);
 $orp_idx = sql_insert_id();
 
@@ -77,7 +93,7 @@ foreach($chk_arr as $oro_idx_v){
     $bom_idx_sql = sql_fetch(" SELECT bom_idx FROM {$g5['order_item_table']} WHERE ori_idx = '".$ori_idx_arr[$oro_idx_v]."' ");
     $bom_idx = $bom_idx_sql['bom_idx'];
 
-    //천단위 제거 
+    //천단위 제거
     $oro_count_arr[$oro_idx_v] = preg_replace("/,/","",$oro_count_arr[$oro_idx_v]);
 
     $sql = " UPDATE {$g5['order_out_table']} SET
@@ -107,6 +123,9 @@ foreach($chk_arr as $oro_idx_v){
                 bom_idx = '".$bom_idx."',
                 oop_count = '".$oro_count_arr[$oro_idx_v]."',
                 oop_history = '',
+				oop_status = '".$orp_status."',
+	            oop_reg_dt = '".G5_TIME_YMDHIS."',
+	            oop_update_dt = '".G5_TIME_YMDHIS."',
                 oop_1 = '".$oro_count_arr[$oro_idx_v]."'
     ";
     sql_query($sql2,1);

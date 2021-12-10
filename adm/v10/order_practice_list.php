@@ -246,7 +246,6 @@ $('.data_blank').on('click',function(e){
         </td>
         <td class="td_orp_status"><?=$g5['set_orp_status_value'][$row['orp_status']]?></td><!-- 상태 -->
         <td class="td_mng">
-			<?=$s_copy?>
 			<?=$s_mod?>
 		</td>
     </tr>
@@ -260,13 +259,15 @@ $('.data_blank').on('click',function(e){
 </div>
 
 <div class="btn_fixed_top">
-    <?php if (!auth_check($auth[$sub_menu],'d')) { ?>
+    <?php if (false){ //(!auth_check($auth[$sub_menu],'d')) { ?>
        <a href="javascript:" id="btn_excel_upload" class="btn btn_02" style="margin-right:50px;">엑셀등록</a>
     <?php } ?>
     <?php if (!auth_check($auth[$sub_menu],'w')) { ?>
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
+    <!--
     <a href="./order_practice_form.php" id="member_add" class="btn btn_01">추가하기</a>
+    -->
     <?php } ?>
 
 </div>
