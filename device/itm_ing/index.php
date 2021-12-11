@@ -62,7 +62,23 @@ else if($getData[0]['bom_part_no']) {
     // 히스토리
     $arr['itm_history'] = $arr['itm_status'].'|'.G5_TIME_YMDHIS;
 
+    
+
     // 공통요소
+    $sql_common = " com_idx = '".$g5['setting']['set_com_idx']."'
+                    , bom_idx = '".$oop['bom_idx']."'
+                    , orp_idx = '".$oop['orp_idx']."'
+                    , bom_part_no = '".$arr['bom_part_no']."'
+                    , itm_name = '".addslashes($bom['bom_name'])."'
+                    , itm_barcode = '".$arr['itm_barcode']."'
+                    , itm_com_barcode = '".$arr['itm_com_barcode']."'
+                    , itm_lot = '".$arr['itm_lot']."'
+                    , trm_idx_location = '".$arr['trm_idx_location']."'
+                    , itm_history = '".$arr['itm_history']."'
+                    , itm_status = '".$arr['itm_status']."'
+    ";
+    /*
+    itm_shift(작업구간) 와 itm_date(통계일)은 ing상태가 된 시점(생산시작) 최초 등록 단계에만 등록되어야 하지 않을까?
     $sql_common = " com_idx = '".$g5['setting']['set_com_idx']."'
                     , bom_idx = '".$oop['bom_idx']."'
                     , orp_idx = '".$oop['orp_idx']."'
@@ -76,6 +92,7 @@ else if($getData[0]['bom_part_no']) {
                     , itm_history = '".$arr['itm_history']."'
                     , itm_status = '".$arr['itm_status']."'
     ";
+    */
 
     // 중복체크
     $sql_dta = "   SELECT itm_idx FROM {$table_name}
@@ -97,8 +114,13 @@ else if($getData[0]['bom_part_no']) {
     }
     // 정보 입력
     else{
+        //구간재설정
+        $ingArr = item_shif_date_return(G5_TIME_YMDHIS);
+        //print_r2($shif);
         $sql = "INSERT INTO {$table_name} SET 
                     {$sql_common}
+                    , itm_shift = '".$ingArr['shift']."'
+                    , itm_date = '".$ingArr['workday']."'
                     , itm_reg_dt = '".G5_TIME_YMDHIS."'
                     , itm_update_dt = '".G5_TIME_YMDHIS."'
         ";

@@ -67,7 +67,6 @@ else if($getData[0]['itm_barcode']) {
         ";
         // echo $sql.'<br>';
         sql_query($sql,1);
-        
     }
 }
 else {

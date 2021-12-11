@@ -486,6 +486,14 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
 				<input type="text" name="set_orp_status" value="<?php echo $g5['setting']['set_orp_status']; ?>" class="frm_input" style="width:70%;">
 			</td>
 		</tr>
+		</tr>
+            <tr>
+			<th scope="row">생산시간구간</th>
+			<td colspan="3">
+				<?php echo help('1=05:01:00-10:09:59,2=10:10:00-12:59:59,3=13:00:00-15:09:59,4=15:10:00-17:09:59,5=17:10:00-19:09:59,6=19:10:00-21:09:59,7=21:10:00-23:09:59,8=23:10:00-01:09:59,9=01:09:00-03:09:59,10=03:10:00-05:00:59'); ?>
+				<input type="text" name="set_itm_shift" value="<?php echo $g5['setting']['set_itm_shift']; ?>" class="frm_input" style="width:70%;">
+			</td>
+		</tr>
         </tbody>
 		</table>
 	</div>

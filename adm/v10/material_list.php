@@ -176,6 +176,7 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 
 <div class="btn_fixed_top">
     <?php if (!auth_check($auth[$sub_menu],'d')) { ?>
+       <a href="./material_excel_upload.php" id="btn_excel_upload2" target="_blank" class="btn btn_02" style="margin-right:50px;">엑셀테스트</a>
        <a href="javascript:" id="btn_excel_upload" class="btn btn_02" style="margin-right:50px;">엑셀등록</a>
     <?php } ?>
     <?php if (!auth_check($auth[$sub_menu],'w')) { ?>

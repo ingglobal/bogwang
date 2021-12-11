@@ -3567,5 +3567,36 @@ function change_com_names($com_idx,$new_com_name)
 }
 }
 
+// 생간시간구간/생산반영일 반환하는 함수
+if(!function_exists('item_shif_date_return')){
+function item_shif_date_return($date){
+    global $g5;
+    //입력되는 날짜의 정보
+    $today_dt = $date;
+    $today_date = explode(" ",$date);
+    $today = $today_date[0];//입력날짜 예) 2021-12-11
+    $todaytime = strtotime($today_dt);
+    //아래 시간 범위에서는 전날 실적이므로 전날의 날짜를 반환해야 한다.
+    $gstart_dt = $today." 00:00:00";
+    $gstarttime = strtotime($gstart_dt);
+    $gend_dt = $today." 05:00:00";
+    $gendtime = strtotime($gend_dt);
+
+    $shift = 0;
+    $return_date = $today;
+    foreach($g5['set_itm_shift_value'] as $k=>$v){
+        $times = explode("-",$v);
+        $start_dt = $today." ".$times[0];
+        $end_dt = $today." ".$times[1];
+        $starttime = strtotime($start_dt);
+        $endtime = strtotime($end_dt);
+        if($todaytime >= $starttime && $todaytime <= $endtime) $shift = $k;
+        if($todaytime >= $gstarttime && $todaytime <= $gendtime) $return_date = get_dayAddDate($today,-1);
+    }
+
+    $arr = array('shift'=>$shift,'workday'=>$return_date);
+    return $arr;
+}
+}
 
 ?>

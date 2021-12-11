@@ -13,6 +13,7 @@ $bar_prefix = $bar_date.'_'.$bar_no;
 $part_no_array = array('88700-J9110PUR','C89460-CG930SIT','89909-CG930SIT','89908-CG930SIT','89909-CG930MIX');
 $barcode_array = array($bar_prefix.'_C89460-CG930SIT_19204DERH00011530',$bar_prefix.'_C89460-CG930SIT');
 $mms_idx_array = array(7,8,9,10);
+
 ?>
 <style>
 	form {padding:10px 100px 100px;}
@@ -27,6 +28,9 @@ $mms_idx_array = array(7,8,9,10);
 
 <form id="form01" action="./form2.php">
 <h1>생산시작 API</h1>
+<?php
+
+?>
 <section>
 	<ul>
 		<li>바코드 출력과 동시에 통신하는 API입니다.</li>
@@ -55,7 +59,16 @@ $mms_idx_array = array(7,8,9,10);
 	<tr><td>시간</td><td><input type="text" name="itm_time" value="<?=date("H:i:s",time()-rand(0,86400))?>"></td></tr>
 	<!-- <tr><td>메시지</td><td><input type="text" name="itm_message" value="에러코드입니다."></td></tr> -->
 </table>
-
+<?php
+//구간재설정
+// print_r2($g5['set_itm_shift_value']);
+// $time = rand(strtotime('2021-12-01 00:00:00'),strtotime(G5_TIME_YMD.' 23:59:59'));
+// $server_time = $time;
+// $time_ymdhis = date('Y-m-d H:i:s', $server_time);
+// echo $time_ymdhis."<br>";
+// $shif = item_shif_date_return($time_ymdhis);
+// print_r2($shif);
+?>
 <hr>
 <button type="submit">확인</button>
 </form>
