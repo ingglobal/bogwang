@@ -30,6 +30,8 @@ else if($getData[0]['itm_barcode']) {
     // $table_name = 'g5_1_item_'.$arr['mms_idx'];  // 향후 테이블 분리가 필요하면..
     $table_name = 'g5_1_item';
 
+
+
     $sql = " SELECT * FROM {$g5['item_table']} WHERE itm_barcode = '".$arr['itm_barcode']."' ";
     $itm = sql_fetch($sql);
     if(!$itm['itm_idx']) {
@@ -39,8 +41,14 @@ else if($getData[0]['itm_barcode']) {
         // 히스토리
         // $arr['itm_history'] = $itm['itm_history'].'\n'.$arr['itm_status'].'|'.G5_TIME_YMDHIS;
 
+        //구간재설정
+        $ingArr = item_shif_date_return($arr['itm_dt']);
+
+
         $sql = "UPDATE {$table_name} SET
                     itm_history = CONCAT(itm_history,'\n".$arr['itm_status']."|".G5_TIME_YMDHIS."')
+                    , itm_shift = '".$ingArr['shift']."'
+                    , itm_date = '".$ingArr['workday']."'
                     , itm_status = '".$arr['itm_status']."'
                     , itm_update_dt = '".G5_TIME_YMDHIS."'
                 WHERE itm_idx = '".$itm['itm_idx']."'

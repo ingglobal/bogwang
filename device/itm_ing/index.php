@@ -27,6 +27,7 @@ else if($getData[0]['bom_part_no']) {
     $arr['en_time'] = strtotime($arr['itm_date1']." 23:59:59"); // 해당 날짜의 끝
     $arr['itm_dt2'] = strtotime(preg_replace('/\./','-',$arr['itm_date2'])." 00:00:00");    // statistics date
     $arr['itm_date_stat'] = date("Y-m-d",$arr['itm_dt2']);   // 2 or 4 digit format(20 or 2020) no problem.
+    
     // $table_name = 'g5_1_item_'.$arr['mms_idx'];  // 향후 테이블 분리가 필요하면..
     $table_name = 'g5_1_item';
 
@@ -62,7 +63,8 @@ else if($getData[0]['bom_part_no']) {
     // 히스토리
     $arr['itm_history'] = $arr['itm_status'].'|'.G5_TIME_YMDHIS;
 
-    
+    //구간재설정
+    $ingArr = item_shif_date_return($arr['itm_dt']);
 
     // 공통요소
     $sql_common = " com_idx = '".$g5['setting']['set_com_idx']."'
@@ -74,25 +76,11 @@ else if($getData[0]['bom_part_no']) {
                     , itm_com_barcode = '".$arr['itm_com_barcode']."'
                     , itm_lot = '".$arr['itm_lot']."'
                     , trm_idx_location = '".$arr['trm_idx_location']."'
+                    , itm_shift = '".$ingArr['shift']."'
+                    , itm_date = '".$ingArr['workday']."'
                     , itm_history = '".$arr['itm_history']."'
                     , itm_status = '".$arr['itm_status']."'
     ";
-    /*
-    itm_shift(작업구간) 와 itm_date(통계일)은 ing상태가 된 시점(생산시작) 최초 등록 단계에만 등록되어야 하지 않을까?
-    $sql_common = " com_idx = '".$g5['setting']['set_com_idx']."'
-                    , bom_idx = '".$oop['bom_idx']."'
-                    , orp_idx = '".$oop['orp_idx']."'
-                    , bom_part_no = '".$arr['bom_part_no']."'
-                    , itm_name = '".addslashes($bom['bom_name'])."'
-                    , itm_barcode = '".$arr['itm_barcode']."'
-                    , itm_com_barcode = '".$arr['itm_com_barcode']."'
-                    , itm_lot = '".$arr['itm_lot']."'
-                    , trm_idx_location = '".$arr['trm_idx_location']."'
-                    , itm_shift = '".$arr['itm_shift']."'
-                    , itm_history = '".$arr['itm_history']."'
-                    , itm_status = '".$arr['itm_status']."'
-    ";
-    */
 
     // 중복체크
     $sql_dta = "   SELECT itm_idx FROM {$table_name}
@@ -114,13 +102,10 @@ else if($getData[0]['bom_part_no']) {
     }
     // 정보 입력
     else{
-        //구간재설정
-        $ingArr = item_shif_date_return(G5_TIME_YMDHIS);
+        
         //print_r2($shif);
         $sql = "INSERT INTO {$table_name} SET 
                     {$sql_common}
-                    , itm_shift = '".$ingArr['shift']."'
-                    , itm_date = '".$ingArr['workday']."'
                     , itm_reg_dt = '".G5_TIME_YMDHIS."'
                     , itm_update_dt = '".G5_TIME_YMDHIS."'
         ";

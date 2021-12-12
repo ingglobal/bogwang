@@ -43,8 +43,14 @@ else if($getData[0]['itm_barcode']) {
         // $arr['itm_history'] = $itm['itm_history'].'\n'.$arr['itm_status'].'|'.G5_TIME_YMDHIS;
         $arr['itm_status'] = 'finish';
 
+        //구간재설정
+        $ingArr = item_shif_date_return($arr['itm_dt']);
+
+
         $sql = "UPDATE {$table_name} SET
                     itm_history = CONCAT(itm_history,'\n".$arr['itm_status']."|".G5_TIME_YMDHIS."')
+                    , itm_shift = '".$ingArr['shift']."'
+                    , itm_date = '".$ingArr['workday']."'
                     , itm_status = '".$arr['itm_status']."'
                     , itm_update_dt = '".G5_TIME_YMDHIS."'
                 WHERE itm_idx = '".$itm['itm_idx']."'
