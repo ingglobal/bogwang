@@ -49,6 +49,7 @@ $g5['order_out_practice_table'] = PROJ_TABLE_PREFIX.'order_out_practice';
 $g5['order_practice_table']     = PROJ_TABLE_PREFIX.'order_practice';
 $g5['member_work_table']        = PROJ_TABLE_PREFIX.'member_work';
 $g5['item_table']               = PROJ_TABLE_PREFIX.'item';
+$g5['item_sum_table']           = PROJ_TABLE_PREFIX.'item_sum';
 $g5['material_table']           = PROJ_TABLE_PREFIX.'material';
 $g5['material_order_table']     = PROJ_TABLE_PREFIX.'material_order';
 $g5['material_order_item_table']= PROJ_TABLE_PREFIX.'material_order_item';

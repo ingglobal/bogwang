@@ -2,7 +2,7 @@
 $sub_menu = "985325";
 include_once('./_common.php');
 
-$g5['title'] = '완제품 재고 생성';
+$g5['title'] = '완제품 재고 추가';
 include(G5_PATH.'/head.sub.php');
 ?>
 <div class="" style="padding:10px;">
@@ -27,7 +27,7 @@ ob_flush();
 
 //재고 데이터 생성
 /*
-1) 우선 보광 com_idx(8)의 BOM 완성품 목록수 만큼 루프를 돌린다
+1) 우선 보광 com_idx(11)의 BOM 완성품 목록수 만큼 루프를 돌린다
 2) 해당 BOM(P/NO) 목록상에서 자식 루프갯수를 랜덤으로 설정(자식루프 수만큼 재고품목을 생성해야 한다.)
 3) 자식 루프 돌면서 부모(P/NO)의 루프수만큼 완성품 재고데이터를 생성한다.
 */
