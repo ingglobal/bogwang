@@ -96,8 +96,10 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 
 </form>
 
-<div class="local_desc01 local_desc" style="display:none;">
-    <p>새로운 고객을 등록</p>
+<div class="local_desc01 local_desc" style="display:no ne;">
+    <p>새로운 자재를 등록하는 페이지입니다.</p>
+    <p><b style="color:skyblue;">엑셀파일</b>로 등록할때는 <b style="color:red;">최초에 한 번만 등록할 수 있으니</b> 신중하게 작성해서 등록해 주시기 바랍니다.</p>
+    <p>엑셀파일에 의한 최초 등록후 재고품목의 <b style="color:skyblue">추가등록</b> 및 <b style="color:red">삭제작업</b>은 [<b style="color:orange">자재재고관리</b>] 페이지상에서 진행해 주세요.</p>
 </div>
 
 
@@ -176,7 +178,6 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 
 <div class="btn_fixed_top">
     <?php if (!auth_check($auth[$sub_menu],'d')) { ?>
-       <a href="./material_excel_upload.php" id="btn_excel_upload2" target="_blank" class="btn btn_02" style="margin-right:50px;">엑셀테스트</a>
        <a href="javascript:" id="btn_excel_upload" class="btn btn_02" style="margin-right:50px;">엑셀등록</a>
     <?php } ?>
     <?php if (!auth_check($auth[$sub_menu],'w')) { ?>
