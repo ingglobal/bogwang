@@ -561,7 +561,7 @@ SELECT bom.bom_idx, com_idx_customer, bom.bom_name, bom_part_no, bom_price, bom_
 FROM g5_1_bom_item AS bit1 
   JOIN g5_1_bom_item AS bit2
   LEFT JOIN g5_1_bom AS bom ON bom.bom_idx = bit2.bom_idx_child
-WHERE bit1.bom_idx = '300' AND bit2.bom_idx = '300'
+WHERE bit1.bom_idx = '1083' AND bit2.bom_idx = '1083'
   AND bit1.bit_num = bit2.bit_num AND bit2.bit_reply LIKE CONCAT(bit1.bit_reply,'%')
 GROUP BY bit1.bit_num, bit1.bit_reply
 ORDER BY bit1.bit_num DESC, bit1.bit_reply
@@ -571,3 +571,28 @@ SELECT * FROM g5_1_item WHERE itm_barcode != '' AND itm_status = 'ing' ORDER BY 
 
 SELECT * FROM g5_1_item
 WHERE bom_part_no = '88700-J9110PUR' AND itm_status = 'finish' ORDER BY itm_idx LIMIT 100
+
+
+SELECT bom_idx,com_idx,bct_id,bom_name,bom_part_no FROM g5_1_bom
+WHERE com_idx = '11'
+    AND bom_type = 'product'
+    AND bom_status = 'ok'
+ORDER BY RAND() LIMIT 1
+
+// itme_sum
+SELECT itm_date, itm_shift, itm_status
+  , COUNT(itm_idx) AS itm_count_sum
+FROM g5_1_item
+WHERE itm_status NOT IN ('trash','delete')
+      AND itm_date != '0000-00-00'
+GROUP BY itm_date, itm_shift, itm_status
+ORDER BY itm_date ASC, itm_shift, itm_status
+
+SELECT itm_date, trm_idx_line, itm_shift, itm_status
+  , COUNT(itm_idx) AS itm_count_sum
+FROM g5_1_item AS itm
+      LEFT JOIN g5_1_order_practice AS orp USING(orp_idx)
+WHERE itm_status NOT IN ('trash','delete')
+      AND itm_date != '0000-00-00'
+GROUP BY itm_date, trm_idx_line, itm_shift, itm_status
+ORDER BY itm_date ASC, trm_idx_line, itm_shift, itm_status

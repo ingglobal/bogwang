@@ -37,7 +37,7 @@ if ($where)
     $sql_search = ' WHERE '.implode(' AND ', $where);
 
 if (!$sst) {
-    $sst = "itm_idx";
+    $sst = "itm_reg_dt";
     $sod = "desc";
 }
 
@@ -159,7 +159,7 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
         <td class="td_itm_com_barcode"><?=$row['itm_com_barcode']?></td><!-- 외부라벨 -->
         <td class="td_itm_lot"><?=$row['itm_lot']?></td><!-- LOT -->
         <td class="td_itm_plt"><?=$row['itm_plt']?></td><!-- PLT -->
-        <td class="td_itm_defect"><?=($row['itm_defect'])?'불량품':'양품'?></td><!-- 품질 -->
+        <td class="td_itm_defect"><?=(preg_match("/^error_/",$row['itm_status']))?'불량품':'양품'?></td><!-- 품질 -->
         <td class="td_itm_location"><?=$g5['location_name'][$row['trm_idx_location']]?></td><!-- 위치 -->
         <td class="td_itm_history"><?=nl2br($row['itm_history'])?></td><!-- 히스토리 -->
         <td class="td_itm_status"><?=$g5['set_itm_status_value'][$row['itm_status']]?></td><!-- 상태 -->
@@ -182,8 +182,8 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
        <a href="<?=G5_URL?>/device/itm_ing/form.php" target="_blank" class="btn btn_02">생산시작</a>
        <a href="<?=G5_URL?>/device/itm_error/form.php" target="_blank" class="btn btn_02">검수</a>
        <a href="<?=G5_URL?>/device/itm_finish/form.php" target="_blank" class="btn btn_02">완제품코드매칭</a>
-       <a href="<?=G5_URL?>/device/itm_label/form.php" target="_blank" class="btn btn_02">빠레트라벨링</a>
-       <a href="<?=G5_URL?>/device/itm_delivery/form.php" target="_blank" class="btn btn_02" style="margin-right:200px;">출하</a>
+       <a href="<?=G5_URL?>/device/plt_label/form.php" target="_blank" class="btn btn_02">빠레트라벨링</a>
+       <a href="<?=G5_URL?>/device/plt_delivery/form.php" target="_blank" class="btn btn_02" style="margin-right:200px;">출하</a>
     <?php } ?>
     <?php if (!auth_check($auth[$sub_menu],'w')) { ?>
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">

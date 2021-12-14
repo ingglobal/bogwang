@@ -42,18 +42,18 @@ if ($stx && $sfl) {
 // 기간 검색
 if ($st_date) {
     if ($st_time) {
-        $where[] = " itm_dt >= '".strtotime($st_date.' '.$st_time)."' ";
+        $where[] = " itm_reg_dt >= '".$st_date.' '.$st_time."' ";
     }
     else {
-        $where[] = " itm_dt >= '".strtotime($st_date.' 00:00:00')."' ";
+        $where[] = " itm_reg_dt >= '".$st_date.' 00:00:00'."' ";
     }
 }
 if ($en_date) {
     if ($en_time) {
-        $where[] = " itm_dt <= '".strtotime($en_date.' '.$en_time)."' ";
+        $where[] = " itm_reg_dt <= '".$en_date.' '.$en_time."' ";
     }
     else {
-        $where[] = " itm_dt <= '".strtotime($en_date.' 23:59:59')."' ";
+        $where[] = " itm_reg_dt <= '".$en_date.' 23:59:59'."' ";
     }
 }
 
@@ -98,7 +98,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 $items1 = array(
     "itm_idx"=>array("번호",0,0,1)
     ,"itm_name"=>array("품명",0,0,0)
-    ,"bom_part_no"=>array("파트넘버",0,0,0)
+    ,"bom_part_no"=>array("파트넘버/바코드",0,0,0)
     ,"trm_idx_line"=>array("라인",0,0,0)
     ,"itm_shift"=>array("구간",0,0,0)
     ,"orp_idx"=>array("실행계획",0,0,0)
@@ -112,6 +112,10 @@ $items1 = array(
 
 add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker/jquery.timepicker.css">', 0);
 ?>
+<style>
+    .td_bom_part_no {width:200px;}
+    .td_trm_idx_line {width:48px;}
+</style>
 <script type="text/javascript" src="<?=G5_USER_ADMIN_URL?>/js/timepicker/jquery.timepicker.js"></script>
 
 <div class="local_ov01 local_ov">
@@ -152,7 +156,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
 <select name="sfl" id="sfl">
     <option value="">검색항목</option>
     <?php
-    $skips = array('itm_idx','trm_idx');
+    $skips = array('itm_idx','trm_idx','bom_part_no','itm_barcode');
     if(is_array($items1)) {
         foreach($items1 as $k1 => $v1) {
             if(in_array($k1,$skips)) {continue;}
@@ -160,6 +164,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
         }
     }
     ?>
+    <option value="bom_part_no"<?php echo get_selected($sfl, "bom_part_no"); ?>>파트넘버</option>
+    <option value="itm_barcode"<?php echo get_selected($sfl, "itm_barcode"); ?>>바코드</option>
 </select>
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
@@ -189,7 +195,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
 			<input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
 		</th>
         <?php
-        $skips = array();
+        $skips = array('itm_barcode');
         if(is_array($items1)) {
             foreach($items1 as $k1 => $v1) {
                 if(in_array($k1,$skips)) {continue;}
@@ -225,7 +231,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
             <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i ?>">
         </td>
         <?php
-        $skips = array();
+        $skips = array('itm_barcode');
         if(is_array($items1)) {
 //            print_r2($items1);
             foreach($items1 as $k1 => $v1) {
@@ -236,29 +242,15 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
                     $list[$k1] = number_format($row[$k1]);
                 }
                 else if(preg_match("/_dt$/",$k1)) {
-                    $list[$k1] = '<span class="font_size_8">'.date("y-m-d H:i:s",$row[$k1]).'</span>';
-//                    $list[$k1] = substr($row[$k1],0,10);
+                    // $list[$k1] = '<span class="font_size_8">'.date("y-m-d H:i:s",$row[$k1]).'</span>';
+                    // $list[$k1] = substr($row[$k1],0,10);
+                    $list[$k1] = '<span class="font_size_8">'.substr($row[$k1],5,14).'</span>';
                 }
                 else if($k1=='trm_idx_line') {
                     $list[$k1] = $line_name[$row['orp']['trm_idx_line']];
                 }
-                else if($k1=='itm_code') {
-                    $list[$k1] = '<a href="./code_list.php?sfl=cod_code&stx='.$row[$k1].'">'.$row[$k1].'</a>';
-                }
-                else if($k1=='com_idx') {
-                    $list[$k1] = '<a href="./company_list.php?sfl=com.com_idx&stx='.$row[$k1].'">'.$row[$k1].'</a>';
-                }
-                else if($k1=='itm_memo') {
-                    $list[$k1] = cut_str($row[$k1],10,'..');
-                }
-                else if($k1=='itm_group') {
-                    $list[$k1] = $row[$k1].' <span class="font_size_8">'.$g5['set_data_group_value'][$row[$k1]].'</span>';
-                }
-                else if($k1=='itm_type') {
-                    $list[$k1] = $row[$k1].' <span class="font_size_8">'.$g5['set_data_type_value'][$row[$k1]].'</span>';
-                }
-                else if($k1=='trm_idx_category') {
-                    $list[$k1] = '<span class="font_size_8">'.$g5['category_name'][$row[$k1]].'</span>';
+                else if($k1=='bom_part_no') {
+                    $list[$k1] = $row[$k1].'<br>'.preg_replace("/".$row[$k1]."/","...",$row['itm_barcode']);
                 }
 
                 $row['colspan'] = ($v1[1]>1) ? ' colspan="'.$v1[1].'"' : '';   // colspan 설정
@@ -371,7 +363,7 @@ function form01_submit(f)
 
 	if(document.pressed == "일괄입력") {
         if(confirm('하루치(1일) 데이타를 입력합니다. 창을 닫지 마세요. 입력을 시작합니다.')) {
-            winDataInsert = window.open('<?=G5_USER_ADMIN_URL?>/convert/data_error1.php', "winDataInsert", "left=100,top=100,width=520,height=600,scrollbars=1");
+            winDataInsert = window.open('<?=G5_USER_ADMIN_URL?>/convert/data_item1.php', "winDataInsert", "left=100,top=100,width=520,height=600,scrollbars=1");
             winDataInsert.focus();
             return false;
         }
