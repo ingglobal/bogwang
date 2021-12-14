@@ -1,6 +1,76 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
+// 생산량 일간 합계 입력
+// itm_date, trm_idx_line, itm_shift, bom_idx, itm_status
+if(!function_exists('update_item_sum')){
+function update_item_sum($arr) {
+    global $g5;
+
+    $sql_where = " com_idx = '".$_SESSION['ss_com_idx']."'
+        AND itm_shift = '".$arr['itm_shift']."'
+        AND trm_idx_operation = '".$arr['trm_idx_operation']."'
+        AND trm_idx_line = '".$arr['trm_idx_line']."'
+        AND bom_idx	= '".$arr['bom_idx']."'
+        AND itm_status = '".$arr['itm_status']."'
+        AND itm_date = '".$arr['itm_date']."'
+    ";
+
+    // 합계 데이터값 추출 / 일별, 상태별, 구분별....  
+    $sql = "SELECT COUNT(itm_idx) AS itm_count
+            FROM {$g5['item_table']} 
+            WHERE {$sql_where}
+    ";
+    $sum = sql_fetch($sql,1); 
+    // echo $sql.'<br>';
+    // print_r2($sum1);
+
+
+    // Record update or insert
+    $sql = "SELECT itm_idx
+            FROM {$g5['item_sum_table']} 
+            WHERE {$sql_where}
+    ";
+    // echo $sql.'<br>';
+    $row = sql_fetch($sql,1);
+    // 정보 업데이트
+    if($row['itm_idx']) {
+        $sql = "UPDATE {$g5['item_sum_table']} SET
+                    itm_count = '".$sum['itm_count']."'
+                WHERE {$sql_where}
+        ";
+        // sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='update', mta_value = '".addslashes($sql)."' ");
+        sql_query($sql,1);
+    }
+    else {
+        // Get a bom info array for price.
+        $bom = get_table('bom', 'bom_idx', $arr['bom_idx']);
+
+        $sql = " INSERT INTO {$g5['item_sum_table']} SET
+                    com_idx = '".$_SESSION['ss_com_idx']."'
+                    , imp_idx = '".$arr['imp_idx']."'
+                    , mms_idx = '".$arr['mms_idx']."'
+                    , mmg_idx = '".$arr['mmg_idx']."'
+                    , shf_idx = '".$arr['shf_idx']."'
+                    , itm_shift = '".$arr['itm_shift']."'
+                    , trm_idx_operation = '".$arr['trm_idx_operation']."'
+                    , trm_idx_line = '".$arr['trm_idx_line']."'
+                    , bom_idx = '".$arr['bom_idx']."'
+                    , bom_part_no = '".$bom['bom_part_no']."'
+                    , itm_price	= '".$bom['bom_price']."'
+                    , itm_count = '".$sum['itm_count']."'
+                    , itm_status = '".$arr['itm_status']."'
+                    , itm_date = '".$arr['itm_date']."'
+        ";
+        // sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='insert', mta_value = '".addslashes($sql)."' ");
+        sql_query($sql,1);
+        $row['itm_idx'] = sql_insert_id();
+    }
+
+    return $row['itm_idx'];
+}
+}
+
 // item 상태 변경 함수 (material 상태도 함께 변경)
 if(!function_exists('update_itm_status')){
 function update_itm_status($arr) {
@@ -405,7 +475,7 @@ function update_output_sum($arr) {
     }
 
 }
-}    
+}
 
 
 // 통계일자 추출 함수

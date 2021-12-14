@@ -371,7 +371,7 @@ function form01_submit(f)
 	}
 
 	if(document.pressed == "테스트입력") {
-		window.open('<?=G5_URL?>/device/error/form.php');
+		window.open('<?=G5_URL?>/device/itm_ing/form.php');
         return false;
 	}
 

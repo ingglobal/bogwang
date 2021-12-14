@@ -588,11 +588,31 @@ WHERE itm_status NOT IN ('trash','delete')
 GROUP BY itm_date, itm_shift, itm_status
 ORDER BY itm_date ASC, itm_shift, itm_status
 
-SELECT itm_date, trm_idx_line, itm_shift, itm_status
-  , COUNT(itm_idx) AS itm_count_sum
+
+SELECT itm.com_idx, itm_date, itm_shift, trm_idx_line, bom_idx, bom_part_no, itm_price
+, COUNT(itm_idx) AS itm_count
 FROM g5_1_item AS itm
-      LEFT JOIN g5_1_order_practice AS orp USING(orp_idx)
+    LEFT JOIN g5_1_order_practice AS orp USING(orp_idx)
 WHERE itm_status NOT IN ('trash','delete')
-      AND itm_date != '0000-00-00'
+    AND itm_date != '0000-00-00'
 GROUP BY itm_date, trm_idx_line, itm_shift, itm_status
 ORDER BY itm_date ASC, trm_idx_line, itm_shift, itm_status
+
+// now, let's get the product count for defect and defect_type respectively
+SELECT itm.com_idx, itm_date, itm_shift, trm_idx_line, bom_idx, bom_part_no, itm_price, itm_status
+, COUNT(itm_idx) AS itm_count
+FROM g5_1_item AS itm
+    LEFT JOIN g5_1_order_practice AS orp USING(orp_idx)
+WHERE itm_status NOT IN ('trash','delete')
+    AND itm_date != '0000-00-00'
+GROUP BY itm_date, trm_idx_line, itm_shift, bom_idx, itm_status
+ORDER BY itm_date ASC, trm_idx_line, itm_shift, bom_idx, itm_status
+
+
+// itm_price update
+UPDATE g5_1_item AS itm SET
+itm_price = (SELECT bom_price FROM g5_1_bom WHERE bom_idx = itm.bom_idx)
+
+
+delete FROM `g5_1_item` WHERE itm_reg_dt > '2021-12-14 00:00:00';
+delete FROM `g5_1_item_sum` WHERE itm_date > '2021-12-13';

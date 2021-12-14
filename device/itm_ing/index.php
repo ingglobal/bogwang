@@ -51,6 +51,7 @@ else if($getData[0]['bom_part_no']) {
     }
 
     $oop = get_table_meta('order_out_practice','oop_idx',$arr['oop_idx']);
+    $orp = get_table_meta('order_practice','orp_idx',$oop['orp_idx']);
     $bom = get_table_meta('bom','bom_idx',$oop['bom_idx']);
 
     // 외부 라벨 추출
@@ -152,6 +153,15 @@ else if($getData[0]['bom_part_no']) {
         $list[] = $ar;
     }
     $result_arr['list'] = $list;
+
+    // 합계 통계 처리
+    $ar['itm_date'] = $ingArr['workday'];
+    $ar['trm_idx_line'] = $orp['trm_idx_line'];
+    $ar['itm_shift'] = $ingArr['shift'];
+    $ar['bom_idx'] = $oop['bom_idx'];
+    $ar['itm_status'] = $arr['itm_status'];
+    update_item_sum($ar);
+    unset($ar);
 	
 }
 else {

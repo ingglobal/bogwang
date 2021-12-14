@@ -28,7 +28,7 @@ $defect_type_array = array('error_stitch'
                             ,'error_fabric','error_push','error_pollution','error_bottom','error_etc');
 
 $total = 10000;
-$start_time = time()-86400*60; //<<<<<<<<<<<<<<==================================
+$start_time = time()-86400*1; //<<<<<<<<<<<<<<==================================
 $end_time = time();   //<<<<<<<<<<<<<<==================================
 // $start_time = time()-86400*200; //<<<<<<<<<<<<<<==================================
 // $end_time = time()-86400*190;   //<<<<<<<<<<<<<<==================================
@@ -56,11 +56,12 @@ for($i=0;$i<$total;$i++) {
 		break;
 
     // 완성품 하나 RANDOM 추출
-    $sql = " SELECT bom_idx,com_idx,bct_id,bom_name,bom_part_no FROM {$g5['bom_table']}
-        WHERE com_idx = '{$_SESSION['ss_com_idx']}'
-            AND bom_type = 'product'
-            AND bom_status = 'ok'
-            ORDER BY RAND() LIMIT 1
+    $sql = "SELECT bom_idx,com_idx,bct_id,bom_name,bom_part_no FROM {$g5['bom_table']}
+            WHERE com_idx = '{$_SESSION['ss_com_idx']}' AND bom_status NOT IN ('delete','trash')
+                AND bom_type = 'product'
+                AND bom_status = 'ok'
+                AND bom_idx >= 3200
+                ORDER BY RAND() LIMIT 1
     ";
     $bom = sql_fetch($sql,1);
 
@@ -82,12 +83,13 @@ for($i=0;$i<$total;$i++) {
     }
 
     // 실행계획 RANDOM 추출
-    $sql = " SELECT orp_idx FROM {$g5['order_practice_table']}
+    $sql = " SELECT orp_idx FROM {$g5['order_out_practice_table']}
         WHERE com_idx = '{$_SESSION['ss_com_idx']}'
-            AND orp_status NOT IN ('trash','delete')
+            AND oop_status NOT IN ('trash','delete')
             ORDER BY RAND() LIMIT 1
     ";
-    $orp = sql_fetch($sql,1);
+    $oop = sql_fetch($sql,1);
+    $orp = get_table('order_practice','orp_idx',$oop['orp_idx']);
 
 
     $itm_dt[$i] = date("Y-m-d H:i:s",rand($start_time,$end_time));
@@ -112,6 +114,7 @@ for($i=0;$i<$total;$i++) {
                 , itm_com_barcode = ''
                 , plt_idx = ''
                 , itm_lot = ''
+                , itm_price = '".$bom['bom_price']."'
                 , itm_defect = ''
                 , itm_defect_type = ''
                 , trm_idx_location = '53'
@@ -143,15 +146,15 @@ for($i=0;$i<$total;$i++) {
 
 // 합계 데이터 입력
 sql_query("TRUNCATE g5_1_item_sum",1);
-$sql = "INSERT INTO g5_1_item_sum (com_idx, itm_date, trm_idx_line, bom_idx, bom_part_no, itm_shift, itm_mmi_no, itm_group, itm_defect, itm_defect_type, itm_message, itm_date, itm_value)
-        SELECT itm.com_idx, itm_date, trm_idx_line, bom_idx, bom_part_no, itm_shift, itm_status
-        , COUNT(itm_idx) AS itm_count_sum
+$sql = "INSERT INTO g5_1_item_sum (com_idx, itm_date, itm_shift, trm_idx_line, bom_idx, bom_part_no, itm_price, itm_status, itm_count)
+        SELECT itm.com_idx, itm_date, itm_shift, trm_idx_line, bom_idx, bom_part_no, itm_price, itm_status
+        , COUNT(itm_idx) AS itm_count
         FROM g5_1_item AS itm
             LEFT JOIN g5_1_order_practice AS orp USING(orp_idx)
         WHERE itm_status NOT IN ('trash','delete')
             AND itm_date != '0000-00-00'
-        GROUP BY itm_date, trm_idx_line, itm_shift, itm_status
-        ORDER BY itm_date ASC, trm_idx_line, itm_shift, itm_status
+        GROUP BY itm_date, trm_idx_line, itm_shift, bom_idx, itm_status
+        ORDER BY itm_date ASC, trm_idx_line, itm_shift, bom_idx, itm_status
 ";
 sql_query($sql,1);
 
