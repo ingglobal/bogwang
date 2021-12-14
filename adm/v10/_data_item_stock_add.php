@@ -60,7 +60,7 @@ for($i=0;$row=sql_fetch_array($result);$i++){
             com_idx = '{$_SESSION['ss_com_idx']}'
             ,ori_idx = ''
             ,bom_idx = '{$row['bom_idx']}'
-            ,orp_idx = ''
+            ,oop_idx = ''
             ,shf_idx = '{$shf_idxs['shf_idx']}'
             ,mb_id = '{$member['mb_id']}'
             ,bom_part_no = '{$row['bom_part_no']}'

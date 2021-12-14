@@ -191,6 +191,7 @@ a.btn_frmline{background:#095D9D;border-radius:0;}
 a.ov_listall {background: #1e2531;}
 a.ov_listall:hover {background: #5b6b8a;}
 .btn_03, a.btn_03 {background: #09829d;}
+.btn_04, a.btn_04 {background: #D33838;color:#fff !important;}
 .btn_confirm{text-align:center;}
 .btn_confirm .btn_submit{color:#fff !important;}
 a.btn_cancel{background:#43535C;border:1px solid #434343;}

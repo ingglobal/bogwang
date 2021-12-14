@@ -38,8 +38,12 @@ try {
             $rowData = $sheet -> rangeToArray("A" . $row . ":" . $highestColumn . $row, NULL, TRUE, FALSE);
             //날짜가 있는 셀에서 날짜만 추출한다.
             if($i == 0 && $row == 5){
-                $up_date = PHPExcel_Style_NumberFormat :: toFormattedString ($rowData[0][1], PHPExcel_Style_NumberFormat :: FORMAT_DATE_YYYYMMDD2);
+                $up_date_sub = PHPExcel_Style_NumberFormat :: toFormattedString ($rowData[0][1], PHPExcel_Style_NumberFormat :: FORMAT_DATE_YYYYMMDD2);
                 
+                if(preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$up_date_sub) && $up_date_sub){
+                    $up_date = $up_date_sub;
+                }
+
                 $mtrchk = sql_fetch(" SELECT COUNT(*) AS cnt FROM {$g5['material_table']} WHERE mtr_input_date = '{$up_date}' AND mtr_status NOT IN('delete','del','cancel','trash') ");
                 if($mtrchk['cnt']){
                     alert('이미 등록된 데이터가 있습니다. 엑셀파일로는 제품의 최초 등록만 가능합니다.');

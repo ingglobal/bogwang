@@ -445,6 +445,13 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
 			</td>
 		</tr>
 		<tr>
+			<th scope="row">자재입고차수</th>
+			<td colspan="3">
+				<?php echo help('1=1차,2=2차,3=3차,4=4차,5=5차,6=6차,7=7차,8=8차,9=9차,10=10차'); ?>
+				<input type="text" name="set_mtr_times" value="<?php echo $g5['setting']['set_mtr_times']; ?>" class="frm_input" style="width:70%;">
+			</td>
+		</tr>
+		<tr>
 			<th scope="row">자재상태</th>
 			<td colspan="3">
 				<?php echo help('stock=재고,repairing=수리중,repairstock=수리완료재고,scrap=폐기,pendign=불출대기,used=사용완료,trash=삭제'); ?>
