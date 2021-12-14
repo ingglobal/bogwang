@@ -75,6 +75,7 @@ else if($getData[0]['bom_part_no']) {
                     , itm_barcode = '".$arr['itm_barcode']."'
                     , itm_com_barcode = '".$arr['itm_com_barcode']."'
                     , itm_lot = '".$arr['itm_lot']."'
+                    , itm_price = '".$bom['bom_price']."'
                     , trm_idx_location = '".$arr['trm_idx_location']."'
                     , itm_shift = '".$ingArr['shift']."'
                     , itm_date = '".$ingArr['workday']."'
