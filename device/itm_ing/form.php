@@ -22,7 +22,7 @@ $bar_prefix = $bar_date.'_'.$bar_no;
 $barcode_array = array($bar_prefix.'_'.$bom['bom_part_no'].'_19204DERH00011530',$bar_prefix.'_'.$bom['bom_part_no']);
 $mms_idx_array = array(7,8,9,10);
 
-print_r2(item_shif_date_return("2021-11-11 10:10:10"));
+print_r2(item_shif_date_return("2021-12-15 23:51:37"));
 ?>
 <style>
 	form {padding:10px 100px 100px;}

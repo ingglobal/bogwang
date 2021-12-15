@@ -21,12 +21,8 @@ else if($getData[0]['bom_part_no']) {
     $arr = $getData[0];
 
     $arr['itm_status'] = 'ing';
-    $arr['itm_dt'] = strtotime(preg_replace('/\./','-',$arr['itm_date'])." ".$arr['itm_time']);
-    $arr['itm_date1'] = date("Y-m-d",$arr['itm_dt']);   // 2 or 4 digit format(20 or 2020) no problem.
-    $arr['st_time'] = strtotime($arr['itm_date1']." 00:00:00"); // 해당 날짜의 시작
-    $arr['en_time'] = strtotime($arr['itm_date1']." 23:59:59"); // 해당 날짜의 끝
-    $arr['itm_dt2'] = strtotime(preg_replace('/\./','-',$arr['itm_date2'])." 00:00:00");    // statistics date
-    $arr['itm_date_stat'] = date("Y-m-d",$arr['itm_dt2']);   // 2 or 4 digit format(20 or 2020) no problem.
+    $arr['itm_dt'] = strtotime(preg_replace('/\./','-',$arr['itm_date'])." ".$arr['itm_time']); // 1639579897
+    $arr['itm_dt1'] = date("Y-m-d H:i:s",$arr['itm_dt']);   // 2021-10-10 10:11:11
     
     // $table_name = 'g5_1_item_'.$arr['mms_idx'];  // 향후 테이블 분리가 필요하면..
     $table_name = 'g5_1_item';
@@ -65,8 +61,7 @@ else if($getData[0]['bom_part_no']) {
     $arr['itm_history'] = $arr['itm_status'].'|'.G5_TIME_YMDHIS;
 
     //구간재설정
-    $ingArr = item_shif_date_return($arr['itm_dt']);
-    print_r2($ingArr);
+    $ingArr = item_shif_date_return($arr['itm_dt1']);
 
     // 공통요소
     $sql_common = " com_idx = '".$g5['setting']['set_com_idx']."'
@@ -109,8 +104,8 @@ else if($getData[0]['bom_part_no']) {
         //print_r2($shif);
         $sql = "INSERT INTO {$table_name} SET 
                     {$sql_common}
-                    , itm_reg_dt = '".G5_TIME_YMDHIS."'
-                    , itm_update_dt = '".G5_TIME_YMDHIS."'
+                    , itm_reg_dt = '".$arr['itm_dt1']."'
+                    , itm_update_dt = '".$arr['itm_dt1']."'
         ";
         sql_query($sql,1);
         $itm['itm_idx'] = sql_insert_id();
