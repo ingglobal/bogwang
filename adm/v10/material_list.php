@@ -4,7 +4,7 @@ include_once('./_common.php');
 
 auth_check($auth[$sub_menu], 'r');
 
-$g5['title'] = '재고관리';
+$g5['title'] = '자재재고관리';
 // include_once('./_top_menu_mtr.php');
 include_once('./_head.php');
 // echo $g5['container_sub_title'];
@@ -12,7 +12,7 @@ include_once('./_head.php');
 $sql_common = " FROM {$g5['material_table']} AS mtr
                     LEFT JOIN {$g5['bom_table']} AS bom ON bom.bom_idx = mtr.bom_idx
                     LEFT JOIN {$g5['company_table']} AS com ON bom.com_idx_provider = com.com_idx
-"; 
+";
 
 $where = array();
 // 디폴트 검색조건 (used 제외)
@@ -117,7 +117,7 @@ label[for="mtr_input2_date"] i{position:absolute;top:-10px;right:0px;z-index:2;c
             <input type="hidden" name="bom_part_no" value="">
             <input type="hidden" name="bom_type" value="">
             <input type="hidden" name="bom_price" value="">
-            <input type="text" id="bom_name" name="bom_name" link="./material_select.php" readonly class="frm_input readonly" placeholder="입고자재상품선택(클릭!)" value="" style="width:200px;">            
+            <input type="text" id="bom_name" name="bom_name" link="./material_select.php" readonly class="frm_input readonly" placeholder="입고자재상품선택(클릭!)" value="" style="width:200px;">
         </label>
         <label for="mtr_input_date">
             <input type="text" name="mtr_input_date" id="mtr_input_date" readonly required class="frm_input readonly required" value="<?=G5_TIME_YMD?>" style="width:80px;">
@@ -209,7 +209,7 @@ label[for="mtr_input2_date"] i{position:absolute;top:-10px;right:0px;z-index:2;c
        <a href="javascript:" id="btn_excel_upload" class="btn btn_02" style="margin-right:50px;">엑셀등록</a>
     <?php } ?>
     <?php if (!auth_check($auth[$sub_menu],'w')) { ?>
-    <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
+    <!--input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02"-->
     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
     <!--
     <a href="./material_form.php" id="member_add" class="btn btn_01">추가하기</a>
@@ -280,11 +280,11 @@ $( "#modal01" ).dialog({
 $(".tbl_head01 tbody tr").on({
     mouseenter: function () {
         $('tr[tr_id='+$(this).attr('tr_id')+']').find('td').css('background','#0b1938');
-        
+
     },
     mouseleave: function () {
         $('tr[tr_id='+$(this).attr('tr_id')+']').find('td').css('background','unset');
-    }    
+    }
 });
 
 // 가격 입력 쉼표 처리
@@ -299,7 +299,7 @@ function chk_Number(object){
         $(this).val($(this).val().replace(/[^0-9|-]/g,""));
     });
 }
-    
+
 
 function form01_submit(f)
 {
@@ -343,13 +343,13 @@ function input_form(f){
         f.mtr_input_date.focus();
         return false;
     }
-    
+
     if(!f.mtr_times.value){
         alert('입고차수를 선택해 주세요.');
         f.mtr_times.focus();
         return false;
     }
-    
+
     if(!f.counts.value){
         alert('입고갯수를 설정해 주세요.');
         f.counts.focus();
@@ -361,7 +361,7 @@ function input_form(f){
             return false;
         }
     }
-    
+
     return true;
 }
 </script>
