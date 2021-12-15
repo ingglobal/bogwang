@@ -7,19 +7,21 @@ if(!function_exists('update_item_sum')){
 function update_item_sum($arr) {
     global $g5;
 
-    $sql_where = " com_idx = '".$_SESSION['ss_com_idx']."'
-        AND itm_shift = '".$arr['itm_shift']."'
-        AND trm_idx_operation = '".$arr['trm_idx_operation']."'
-        AND trm_idx_line = '".$arr['trm_idx_line']."'
-        AND bom_idx	= '".$arr['bom_idx']."'
-        AND itm_status = '".$arr['itm_status']."'
-        AND itm_date = '".$arr['itm_date']."'
+    $sql_where = "itm_shift = '".$arr['itm_shift']."'
+                AND trm_idx_operation = '".$arr['trm_idx_operation']."'
+                AND trm_idx_line = '".$arr['trm_idx_line']."'
+                AND itm_status = '".$arr['itm_status']."'
+                AND itm_date = '".$arr['itm_date']."'
     ";
 
     // 합계 데이터값 추출 / 일별, 상태별, 구분별....
     $sql = "SELECT COUNT(itm_idx) AS itm_count
-            FROM {$g5['item_table']}
+            FROM {$g5['item_table']} AS itm
+                LEFT JOIN {$g5['order_out_practice_table']} AS oop ON oop.oop_idx = itm.oop_idx
+                LEFT JOIN {$g5['order_practice_table']} AS orp ON orp.orp_idx = oop.orp_idx
             WHERE {$sql_where}
+                AND itm.com_idx = '".$_SESSION['ss_com_idx']."'
+                AND itm.bom_idx	= '".$arr['bom_idx']."'
     ";
     $sum = sql_fetch($sql,1);
     // echo $sql.'<br>';
@@ -30,6 +32,8 @@ function update_item_sum($arr) {
     $sql = "SELECT itm_idx
             FROM {$g5['item_sum_table']}
             WHERE {$sql_where}
+                AND com_idx = '".$_SESSION['ss_com_idx']."'
+                AND bom_idx	= '".$arr['bom_idx']."'
     ";
     // echo $sql.'<br>';
     $row = sql_fetch($sql,1);

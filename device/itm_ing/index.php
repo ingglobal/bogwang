@@ -66,11 +66,12 @@ else if($getData[0]['bom_part_no']) {
 
     //구간재설정
     $ingArr = item_shif_date_return($arr['itm_dt']);
+    print_r2($ingArr);
 
     // 공통요소
     $sql_common = " com_idx = '".$g5['setting']['set_com_idx']."'
                     , bom_idx = '".$oop['bom_idx']."'
-                    , orp_idx = '".$oop['orp_idx']."'
+                    , oop_idx = '".$oop['oop_idx']."'
                     , bom_part_no = '".$arr['bom_part_no']."'
                     , itm_name = '".addslashes($bom['bom_name'])."'
                     , itm_barcode = '".$arr['itm_barcode']."'

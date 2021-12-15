@@ -143,6 +143,23 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 
         $s_mod = '<a href="./item_form.php?'.$qstr.'&amp;w=u&amp;itm_idx='.$row['itm_idx'].'" class="btn btn_03">수정</a>';
 
+        // history there items form the last. It is not gooe to see if many are being seen.
+        $row['itm_histories'] = explode("\n",$row['itm_history']);
+        // print_r2($row['itm_histories']);
+        if(sizeof($row['itm_histories']) > 2) {
+            $row['itm_history_array'][0] = "...";
+            $x=1;
+            for($j=sizeof($row['itm_histories'])-2;$j<sizeof($row['itm_histories']);$j++) {
+                $row['itm_history_array'][$x] = $row['itm_histories'][$j];
+                $x++;
+            }
+        }
+        else {
+            $row['itm_history_array'] = $row['itm_histories'];
+        }
+
+
+
         $bg = 'bg'.($i%2);
     ?>
 
@@ -161,7 +178,7 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
         <td class="td_itm_plt"><?=$row['itm_plt']?></td><!-- PLT -->
         <td class="td_itm_defect"><?=(preg_match("/^error_/",$row['itm_status']))?'불량품':'양품'?></td><!-- 품질 -->
         <td class="td_itm_location"><?=$g5['location_name'][$row['trm_idx_location']]?></td><!-- 위치 -->
-        <td class="td_itm_history"><?=nl2br($row['itm_history'])?></td><!-- 히스토리 -->
+        <td class="td_itm_history"><?=implode("<br>",$row['itm_history_array'])?></td><!-- 히스토리 -->
         <td class="td_itm_status"><?=$g5['set_itm_status_value'][$row['itm_status']]?></td><!-- 상태 -->
         <td class="td_mng">
             <?=($row['itm_type']!='material')?$s_bom:''?><!-- 자재가 아닌 경우만 BOM 버튼 -->

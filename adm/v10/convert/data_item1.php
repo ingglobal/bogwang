@@ -27,7 +27,7 @@ $defect_type_array = array('error_stitch'
                             ,'error_wrinkle','error_wrinkle','error_wrinkle','error_wrinkle','error_wrinkle','error_wrinkle','error_wrinkle'
                             ,'error_fabric','error_push','error_pollution','error_bottom','error_etc');
 
-$total = 10000;
+$total = 1000;
 $start_time = time()-86400*1; //<<<<<<<<<<<<<<==================================
 $end_time = time();   //<<<<<<<<<<<<<<==================================
 // $start_time = time()-86400*200; //<<<<<<<<<<<<<<==================================
@@ -82,14 +82,12 @@ for($i=0;$i<$total;$i++) {
         // print_r2($row);
     }
 
-    // 실행계획 RANDOM 추출
-    $sql = " SELECT orp_idx FROM {$g5['order_out_practice_table']}
-        WHERE com_idx = '{$_SESSION['ss_com_idx']}'
-            AND oop_status NOT IN ('trash','delete')
+    // 출하-실행계획 RANDOM 추출
+    $sql = " SELECT oop_idx FROM {$g5['order_out_practice_table']}
+        WHERE oop_status NOT IN ('trash','delete')
             ORDER BY RAND() LIMIT 1
     ";
     $oop = sql_fetch($sql,1);
-    $orp = get_table('order_practice','orp_idx',$oop['orp_idx']);
 
 
     $itm_dt[$i] = date("Y-m-d H:i:s",rand($start_time,$end_time));
@@ -106,7 +104,7 @@ for($i=0;$i<$total;$i++) {
                 com_idx	= '11'
                 , ori_idx	= '".rand(1,40)."'
                 , bom_idx	= '".$bom['bom_idx']."'
-                , orp_idx	= '".$orp['orp_idx']."'
+                , oop_idx	= '".$oop['oop_idx']."'
                 , shf_idx	= '0'
                 , bom_part_no	= '".$bom['bom_part_no']."'
                 , itm_name = '".addslashes($bom['bom_name'])."'
@@ -147,10 +145,11 @@ for($i=0;$i<$total;$i++) {
 // 합계 데이터 입력
 sql_query("TRUNCATE g5_1_item_sum",1);
 $sql = "INSERT INTO g5_1_item_sum (com_idx, itm_date, itm_shift, trm_idx_line, bom_idx, bom_part_no, itm_price, itm_status, itm_count)
-        SELECT itm.com_idx, itm_date, itm_shift, trm_idx_line, bom_idx, bom_part_no, itm_price, itm_status
+        SELECT itm.com_idx, itm_date, itm_shift, trm_idx_line, oop.bom_idx, bom_part_no, itm_price, itm_status
         , COUNT(itm_idx) AS itm_count
         FROM g5_1_item AS itm
-            LEFT JOIN g5_1_order_practice AS orp USING(orp_idx)
+            LEFT JOIN g5_1_order_out_practice AS oop ON oop.oop_idx = itm.oop_idx
+            LEFT JOIN g5_1_order_practice AS orp ON orp.orp_idx = oop.orp_idx
         WHERE itm_status NOT IN ('trash','delete')
             AND itm_date != '0000-00-00'
         GROUP BY itm_date, trm_idx_line, itm_shift, bom_idx, itm_status

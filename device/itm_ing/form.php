@@ -4,16 +4,25 @@ include_once('./_common.php');
 // 실제로는 member_log.php가 크롤링 서버에서 정보를 받아서 저장합니다.
 // 파일명이 실제로는 member_feed_log.php가 더 적합할 수도..
 
+// 출하-실행계획 RANDOM 추출
+$sql = " SELECT oop_idx,bom_idx FROM {$g5['order_out_practice_table']}
+	WHERE oop_status NOT IN ('trash','delete')
+		ORDER BY RAND() LIMIT 1
+";
+$oop = sql_fetch($sql,1);
+$bom = get_table('bom','bom_idx', $oop['bom_idx']);
+// print_r2($bom);
+
 $bar_date = date("ymd");
 $bar_no = rand(11111,99999);
 $bar_prefix = $bar_date.'_'.$bar_no;
 // echo $bar_prefix;
 
 // $com_idx_array = array(9999,67,66,65,64,10000);
-$part_no_array = array('88700-J9110PUR','C89460-CG930SIT','89909-CG930SIT','89908-CG930SIT','89909-CG930MIX');
-$barcode_array = array($bar_prefix.'_C89460-CG930SIT_19204DERH00011530',$bar_prefix.'_C89460-CG930SIT');
+$barcode_array = array($bar_prefix.'_'.$bom['bom_part_no'].'_19204DERH00011530',$bar_prefix.'_'.$bom['bom_part_no']);
 $mms_idx_array = array(7,8,9,10);
 
+print_r2(item_shif_date_return("2021-11-11 10:10:10"));
 ?>
 <style>
 	form {padding:10px 100px 100px;}
@@ -49,10 +58,10 @@ $mms_idx_array = array(7,8,9,10);
 	<!-- <tr><td>업체 idx</td><td><input type="text" name="com_idx" value="8"></td></tr> -->
 	<tr><td>IMP idx</td><td><input type="text" name="imp_idx" value="<?=rand(1,16)?>"></td></tr>
 	<tr><td>MMS idx</td><td><input type="text" name="mms_idx" value="<?=$mms_idx_array[rand(0,sizeof($mms_idx_array)-1)]?>"></td></tr>
-	<tr><td>실행계획고유번호</td><td><input type="text" name="oop_idx" value="<?=rand(1,4)?>"></td></tr>
+	<tr><td>실행계획고유번호</td><td><input type="text" name="oop_idx" value="<?=$oop['oop_idx']?>"></td></tr>
 	<tr><td>LOT</td><td><input type="text" name="itm_lot" value="<?=rand(1,4)?>"></td></tr>
 	<tr><td>작업구간</td><td><input type="text" name="itm_shift" value="<?=rand(1,8)?>"></td></tr>
-	<tr><td>파트넘버</td><td><input type="text" name="bom_part_no" value="<?=$part_no_array[rand(0,sizeof($part_no_array)-1)]?>"></td></tr>
+	<tr><td>파트넘버</td><td><input type="text" name="bom_part_no" value="<?=$bom['bom_part_no']?>"></td></tr>
 	<tr><td>바코드</td><td><input type="text" name="itm_barcode" value="<?=$barcode_array[rand(0,sizeof($barcode_array)-1)]?>" style="width:370px;"></td></tr>
 	<tr><td>위치</td><td><input type="text" name="trm_idx_location" value="<?=rand(1,4)?>"></td></tr>
 	<tr><td>날짜</td><td><input type="text" name="itm_date" value="<?=date("y.m.d",time())?>"></td></tr>
