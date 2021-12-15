@@ -33,7 +33,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 <section id="anc_cf_default">
 	<h2 class="h2_frm">기본설정</h2>
 	<?php echo $pg_anchor ?>
-	
+
 	<div class="tbl_frm01 tbl_wrap">
 		<table>
 		<caption>기본설정</caption>
@@ -466,6 +466,13 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
 			</td>
 		</tr>
 		<tr>
+			<th scope="row">완제품생산시간대</th>
+			<td colspan="3">
+				<?php echo help('1=시간1,2=시간2,3=시간3,4=시간4,5=시간5,6=시간6,7=시간7,8=시간8,9=시간9,10=시간10'); ?>
+				<input type="text" name="set_itm_shift2" value="<?php echo $g5['setting']['set_itm_shift2']; ?>" class="frm_input" style="width:70%;">
+			</td>
+		</tr>
+		<tr>
 			<th scope="row">완제품상태</th>
 			<td colspan="3">
 				<?php echo help('pending=대기,ing=생산중,finish=생산완료,delivery=출고완료,return=반품,refund=환불,scrap=폐기,trash=삭제'); ?>
@@ -507,7 +514,7 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
 </section>
 
 
-    
+
 <section id="anc_cf_message">
     <h2 class="h2_frm">메시지설정</h2>
     <?php echo $pg_anchor; ?>

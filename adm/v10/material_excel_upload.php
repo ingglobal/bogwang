@@ -162,6 +162,13 @@ foreach($conArr as $k => $v){
         $bom['bom_type'] = 'material';
         $bom['bom_price'] = $v['bom_price'];
     }
+    //해당 bom_idx 데이터가 있으면 가격정보를 업데이트 한다.
+    // else {
+    //     $bsql = " UPDATE {$g5['bom_table']} SET bom_price = '{{$v['bom_price']}}' WHERE com_idx = '{$_SESSION['ss_com_idx']}' AND bom_part_no = '{$k}' ";
+    //     sql_query($bsql);
+    //     $bom['bom_price'] = $v['bom_price'];
+    // }
+
     foreach($v['times'] as $tk => $tv){
         $sql = " INSERT INTO {$g5['material_table']} (`com_idx`,`bom_idx`,`bom_part_no`,`mtr_name`,`mtr_type`,`mtr_price`,`mtr_times`,`mtr_status`,`mtr_input_date`,`mtr_reg_dt`,`mtr_update_dt`) VALUES ";
         for($i=0;$i<$tv;$i++){

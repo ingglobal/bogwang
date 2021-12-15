@@ -101,6 +101,7 @@ include_once('./_head.sub.php');
             <th scope="col"><?php echo subject_sort_link('bom_name') ?>품명</a></th>
             <th scope="col">파트넘버</th>
             <th scope="col">공급처</th>
+            <th scope="col">단가</th>
             <th scope="col">타입</th>
             <th scope="col">선택</th>
         </tr>
@@ -115,6 +116,7 @@ include_once('./_head.sub.php');
             <td class="td_bom_name"><?=$row['bom_name']?></td><!-- 품명 -->
             <td class="td_bom_part_no"><?=$row['bom_part_no']?></td><!-- 파트넘버 -->
             <td class="td_bom_provider"><?=$row['com_name']?></td><!-- 공급처 -->
+            <td class="td_bom_price"><?=number_format($row['bom_price'])?></td><!-- 단가 -->
             <td class="td_bom_type"><?=$g5['set_bom_type_value'][$row['bom_type']]?></td>
             <td class="td_mng td_mng_s">
                 <button type="button" class="btn btn_03 btn_select"
@@ -122,7 +124,7 @@ include_once('./_head.sub.php');
                     bom_name="<?=$row['bom_name']?>"
                     bom_part_no="<?=$row['bom_part_no']?>"
                     bom_type="<?=$row['bom_type']?>"
-                    bom_price="<?=$row['bom_price']?>"
+                    bom_price="<?=number_format($row['bom_price'])?>"
                     com_name="<?=$row['com_name']?>"
                 >선택</button>
             </td>
@@ -130,7 +132,7 @@ include_once('./_head.sub.php');
         <?php
         }
         if($i ==0)
-            echo '<tr><td colspan="5" class="empty_table">검색된 자료가 없습니다.</td></tr>';
+            echo '<tr><td colspan="6" class="empty_table">검색된 자료가 없습니다.</td></tr>';
         ?>
         </tbody>
         </table>
@@ -153,16 +155,20 @@ $('.btn_select').click(function(e){
     
     <?php
     // BOM 구성
-    //if($file_name=='material_list.php') {
+    if($file_name=='material_form') {
     ?>
+        $("input[name=bom_idx]", opener.document).val( bom_idx );
+        $("input[name=bom_part_no]", opener.document).val( bom_part_no );
+        $("input[name=mtr_name]", opener.document).val( bom_name );
+        $("input[name=mtr_type]", opener.document).val( bom_type );
+        $("input[name=mtr_price]", opener.document).val( bom_price );
+    <?php } else { ?>
         $("input[name=bom_idx]", opener.document).val( bom_idx );
         $("input[name=bom_part_no]", opener.document).val( bom_part_no );
         $("input[name=bom_name]", opener.document).val( bom_name );
         $("input[name=bom_type]", opener.document).val( bom_type );
         $("input[name=bom_price]", opener.document).val( bom_price );
-    <?php
-    //}
-    ?>
+    <?php } ?>
 
     window.close();
 });
