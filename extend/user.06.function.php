@@ -3670,21 +3670,23 @@ function item_shif_date_return($date){
     $today_date = explode(" ",$date);
     $today = $today_date[0];//입력날짜 예) 2021-12-11
     $todaytime = strtotime($today_dt);
+
     //아래 시간 범위에서는 전날 실적이므로 전날의 날짜를 반환해야 한다.
     $gstart_dt = $today." 00:00:00";
     $gstarttime = strtotime($gstart_dt);
-    $gend_dt = $today." 05:00:00";
+    $gend_dt = $today." 05:09:59";
     $gendtime = strtotime($gend_dt);
 
     $shift = 0;
     $return_date = $today;
+    //print_r2($g5['set_itm_shift_value']);
     foreach($g5['set_itm_shift_value'] as $k=>$v){
         $times = explode("-",$v);
         $start_dt = $today." ".$times[0];
         $end_dt = $today." ".$times[1];
-        $starttime = strtotime($start_dt);
         $endtime = strtotime($end_dt);
-        if($todaytime >= $starttime && $todaytime <= $endtime) $shift = $k;
+        $starttime = strtotime($start_dt);
+        if($todaytime >= $starttime && $todaytime <= $endtime) $shift = (int)substr($k,0,2);
         if($todaytime >= $gstarttime && $todaytime <= $gendtime) $return_date = get_dayAddDate($today,-1);
     }
 
