@@ -11,7 +11,7 @@ echo $g5['container_sub_title'];
 
 $sql_common = " FROM {$g5['item_table']} AS itm
                     LEFT JOIN {$g5['bom_table']} AS bom USING(bom_idx)
-"; 
+";
 
 $where = array();
 // 디폴트 검색조건 (used 제외)
@@ -32,6 +32,9 @@ if ($stx != "") {
     }
 }
 
+if($shift) $where[] = " itm_shift = '".$shift."' ";
+if($itm_static_date) $where[] = " itm_date = '".$itm_static_date."' ";
+if($itm2_status) $where[] = " itm_status = '".$itm2_status."' ";
 // 최종 WHERE 생성
 if ($where)
     $sql_search = ' WHERE '.implode(' AND ', $where);
@@ -79,6 +82,8 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
     margin: -8px 0 0 -8px;
 }
 .td_itm_history {width:190px !important;}
+label[for="itm_static_date"]{position:relative;}
+label[for="itm_static_date"] i{position:absolute;top:-10px;right:0px;z-index:2;cursor:pointer;}
 .slt_label{position:relative;}
 .slt_label span{position:absolute;top:-23px;left:0px;z-index:2;}
 .slt_label .data_blank{position:absolute;top:3px;right:-18px;z-index:2;font-size:1.1em;cursor:pointer;}
@@ -93,13 +98,33 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 <label for="sfl" class="sound_only">검색대상</label>
 <select name="sfl" id="sfl">
     <option value="itm_name"<?php echo get_selected($_GET['sfl'], "itm_name"); ?>>품명</option>
-    <option value="itm_barcode"<?php echo get_selected($_GET['sfl'], "itm_borcode"); ?>>바코드</option>
-    <option value="itm_lot"<?php echo get_selected($_GET['sfl'], "itm_borcode"); ?>>LOT</option>
-    <option value="com_idx_customer"<?php echo get_selected($_GET['sfl'], "com_idx_customer"); ?>>거래처번호</option>
-    <option value="itm_maker"<?php echo get_selected($_GET['sfl'], "itm_maker"); ?>>메이커</option>
+    <option value="bom.bom_part_no"<?php echo get_selected($_GET['sfl'], "bom_part_no"); ?>>품번</option>
 </select>
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
+<select name="shift" id="shift">
+    <option value="">::작업구간::</option>
+    <?=$g5['set_itm_shift2_value_options']?>
+</select>
+<select name="itm2_status" id="itm2_status">
+    <option value="">-상태선택-</option>
+    <?=$g5['set_itm_status_value_options']?>
+</select>
+<?php
+$itm_static_date = ($itm_static_date) ? $itm_static_date : G5_TIME_YMD;
+?>
+<label for="itm_static_date"><strong class="sound_only">입고일 필수</strong>
+<i class="fa fa-times" aria-hidden="true"></i>
+<input type="text" name="itm_static_date" value="<?php echo $itm_static_date ?>" placeholder="통계일" id="itm_static_date" readonly class="frm_input readonly" style="width:80px;">
+</label>
+<script>
+<?php
+$sfl = ($sfl == '') ? 'itm_name' : $sfl;
+?>
+$('#sfl').val('<?=$sfl?>');
+$('#shift').val('<?=$shift?>');
+$('#itm2_status').val('<?=$itm2_status?>');
+</script>
 <input type="submit" class="btn_submit" value="검색">
 
 </form>
@@ -116,6 +141,9 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
             <select name="o_status" id="o_status">
                 <option value="">-선택-</option>
                 <?=$g5['set_itm_status_options']?>
+                <?php if($is_admin){ ?>
+                <option value="trash">삭제</option>
+                <?php } ?>
             </select>
         </label>
         <input type="button" id="slt_input" onclick="slet_input(document.getElementById('form01'));" value="선택항목 일괄입력" class="btn btn_02">
@@ -156,13 +184,15 @@ $('.data_blank').on('click',function(e){
             <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
         </th>
         <th scope="col">ID</th>
-        <th scope="col">생산일</th>
         <th scope="col"><?php echo subject_sort_link('itm_name') ?>품명</a></th>
         <th scope="col">파트넘버</th>
+        <th scope="col">통계일</th>
+        <th scope="col">작업구간</th>
         <th scope="col">바코드</th>
         <th scope="col">외부라벨</th>
         <th scope="col">PLT</th>
         <!-- <th scope="col">히스토리</th> -->
+        <th scope="col">등록일시</th>
         <th scope="col">상태</th>
         <th scope="col">관리</th>
     </tr>
@@ -204,13 +234,15 @@ $('.data_blank').on('click',function(e){
             <div class="chkdiv_btn" chk_no="<?=$i?>"></div>
         </td>
         <td class="td_itm_idx"><?=$row['itm_idx']?></td><!-- ID -->
-        <td class="td_itm_reg_dt"><?=substr($row['itm_reg_dt'],0,19)?></td><!-- 생산일 -->
         <td class="td_itm_name"><?=$row['itm_name']?></td><!-- 품명 -->
         <td class="td_itm_part_no"><?=$row['bom_part_no']?></td><!-- 파트넘버 -->
-        <td class="td_itm_barcode"><?=$row['itm_barcode']?></td><!-- 바코드 -->
+        <td class="td_itm_date"><?=$row['itm_date']?></td><!-- 통계일 -->
+        <td class="td_itm_shift"><?=$row['itm_shift']?></td><!-- 작업구간 -->
+        <td class="td_itm_barcode" style="text-align:left;"><?=$row['itm_barcode']?></td><!-- 바코드 -->
         <td class="td_itm_com_barcode"><?=$row['itm_com_barcode']?></td><!-- 외부라벨 -->
         <td class="td_itm_plt"><?=$row['itm_plt']?></td><!-- PLT -->
-        <!-- <td class="td_itm_history"><?=implode("<br>",$row['itm_history_array'])?></td> -->
+        <!-- <td class="td_itm_history"><?php ;//implode("<br>",$row['itm_history_array'])?></td> -->
+        <td class="td_itm_reg_dt"><?=substr($row['itm_reg_dt'],0,19)?></td><!-- 등록일시 -->
         <td class="td_itm_status td_itm_status_<?=$row['itm_idx']?>">
             <input type="hidden" name="itm_status[<?php echo $row['itm_idx'] ?>]" class="itm_status_<?php echo $row['itm_idx'] ?>" value="<?php echo $row['itm_status']?>">
             <input type="text" value="<?php echo $g5['set_itm_status'][$row['itm_status']]?>" readonly class="tbl_input readonly itm_status_name_<?php echo $row['itm_idx'] ?>" style="width:170px;text-align:center;">
@@ -239,8 +271,10 @@ $('.data_blank').on('click',function(e){
     <?php } ?>
     <?php if (!auth_check($auth[$sub_menu],'w')) { ?>
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
+    <?php if($is_admin){ ?>
     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
     <a href="./item_form.php" id="member_add" class="btn btn_01">추가하기</a>
+    <?php } ?>
     <?php } ?>
 </div>
 
@@ -277,6 +311,12 @@ $('.data_blank').on('click',function(e){
 
 
 <script>
+$("input[name*=_date]").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-99:c+99" });
+
+$('label[for="itm_static_date"] i').on('click',function(){
+    $(this).siblings('input').val('');
+});
+
 // 엑셀등록 버튼
 $( "#btn_excel_upload" ).on( "click", function() {
     $( "#modal01" ).dialog( "open" );
@@ -291,11 +331,11 @@ $( "#modal01" ).dialog({
 $(".tbl_head01 tbody tr").on({
     mouseenter: function () {
         $('tr[tr_id='+$(this).attr('tr_id')+']').find('td').css('background','#0b1938');
-        
+
     },
     mouseleave: function () {
         $('tr[tr_id='+$(this).attr('tr_id')+']').find('td').css('background','unset');
-    }    
+    }
 });
 
 

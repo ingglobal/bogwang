@@ -132,7 +132,7 @@ include_once ('./_head.php');
     <tr>
         <th scope="row">히스토리</th>
         <td colspan="3">
-            <?=${$pre}[$pre.'_history']?>
+            <?=nl2br(${$pre}[$pre.'_history'])?>
         </td>
     </tr>
 	</tbody>

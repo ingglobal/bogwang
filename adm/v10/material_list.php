@@ -32,7 +32,7 @@ if ($stx != "") {
 
 if($times) $where[] = " mtr_times = '".$times."' ";
 if($mtr_input2_date) $where[] = " mtr_input_date = '".$mtr_input2_date."' ";
-
+if($mtr2_status) $where[] = " mtr_status = '".$mtr2_status."' ";
 // 최종 WHERE 생성
 if ($where)
     $sql_search = ' WHERE '.implode(' AND ', $where);
@@ -57,13 +57,16 @@ $sql = "SELECT *
         {$sql_common} {$sql_search} {$sql_order}
         LIMIT {$from_record}, {$rows}
 ";
-// print_r3($sql);
+//print_r3($sql);
 $result = sql_query($sql,1);
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
 $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 넘겨야 할 변수들
 ?>
 <style>
+.tbl_head01 thead tr th{position:sticky;top:100px;z-index:100;}
+.td_chk{position:relative;}
+.td_chk .chkdiv_btn{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,255,0,0);}
 #top_form:after{display:block;visibility:hidden;clear:both;content:'';}
 #top_form #fsearch{float:left;}
 #top_form #finput{float:right;margin:10px 0;}
@@ -81,6 +84,9 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 }
 label[for="mtr_input2_date"]{position:relative;}
 label[for="mtr_input2_date"] i{position:absolute;top:-10px;right:0px;z-index:2;cursor:pointer;}
+.slt_label{position:relative;}
+.slt_label span{position:absolute;top:-23px;left:0px;z-index:2;}
+.slt_label .data_blank{position:absolute;top:3px;right:-18px;z-index:2;font-size:1.1em;cursor:pointer;}
 </style>
 
 <div class="local_ov01 local_ov">
@@ -101,6 +107,10 @@ label[for="mtr_input2_date"] i{position:absolute;top:-10px;right:0px;z-index:2;c
             <option value="">::입고차수::</option>
             <?=$g5['set_mtr_times_value_options']?>
         </select>
+        <select name="mtr2_status" id="mtr2_status">
+            <option value="">-상태선택-</option>
+            <?=$g5['set_mtr_status_value_options']?>
+        </select>
         <?php
         $mtr_input2_date = ($mtr_input2_date) ? $mtr_input2_date : G5_TIME_YMD;
         ?>
@@ -108,6 +118,14 @@ label[for="mtr_input2_date"] i{position:absolute;top:-10px;right:0px;z-index:2;c
         <i class="fa fa-times" aria-hidden="true"></i>
         <input type="text" name="mtr_input2_date" value="<?php echo $mtr_input2_date ?>" placeholder="입고일" id="mtr_input_date" readonly class="frm_input readonly" style="width:80px;">
         </label>
+        <script>
+        <?php
+        $sfl = ($sfl == '') ? 'mtr_name' : $sfl;
+        ?>
+        $('#sfl').val('<?=$sfl?>');
+        $('#times').val('<?=$times?>');
+        $('#mtr2_status').val('<?=$mtr2_status?>');
+        </script>
         <input type="submit" class="btn_submit" value="검색">
     </form>
 
@@ -138,7 +156,39 @@ label[for="mtr_input2_date"] i{position:absolute;top:-10px;right:0px;z-index:2;c
     <p>엑셀파일에 의한 최초 등록후 재고품목의 <b style="color:skyblue">추가등록</b> 및 <b style="color:red">삭제작업</b>은 [<b style="color:orange">자재재고관리</b>] 페이지상에서 진행해 주세요.</p>
 </div>
 
-
+<div class="select_input">
+    <h3>선택목록 데이터일괄 입력</h3>
+    <p style="padding:30px 0 20px">
+        <label for="" class="slt_label">
+            <span>상태<i class="fa fa-times data_blank" aria-hidden="true"></i></span>
+            <select name="o_status" id="o_status">
+                <option value="">-선택-</option>
+                <?=$g5['set_mtr_status_options']?>
+                <?php if($is_admin){ ?>
+                <option value="trash">삭제</option>
+                <?php } ?>
+            </select>
+        </label>
+        <input type="button" id="slt_input" onclick="slet_input(document.getElementById('form01'));" value="선택항목 일괄입력" class="btn btn_02">
+    </p>
+</div>
+<script>
+$('.data_blank').on('click',function(e){
+    e.preventDefault();
+    //$(this).parent().siblings('input').val('');
+    var obj = $(this).parent().next();
+    if(obj.prop("tagName") == 'INPUT'){
+        if(obj.attr('type') == 'hidden'){
+            obj.val('');
+            obj.siblings('input').val('');
+        }else if(obj.attr('type') == 'text'){
+            obj.val('');
+        }
+    }else if(obj.prop("tagName") == 'SELECT'){
+        obj.val('');
+    }
+});
+</script>
 <form name="form01" id="form01" action="./material_list_update.php" onsubmit="return form01_submit(this);" method="post">
 <input type="hidden" name="sst" value="<?php echo $sst ?>">
 <input type="hidden" name="sod" value="<?php echo $sod ?>">
@@ -179,9 +229,10 @@ label[for="mtr_input2_date"] i{position:absolute;top:-10px;right:0px;z-index:2;c
 
     <tr class="<?php echo $bg; ?>" tr_id="<?php echo $row['mtr_idx'] ?>">
         <td class="td_chk">
-            <input type="hidden" name="mtr_idx[<?php echo $i ?>]" value="<?php echo $row['mtr_idx'] ?>" id="mtr_idx_<?php echo $i ?>">
+            <input type="hidden" name="mtr_idx[<?php echo $row['mtr_idx'] ?>]" value="<?php echo $row['mtr_idx'] ?>" id="mtr_idx_<?php echo $i ?>">
             <label for="chk_<?php echo $i; ?>" class="sound_only"><?php echo get_text($row['mtr_name']); ?> <?php echo get_text($row['mtr_nick']); ?>님</label>
-            <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i ?>">
+            <input type="checkbox" name="chk[]" value="<?php echo $row['mtr_idx'] ?>" id="chk_<?php echo $i ?>">
+            <div class="chkdiv_btn" chk_no="<?=$i?>"></div>
         </td>
         <td class="td_mtr_name"><?=$row['mtr_idx']?></td><!-- ID -->
         <td class="td_mtr_name"><?=$row['mtr_name']?></td><!-- 품명 -->
@@ -189,7 +240,10 @@ label[for="mtr_input2_date"] i{position:absolute;top:-10px;right:0px;z-index:2;c
         <td class="td_mtr_provider"><?=$row['com_name']?></td><!-- 공급처명 -->
         <td class="td_mtr_input_date"><?=$row['mtr_input_date']?></td><!-- 입고일 -->
         <td class="td_mtr_times"><?=$row['mtr_times']?></td><!-- 차수 -->
-        <td class="td_mtr_status"><?=$g5['set_mtr_status_value'][$row['mtr_status']]?></td><!-- 상태 -->
+        <td class="td_mtr_status td_mtr_status_<?=$row['mtr_idx']?>" style="width:180px;">
+            <input type="hidden" name="mtr_status[<?php echo $row['mtr_idx'] ?>]" class="mtr_status_<?php echo $row['mtr_idx'] ?>" value="<?php echo $row['mtr_status']?>">
+            <input type="text" value="<?php echo $g5['set_mtr_status'][$row['mtr_status']]?>" readonly class="tbl_input readonly mtr_status_name_<?php echo $row['mtr_idx'] ?>" style="width:170px;text-align:center;">
+        </td><!-- 상태 -->
         <td class="td_mng">
             <?=($row['mtr_type']!='material')?$s_bom:''?><!-- 자재가 아닌 경우만 BOM 버튼 -->
 			<?=$s_mod?>
@@ -209,8 +263,8 @@ label[for="mtr_input2_date"] i{position:absolute;top:-10px;right:0px;z-index:2;c
        <a href="javascript:" id="btn_excel_upload" class="btn btn_02" style="margin-right:50px;">엑셀등록</a>
     <?php } ?>
     <?php if (!auth_check($auth[$sub_menu],'w')) { ?>
-    <!--input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02"-->
-    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
+    <input type="submit" name="act_button2" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
+    <input type="submit" name="act_button2" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
     <!--
     <a href="./material_form.php" id="member_add" class="btn btn_01">추가하기</a>
     -->
@@ -265,7 +319,10 @@ $("#bom_name").click(function(e) {
     winBomSelect = window.open(href, "winBomSelect", "left=300,top=150,width=650,height=600,scrollbars=1");
     winBomSelect.focus();
 });
-
+//입고날짜선택에서 X버튼 클릭시 값제거
+$('label[for="mtr_input2_date"] i').on('click',function(){
+    $(this).siblings('input').val('');
+});
 // 엑셀등록 버튼
 $( "#btn_excel_upload" ).on( "click", function() {
     $( "#modal01" ).dialog( "open" );
@@ -300,6 +357,82 @@ function chk_Number(object){
     });
 }
 
+var first_no = '';
+var second_no = '';
+$('.chkdiv_btn').on('click',function(e){
+    //시프트키 또는 알트키와 클릭을 같이 눌렀을 경우
+    if(e.shiftKey || e.altKey){
+        //first_no정보가 없으면 0번부터 shift+click한 체크까지 선택을 한다.
+        if(first_no == ''){
+            first_no = 0;
+        }
+        //first_no정보가 있으면 first_no부터 second_no까지 체크를 선택한다.
+        else{
+            ;
+        }
+        second_no = Number($(this).attr('chk_no'));
+        var key_type = (e.shiftKey) ? 'shift' : 'alt';
+        //multi_chk(first_no,second_no,key_type);
+        (function(first_no,second_no,key_type){
+            //console.log(first_no+','+second_no+','+key_type+':func');return;
+            var start_no = (first_no < second_no) ? first_no : second_no;
+            var end_no = (first_no < second_no) ? second_no : first_no;
+            //console.log(start_no+','+end_no);return;
+            for(var i=start_no;i<=end_no;i++){
+                if(key_type == 'shift')
+                    $('.chkdiv_btn[chk_no="'+i+'"]').siblings('input[type="checkbox"]').attr('checked',true);
+                else
+                    $('.chkdiv_btn[chk_no="'+i+'"]').siblings('input[type="checkbox"]').attr('checked',false);
+            }
+
+            first_no = '';
+            second_no = '';
+        })(first_no,second_no,key_type);
+    }
+    //클릭만했을 경우
+    else{
+        //이미 체크되어 있었던 경우 체크를 해제하고 first_no,second_no를 초기화해라
+        if($(this).siblings('input[type="checkbox"]').is(":checked")){
+            first_no = '';
+            second_no = '';
+            $(this).siblings('input[type="checkbox"]').attr('checked',false);
+        }
+        //체크가 안되어 있는 경우 체크를 넣고 first_no에 해당 체크번호를 대입하고, second_no를 초기화한다.
+        else{
+            $(this).siblings('input[type="checkbox"]').attr('checked',true);
+            first_no = $(this).attr('chk_no');
+            second_no = '';
+        }
+    }
+});
+
+function slet_input(f){
+    var chk_count = 0;
+    var chk_idx = [];
+    //var dt_pattern = new RegExp("^(\d{4}-\d{2}-\d{2})$");
+    var dt_pattern = /^(\d{4}-\d{2}-\d{2})$/;
+    for(var i=0; i<f.length; i++){
+        if(f.elements[i].name == "chk[]" && f.elements[i].checked){
+            chk_idx.push(f.elements[i].value);
+            chk_count++;
+        }
+    }
+    if (!chk_count) {
+        alert("일괄입력할 자재재고목록을 하나 이상 선택하세요.");
+        return false;
+    }
+
+    var o_status = document.getElementById('o_status').value;
+    var o_status_name = $('#o_status').find('option[value="'+o_status+'"]').text();
+
+    for(var idx in chk_idx){
+        //console.log(idx);continue;
+        if(o_status){
+            $('.td_mtr_status_'+chk_idx[idx]).find('input[type="hidden"]').val(o_status);
+            $('.td_mtr_status_'+chk_idx[idx]).find('input[type="text"]').val(o_status_name);
+        }
+    }
+}
 
 function form01_submit(f)
 {
@@ -314,6 +447,8 @@ function form01_submit(f)
         }
     }
 
+    $('<input type="hidden" name="act_button" value="'+document.pressed+'">').prependTo('#form01');
+    
     return true;
 }
 

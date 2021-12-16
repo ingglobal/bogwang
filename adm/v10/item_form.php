@@ -78,9 +78,11 @@ include_once ('./_head.php');
             <th>품명</th>
             <td>
                 <input type="hidden" name="bom_idx" value="<?=${$pre}['bom_idx']?>">
-                <input type="text" name="itm_name" value="<?=${$pre}['mtr_name']?>" required readonly class="frm_input required readonly" style="width:200px;">
-                <a href="javascript:" link="./bom_select.php?file_name=<?=$g5['file_name']?>" id="btn_bom" class="btn btn_01">상품선택</a>
-            </td>
+                <input type="text" name="itm_name" value="<?=${$pre}['itm_name']?>" required readonly class="frm_input required readonly" style="width:200px;">
+                <?php if($w == ''){ ?>
+                <a href="javascript:" link="./bom_select3.php?file_name=<?=$g5['file_name']?>" id="btn_bom" class="btn btn_01">상품선택</a>
+                <?php } ?>
+                </td>
             <th>단가</th>
             <td>
                 <?php echo help("단가수정은 BOM관리에서 해 주셔야 합니다.") ?>
@@ -91,38 +93,47 @@ include_once ('./_head.php');
     <tr>
         <th>파트넘버(P/NO)</th>
         <td>
-            <input type="text" name="bom_part_no" value="<?=${$pre}['bom_part_no']?>" readonly class="frm_input readonly" style="width:200px;">
+            <input type="text" name="bom_part_no" value="<?=${$pre}['bom_part_no']?>" required readonly class="frm_input required readonly" style="width:200px;">
         </td>
         <th>상품바코드</th>
         <td>
-            <input type="text" name="itm_barcode" value="<?=${$pre}['itm_barcode']?>" readonly class="frm_input readonly" style="width:200px;">
+            <input type="text" name="itm_barcode" value="<?=${$pre}['itm_barcode']?>" class="frm_input" style="width:350px;">
         </td>
     </tr>
     <tr>
         <th>외부(고객처)라벨</th>
         <td>
-            <input type="text" name="itm_com_barcode" value="<?=${$pre}['itm_com_barcode']?>" required readonly class="frm_input readonly required" style="width:200px;">
+            <input type="text" name="itm_com_barcode" value="<?=${$pre}['itm_com_barcode']?>" readonly class="frm_input readonly" style="width:200px;">
         </td>
         <th>PLT번호</th>
         <td>
-            <input type="text" name="plt_idx" value="<?=${$pre}['plt_idx']?>" class="frm_input" style="width:100px;" onclick="javascript:chk_Number(this);">
+            <input type="text" name="plt_idx" value="<?=${$pre}['plt_idx']?>" class="frm_input" style="width:200px;" onclick="javascript:chk_Number(this);">
         </td>
     </tr>
     <tr>
         <th>생산시간대번호</th>
         <td>
-            <select name="itm_shift" id="itm_shift" class="">
+            <select name="itm_shift" id="itm_shift" class=""
+            <?php if (!$is_admin) { ?>
+                onFocus='this.initialSelect=this.selectedIndex;' onChange='this.selectedIndex=this.initialSelect;'<?php } ?>>
                 <?=$g5['set_itm_shift2_value_options']?>
             </select>
             <script>
-            $('#itm_shift').val('<?=${$pre}['itm_shift']?>');
+            <?php
+            $itm_shift = ($w == '') ? 1 : ${$pre}['itm_shift'];
+            ?>
+            $('#itm_shift').val('<?=$itm_shift?>');
             </script>
         </td>
         <th scope="row">상태</th>
         <td>
-            <select name="<?=$pre?>_status" id="<?=$pre?>_status"
-            <?php if (auth_check($auth[$sub_menu],"d",1)) { ?>onFocus='this.initialSelect=this.selectedIndex;' onChange='this.selectedIndex=this.initialSelect;'<?php } ?>>
-                <?=$g5['set_mtr_status_options']?>
+            <select name="<?=$pre?>_status" id="<?=$pre?>_status" required class="required"
+            <?php if (auth_check($auth[$sub_menu],"w",1)) { ?>
+                onFocus='this.initialSelect=this.selectedIndex;' onChange='this.selectedIndex=this.initialSelect;'<?php } ?>>
+                <?=$g5['set_itm_status_options']?>
+                <?php if($is_admin){ ?>
+                <option value="trash">삭제</option>
+                <?php } ?>
             </select>
             <script>$('select[name="<?=$pre?>_status"]').val('<?=${$pre}[$pre.'_status']?>');</script>
         </td>
@@ -173,7 +184,7 @@ $(function() {
 });
 
 // 제품찾기 버튼 클릭
-$("#btn_mtr").click(function(e) {
+$("#btn_bom").click(function(e) {
     e.preventDefault();
     var href = $(this).attr('link');
     winBomSelect = window.open(href, "winBomSelect", "left=300,top=150,width=650,height=600,scrollbars=1");
@@ -188,17 +199,30 @@ function chk_Number(object){
 }
 
 function form01_submit(f) {
-    if(!f.mtr_name.value) {
+    if(!f.itm_name.value) {
         alert('상품을 선태해 주세요.');
-        f.mtr_name.focus();
+        f.itm_name.focus();
         return false;
     }
 
-    if(!f.mtr_input_date.value) {
-        alert('입고일을 선택해 주세요.');
-        f.mtr_input_date.focus();
+    if(!f.bom_part_no.value) {
+        alert('품번을 입력해 주세요.');
+        f.bom_part_no.focus();
         return false;
     }
+
+    if(!f.itm_shift.value) {
+        alert('작업구간을 입력해 주세요.');
+        f.itm_shift.focus();
+        return false;
+    }
+
+    if(!f.itm_status.value) {
+        alert('상태값을 입력해 주세요.');
+        f.itm_status.focus();
+        return false;
+    }
+
     return true;
 }
 

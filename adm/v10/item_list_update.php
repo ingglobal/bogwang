@@ -42,7 +42,7 @@ if ($_POST['act_button'] == "선택수정") {
         (ing,finish,error_product,delivery,scrap)
         */
 
-        $sync_status = array('ing','finish','error_product','delivery','scrap');
+        $sync_status = array('ing','finish','error_product','delivery','scrap','trash');
         if(preg_match("/^error_/",$_POST['itm_status'][$itm_idx_v])){
             // 연결된 자재의 모든 상태값을 변경
             $sql = "UPDATE {$g5['material_table']} SET
@@ -56,10 +56,16 @@ if ($_POST['act_button'] == "선택수정") {
         }
         else {
             if(in_array($_POST['itm_status'][$itm_idx_v],$sync_status)){
+                if($_POST['itm_status'][$itm_idx_v] == 'trash'){
+                    $mtr_history = " CONCAT(mtr_history,'\n삭제 by ".$member['mb_name'].", ".G5_TIME_YMDHIS."') ";
+                }
+                else{
+                    $mtr_history = " CONCAT(mtr_history,'\n".$_POST['itm_status'][$itm_idx_v]."|".G5_TIME_YMDHIS."') ";
+                }
                 // 연결된 자재의 모든 상태값을 변경
                 $sql = "UPDATE {$g5['material_table']} SET
                         mtr_status = '".$_POST['itm_status'][$itm_idx_v]."'
-                        , mtr_history = CONCAT(mtr_history,'\n".$_POST['itm_status'][$itm_idx_v]."|".G5_TIME_YMDHIS."')
+                        , mtr_history = ".$mtr_history."
                         , mtr_update_dt = '".G5_TIME_YMDHIS."'
                     WHERE itm_idx = '".$itm_idx_v."'
                 ";
