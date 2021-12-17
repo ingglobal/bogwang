@@ -1,11 +1,55 @@
 <?php
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
+// 상태값 변경에 따른 생산량 일간 합계 업데이트, 이전상태에 대한 통계 및 현재상태에 대한 통계 둘 다 변경되어야 함
+// itm_idx
+if(!function_exists('update_item_sum_by_status')){
+function update_item_sum_by_status($itm_idx) {
+    global $g5;
+
+    if(!$itm_idx) {
+        return false;
+    }
+    $itm = get_table('item','itm_idx',$itm_idx);
+    $oop = get_table('order_out_practice','oop_idx',$itm['oop_idx']);
+    $orp = get_table('order_practice','orp_idx',$oop['orp_idx']);
+    // print_r2($itm);
+    // last two items form the last / This gets only one for one line, and two item for two line.
+    $itm['itm_histories'] = explode("\n",trim($itm['itm_history']));
+    // print_r2($itm['itm_histories']);
+    if(trim($itm['itm_history'])) {
+        $x=0;
+        for($j=sizeof($itm['itm_histories'])-2;$j<sizeof($itm['itm_histories']);$j++) {
+            $itm['itm_history_array'][$x] = $itm['itm_histories'][$j];
+            $x++;
+        }
+    }
+    // print_r2($itm['itm_history_array']);
+    for($j=0;$j<sizeof($itm['itm_history_array']);$j++) {
+        $itm['itm_history_items'] = explode("|",$itm['itm_history_array'][$j]);
+        // print_r2($itm['itm_history_items']);
+        // 통계 처리
+        $ar['itm_date'] = $itm['itm_history_items'][1];
+        $ar['trm_idx_line'] = $orp['trm_idx_line'];
+        $ar['itm_shift'] = $itm['itm_shift'];
+        $ar['bom_idx'] = $itm['bom_idx'];
+        $ar['itm_status'] = $itm['itm_history_items'][0];
+        update_item_sum($ar);
+        unset($ar);
+    }
+
+    return true;
+}
+}
 // 생산량 일간 합계 입력
 // itm_date, trm_idx_line, itm_shift, bom_idx, itm_status
 if(!function_exists('update_item_sum')){
 function update_item_sum($arr) {
     global $g5;
+
+    if(!$arr['itm_date']) {
+        return false;
+    }
 
     $sql_where = "itm_shift = '".$arr['itm_shift']."'
                 AND trm_idx_operation = '".$arr['trm_idx_operation']."'

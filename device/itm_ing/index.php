@@ -21,8 +21,8 @@ else if($getData[0]['bom_part_no']) {
     $arr = $getData[0];
 
     $arr['itm_status'] = 'ing';
-    $arr['itm_dt'] = strtotime(preg_replace('/\./','-',$arr['itm_date'])." ".$arr['itm_time']); // 1639579897
-    $arr['itm_dt1'] = date("Y-m-d H:i:s",$arr['itm_dt']);   // 2021-10-10 10:11:11
+    $arr['itm_timestamp'] = strtotime(preg_replace('/\./','-',$arr['itm_date'])." ".$arr['itm_time']); // 1639579897
+    $arr['itm_dt'] = date("Y-m-d H:i:s",$arr['itm_timestamp']);   // 2021-10-10 10:11:11
     
     // $table_name = 'g5_1_item_'.$arr['mms_idx'];  // 향후 테이블 분리가 필요하면..
     $table_name = 'g5_1_item';
@@ -57,11 +57,11 @@ else if($getData[0]['bom_part_no']) {
         $arr['itm_com_barcode'] = $arr['itm_barcodes'][3];
     }
 
-    // 히스토리
-    $arr['itm_history'] = $arr['itm_status'].'|'.G5_TIME_YMDHIS;
-
     //구간재설정
-    $ingArr = item_shif_date_return($arr['itm_dt1']);
+    $ingArr = item_shif_date_return($arr['itm_dt']);
+
+    // 히스토리 / status|통계일|등록일
+    $arr['itm_history'] = $arr['itm_status'].'|'.$ingArr['workday'].'|'.G5_TIME_YMDHIS;
 
     // 공통요소
     $sql_common = " com_idx = '".$g5['setting']['set_com_idx']."'
@@ -104,8 +104,8 @@ else if($getData[0]['bom_part_no']) {
         //print_r2($shif);
         $sql = "INSERT INTO {$table_name} SET 
                     {$sql_common}
-                    , itm_reg_dt = '".$arr['itm_dt1']."'
-                    , itm_update_dt = '".$arr['itm_dt1']."'
+                    , itm_reg_dt = '".$arr['itm_dt']."'
+                    , itm_update_dt = '".$arr['itm_dt']."'
         ";
         sql_query($sql,1);
         $itm['itm_idx'] = sql_insert_id();
@@ -150,7 +150,7 @@ else if($getData[0]['bom_part_no']) {
     }
     $result_arr['list'] = $list;
 
-    // 합계 통계 처리
+    // Statistics process / This is the first input, so you have to treet this directly once.
     $ar['itm_date'] = $ingArr['workday'];
     $ar['trm_idx_line'] = $orp['trm_idx_line'];
     $ar['itm_shift'] = $ingArr['shift'];

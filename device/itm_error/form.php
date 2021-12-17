@@ -1,7 +1,7 @@
 <?php
 include_once('./_common.php');
 
-// barcode should be stored beforehand. Find one record from db table and asign it to barcode here.
+// barcode exists. Find one record from db table and asign it to barcode here.
 $sql = " SELECT * FROM {$g5['item_table']} WHERE itm_barcode != '' AND itm_status = 'ing' ORDER BY RAND() LIMIT 1 ";
 $itm = sql_fetch($sql,1);
 

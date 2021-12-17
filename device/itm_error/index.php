@@ -21,12 +21,8 @@ else if($getData[0]['itm_barcode']) {
     $arr = $getData[0];
 
     $arr['itm_status'] = $arr['itm_error_code'];
-    $arr['itm_dt'] = strtotime(preg_replace('/\./','-',$arr['itm_date'])." ".$arr['itm_time']);
-    $arr['itm_date1'] = date("Y-m-d",$arr['itm_dt']);   // 2 or 4 digit format(20 or 2020) no problem.
-    $arr['st_time'] = strtotime($arr['itm_date1']." 00:00:00"); // 해당 날짜의 시작
-    $arr['en_time'] = strtotime($arr['itm_date1']." 23:59:59"); // 해당 날짜의 끝
-    $arr['itm_dt2'] = strtotime(preg_replace('/\./','-',$arr['itm_date2'])." 00:00:00");    // statistics date
-    $arr['itm_date_stat'] = date("Y-m-d",$arr['itm_dt2']);   // 2 or 4 digit format(20 or 2020) no problem.
+    $arr['itm_timestamp'] = strtotime(preg_replace('/\./','-',$arr['itm_date'])." ".$arr['itm_time']); // 1639579897
+    $arr['itm_dt'] = date("Y-m-d H:i:s",$arr['itm_timestamp']);   // 2021-10-10 10:11:11
     // $table_name = 'g5_1_item_'.$arr['mms_idx'];  // 향후 테이블 분리가 필요하면..
     $table_name = 'g5_1_item';
 
@@ -71,6 +67,18 @@ else if($getData[0]['itm_barcode']) {
         ";
         // echo $sql.'<br>';
         sql_query($sql,1);
+
+
+        // 통계 처리
+        $oop = get_table_meta('order_out_practice','oop_idx',$itm['oop_idx']);
+        $orp = get_table_meta('order_practice','orp_idx',$oop['orp_idx']);
+        $ar['itm_date'] = $ingArr['workday'];
+        $ar['trm_idx_line'] = $orp['trm_idx_line'];
+        $ar['itm_shift'] = $ingArr['shift'];
+        $ar['bom_idx'] = $oop['bom_idx'];
+        $ar['itm_status'] = $arr['itm_status'];
+        update_item_sum($ar);
+        unset($ar);
         
     }
 }
