@@ -53,5 +53,6 @@ $g5['item_sum_table']           = PROJ_TABLE_PREFIX.'item_sum';
 $g5['material_table']           = PROJ_TABLE_PREFIX.'material';
 $g5['material_order_table']     = PROJ_TABLE_PREFIX.'material_order';
 $g5['material_order_item_table']= PROJ_TABLE_PREFIX.'material_order_item';
+$g5['pallet_table']             = PROJ_TABLE_PREFIX.'pallet';
 
 ?>

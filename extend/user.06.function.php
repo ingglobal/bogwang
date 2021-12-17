@@ -13,7 +13,7 @@ function update_item_sum_by_status($itm_idx) {
     $itm = get_table('item','itm_idx',$itm_idx);
     $oop = get_table('order_out_practice','oop_idx',$itm['oop_idx']);
     $orp = get_table('order_practice','orp_idx',$oop['orp_idx']);
-    // print_r2($itm);
+    // print_r2($orp);
     // last two items form the last / This gets only one for one line, and two item for two line.
     $itm['itm_histories'] = explode("\n",trim($itm['itm_history']));
     // print_r2($itm['itm_histories']);
@@ -31,9 +31,10 @@ function update_item_sum_by_status($itm_idx) {
         // 통계 처리
         $ar['itm_date'] = $itm['itm_history_items'][1];
         $ar['trm_idx_line'] = $orp['trm_idx_line'];
-        $ar['itm_shift'] = $itm['itm_shift'];
+        $ar['itm_shift'] = $itm['itm_history_items'][2];
         $ar['bom_idx'] = $itm['bom_idx'];
         $ar['itm_status'] = $itm['itm_history_items'][0];
+        // print_r2($ar);
         update_item_sum($ar);
         unset($ar);
     }
@@ -114,8 +115,36 @@ function update_item_sum($arr) {
         sql_query($sql,1);
         $row['itm_idx'] = sql_insert_id();
     }
+    // echo $sql.'<br>';
 
     return $row['itm_idx'];
+}
+}
+
+// item 출하 처리 함수 (material도 함께 변경)
+if(!function_exists('update_itm_delivery')){
+function update_itm_delivery($arr) {
+    global $g5;
+
+    $sql = "UPDATE {$g5['item_table']} SET
+                itm_delivery = '1'
+                , plt_idx = '".$arr['plt_idx']."'
+                , itm_update_dt = '".G5_TIME_YMDHIS."'
+            WHERE itm_idx = '".$arr['itm_idx']."'
+    ";
+    // echo $sql.'<br>';
+    sql_query($sql,1);
+
+    // 연결된 자재의 모든 상태값을 변경
+    $sql = "UPDATE {$g5['material_table']} SET
+                mtr_delivery = '1'
+                , mtr_update_dt = '".G5_TIME_YMDHIS."'
+            WHERE itm_idx = '".$arr['itm_idx']."'
+    ";
+    // echo $sql.'<br>';
+    sql_query($sql,1);
+
+    return $arr['itm_idx'];
 }
 }
 
@@ -167,10 +196,37 @@ function update_mtr_status($arr) {
 }
 }
 
-// item 상태 초기화 함수 (material 상태도 함께 변경)
+// 빠레트 출하 취소 함수
+if(!function_exists('pallet_item_init')){
+function pallet_item_init($arr) {
+    global $g5;
+
+    // 연결된 자재의 출하 상태값을 변경
+    $sql = "UPDATE {$g5['material_table']} SET
+                mtr_delivery = '0'
+                , mtr_update_dt = '".G5_TIME_YMDHIS."'
+            WHERE itm_idx IN (SELECT itm_idx FROM {$g5['item_table']} WHERE plt_idx = '".$arr['plt_idx']."' )
+    ";
+    // echo $sql.'<br>';
+    sql_query($sql,1);
+
+    // 제품 출하 정보 초기화
+    $sql = "UPDATE {$g5['item_table']} SET
+                itm_delivery = '0'
+                , plt_idx = '0'
+                , itm_update_dt = '".G5_TIME_YMDHIS."'
+            WHERE plt_idx = '".$arr['plt_idx']."'
+    ";
+    // echo $sql.'<br>';
+    sql_query($sql,1);
+
+    return $arr['itm_idx'];
+}
+}
+
+// item 상태 세팅 함수 (material 상태도 함께 변경)
 // 상태값을 finish가 아닌 다른 값으로 바꾸려면 상태값을 배열로 넘겨주면 됨 $arr['itm_status'] = 'delivery';
 if(!function_exists('pallet_item_reset')){
-
 function pallet_item_reset($arr) {
     global $g5;
 

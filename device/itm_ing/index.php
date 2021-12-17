@@ -61,7 +61,7 @@ else if($getData[0]['bom_part_no']) {
     $ingArr = item_shif_date_return($arr['itm_dt']);
 
     // 히스토리 / status|통계일|등록일
-    $arr['itm_history'] = $arr['itm_status'].'|'.$ingArr['workday'].'|'.G5_TIME_YMDHIS;
+    $arr['itm_history'] = $arr['itm_status'].'|'.$ingArr['workday'].'|'.$ingArr['shift'].'|'.G5_TIME_YMDHIS;
 
     // 공통요소
     $sql_common = " com_idx = '".$g5['setting']['set_com_idx']."'

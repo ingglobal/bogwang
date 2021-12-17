@@ -42,7 +42,7 @@ else if($getData[0]['itm_barcode']) {
 
 
         $sql = "UPDATE {$table_name} SET
-                    itm_history = CONCAT(itm_history,'\n".$arr['itm_status']."|".G5_TIME_YMDHIS."')
+                    itm_history = CONCAT(itm_history,'\n".$arr['itm_status']."|".$ingArr['workday']."|".$ingArr['shift']."|".G5_TIME_YMDHIS."')
                     , itm_shift = '".$ingArr['shift']."'
                     , itm_date = '".$ingArr['workday']."'
                     , itm_status = '".$arr['itm_status']."'
@@ -69,16 +69,8 @@ else if($getData[0]['itm_barcode']) {
         sql_query($sql,1);
 
 
-        // 통계 처리
-        $oop = get_table_meta('order_out_practice','oop_idx',$itm['oop_idx']);
-        $orp = get_table_meta('order_practice','orp_idx',$oop['orp_idx']);
-        $ar['itm_date'] = $ingArr['workday'];
-        $ar['trm_idx_line'] = $orp['trm_idx_line'];
-        $ar['itm_shift'] = $ingArr['shift'];
-        $ar['bom_idx'] = $oop['bom_idx'];
-        $ar['itm_status'] = $arr['itm_status'];
-        update_item_sum($ar);
-        unset($ar);
+        // update statistics for two days which are the changed day as well as the pervious statistics day.
+        update_item_sum_by_status($itm['itm_idx']);
         
     }
 }

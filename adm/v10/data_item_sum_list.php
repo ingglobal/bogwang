@@ -18,6 +18,7 @@ include_once('./_top_menu_data.php');
 include_once('./_head.php');
 echo $g5['container_sub_title'];
 
+// update_item_sum_by_status(160379);
 
 $sql_common = " FROM {$g5_table_name} AS ".$pre."
                     LEFT JOIN {$g5['bom_table']} AS bom USING(bom_idx)
