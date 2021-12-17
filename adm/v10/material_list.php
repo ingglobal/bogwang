@@ -70,7 +70,6 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 #top_form:after{display:block;visibility:hidden;clear:both;content:'';}
 #top_form #fsearch{float:left;}
 #top_form #finput{float:right;margin:10px 0;}
-.tbl_head01 thead tr th{position:sticky;top:100px;z-index:100;}
 .td_mtr_name {text-align:left !important;}
 .td_mtr_part_no, .td_com_name, .td_mtr_maker
 ,.td_mtr_items, .td_mtr_items_title {text-align:left !important;}
@@ -448,7 +447,7 @@ function form01_submit(f)
     }
 
     $('<input type="hidden" name="act_button" value="'+document.pressed+'">').prependTo('#form01');
-    
+
     return true;
 }
 

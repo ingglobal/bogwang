@@ -10,12 +10,14 @@ echo $g5['container_sub_title'];
 
 
 $sql_common = " FROM {$g5['item_table']} AS itm
-                    LEFT JOIN {$g5['bom_table']} AS bom USING(bom_idx)
+                    LEFT JOIN {$g5['bom_table']} AS bom ON itm.bom_idx = bom.bom_idx
+                    LEFT JOIN {$g5['order_out_practice_table']} AS oop ON itm.oop_idx = oop.oop_idx
+                    LEFT JOIN {$g5['order_practice_table']} AS orp ON oop.orp_idx = orp.orp_idx
 ";
 
 $where = array();
 // 디폴트 검색조건 (used 제외)
-$where[] = " itm_status NOT IN ('delete','trash','used') AND itm.com_idx = '".$_SESSION['ss_com_idx']."' ";
+$where[] = " itm.itm_status NOT IN ('delete','trash','used') AND itm.com_idx = '".$_SESSION['ss_com_idx']."' ";
 
 // 검색어 설정
 if ($stx != "") {
@@ -187,7 +189,8 @@ $('.data_blank').on('click',function(e){
         <th scope="col"><?php echo subject_sort_link('itm_name') ?>품명</a></th>
         <th scope="col">파트넘버</th>
         <th scope="col">통계일</th>
-        <th scope="col">작업구간</th>
+        <th scope="col">설비라인</th>
+        <th scope="col">시간구간</th>
         <th scope="col">바코드</th>
         <th scope="col">외부라벨</th>
         <th scope="col">PLT</th>
@@ -237,6 +240,7 @@ $('.data_blank').on('click',function(e){
         <td class="td_itm_name"><?=$row['itm_name']?></td><!-- 품명 -->
         <td class="td_itm_part_no"><?=$row['bom_part_no']?></td><!-- 파트넘버 -->
         <td class="td_itm_date"><?=$row['itm_date']?></td><!-- 통계일 -->
+        <td class="td_itm_line"><?=$g5['line_name'][$row['trm_idx_line']]?></td><!-- 설비라인 -->
         <td class="td_itm_shift"><?=$row['itm_shift']?></td><!-- 작업구간 -->
         <td class="td_itm_barcode" style="text-align:left;"><?=$row['itm_barcode']?></td><!-- 바코드 -->
         <td class="td_itm_com_barcode"><?=$row['itm_com_barcode']?></td><!-- 외부라벨 -->

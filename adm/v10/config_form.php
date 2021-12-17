@@ -445,6 +445,13 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
 			</td>
 		</tr>
 		<tr>
+			<th scope="row">고객처재고상태</th>
+			<td colspan="3">
+				<?php echo help('pending=대기,ok=완료,cancel=취소,trash=삭제'); ?>
+				<input type="text" name="set_gst_status" value="<?php echo $g5['setting']['set_gst_status']; ?>" class="frm_input" style="width:70%;">
+			</td>
+		</tr>
+		<tr>
 			<th scope="row">자재입고차수</th>
 			<td colspan="3">
 				<?php echo help('1=1차,2=2차,3=3차,4=4차,5=5차,6=6차,7=7차,8=8차,9=9차,10=10차'); ?>
@@ -475,7 +482,7 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
 		<tr>
 			<th scope="row">완제품상태</th>
 			<td colspan="3">
-				<?php echo help('pending=대기,ing=생산중,finish=생산완료,delivery=출고완료,return=반품,refund=환불,scrap=폐기,trash=삭제'); ?>
+				<?php echo help('pending=대기,ing=생산중,finish=생산완료,return=반품,refund=환불,scrap=폐기,trash=삭제'); ?>
 				<input type="text" name="set_itm_status" value="<?php echo $g5['setting']['set_itm_status']; ?>" class="frm_input" style="width:70%;">
 			</td>
 		</tr>
