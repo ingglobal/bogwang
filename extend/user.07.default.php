@@ -194,7 +194,7 @@ if( is_array($g5['set_taxonomies_value']) ) {
         }
     }
 }
-
+//print_r2($g5);
 // 공정/라인/위치/작업장 미리 추출해 두고 가져다 쓰도록 합니다.
 $g5['set_customer_category'] = array('operation','line','location','site');
 if( is_array($g5['set_customer_category']) || $_SESSION['ss_com_idx'] ) {

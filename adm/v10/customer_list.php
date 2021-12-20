@@ -23,7 +23,7 @@ $where = array();
 $where[] = " com_level =2 AND com_idx_par = ".$_SESSION['ss_com_idx']." AND com_status NOT IN ('trash','delete') ";   // 디폴트 검색조건
 
 // 운영권한이 없으면 자기것만
-if (!$member['mb_manager_yn']) {
+if (false){ //(!$member['mb_manager_yn']) {
     // company_saler 교차 테이블에서 내 것만 추출
     $where[] = " com.com_idx IN ( SELECT com.com_idx
         FROM {$g5['company_table']} AS com
@@ -33,7 +33,7 @@ if (!$member['mb_manager_yn']) {
     // 관련직원(영업자) 추가쿼리
     $sql_mb_firms = " AND mb_id = '".$member['mb_id']."' ";
 }
-
+//print_r3($member['mb_manager_yn']);
 if ($stx) {
     switch ($sfl) {
 		case 'com_name' :
