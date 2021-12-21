@@ -13,6 +13,23 @@ CREATE TABLE `g5_1_order` (
   PRIMARY KEY (`ord_idx`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+
+CREATE TABLE `g5_1_data_output_40` (
+  `dta_idx` bigint(20) NOT NULL COMMENT '데이터idx',
+  `dta_shf_no` int(11) NOT NULL COMMENT '교대번호',
+  `dta_mmi_no` int(11) NOT NULL COMMENT '기종번호',
+  `dta_group` varchar(10) NOT NULL DEFAULT 'product' COMMENT '데이터그룹',
+  `dta_defect` tinyint(2) NOT NULL COMMENT '불량',
+  `dta_defect_type` tinyint(2) NOT NULL COMMENT '불량타입',
+  `dta_dt` int(11) DEFAULT NULL COMMENT '일시',
+  `dta_date` date NOT NULL DEFAULT '0000-00-00' COMMENT '통계일',
+  `dta_value` double DEFAULT 0 COMMENT '정수,음수,실수',
+  `dta_reg_dt` int(11) DEFAULT NULL COMMENT '등록일시',
+  `dta_update_dt` int(11) DEFAULT NULL COMMENT '수정일시',
+  PRIMARY KEY (`dta_idx`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
 CREATE TABLE `g5_1_order_out` (
   `oro_idx` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '수주idx',
   `com_idx` bigint(20) NOT NULL DEFAULT '0' COMMENT '업체번호',
@@ -571,3 +588,5 @@ SELECT * FROM g5_1_item WHERE itm_barcode != '' AND itm_status = 'ing' ORDER BY 
 
 SELECT * FROM g5_1_item
 WHERE bom_part_no = '88700-J9110PUR' AND itm_status = 'finish' ORDER BY itm_idx LIMIT 100
+
+
