@@ -31,7 +31,8 @@ for($i=0;$i<sizeof($fields);$i++) {
     if(in_array($fields[$i],$skips)) {continue;}
     $sql_commons[] = " ".$fields[$i]." = '".$_POST[$fields[$i]]."' ";
 }
-
+// print_r2($sql_commons);
+// exit;
 // after sql_common value setting
 // $sql_commons[] = " com_idx = '".$_SESSION['ss_com_idx']."' ";
 
@@ -62,6 +63,7 @@ else if ($w == 'u') {
             WHERE ".$pre."_idx = '".${$pre."_idx"}."' 
 	";
     // echo $sql.'<br>';
+    // exit;
     sql_query($sql,1);
         
 }

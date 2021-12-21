@@ -23,12 +23,8 @@ else if($getData[0]['plt_barcode']) {
     // 버튼상태값: 출력(print)/출하처리(out)/출하취소(cancel)
     $arr['btn_array'] = array("print"=>"finish","out"=>"delivery","cancel"=>"finish");
     $arr['plt_status'] = $arr['btn_array'][$arr['plt_btn_type']];
-    $arr['plt_dt'] = strtotime(preg_replace('/\./','-',$arr['plt_date'])." ".$arr['plt_time']);
-    $arr['plt_date1'] = date("Y-m-d",$arr['plt_dt']);   // 2 or 4 digit format(20 or 2020) no problem.
-    $arr['st_time'] = strtotime($arr['plt_date1']." 00:00:00"); // 해당 날짜의 시작
-    $arr['en_time'] = strtotime($arr['plt_date1']." 23:59:59"); // 해당 날짜의 끝
-    $arr['plt_dt2'] = strtotime(preg_replace('/\./','-',$arr['plt_date2'])." 00:00:00");    // statistics date
-    $arr['plt_date_stat'] = date("Y-m-d",$arr['plt_dt2']);   // 2 or 4 digit format(20 or 2020) no problem.
+    $arr['plt_timestamp'] = strtotime(preg_replace('/\./','-',$arr['plt_date'])." ".$arr['plt_time']); // 1639579897
+    $arr['plt_dt'] = date("Y-m-d H:i:s",$arr['plt_timestamp']);   // 2021-10-10 10:11:11
     $table_name = 'g5_1_pallet';
 
     // 취소인 경우
@@ -42,7 +38,7 @@ else if($getData[0]['plt_barcode']) {
         if($plt['plt_idx']) {
             // 이전에 설정했던 제품(item) 설정 모두 초기화
             $ar['plt_idx'] = $plt['plt_idx'];
-            pallet_item_reset($ar);
+            pallet_item_init($ar);
             unset($ar);
         }
         $result_arr['code'] = 200;
@@ -103,7 +99,7 @@ else if($getData[0]['plt_barcode']) {
 
                 // 이전에 설정했던 제품(item) 설정 모두 초기화, 갯수가 많아지든 작아지든 관계없이 이전 연결설정정을 일단 초기화
                 $ar['plt_idx'] = $plt_idx;
-                pallet_item_reset($ar);
+                pallet_item_init($ar);
                 unset($ar);
 
             }
@@ -115,8 +111,8 @@ else if($getData[0]['plt_barcode']) {
                 $sql = "INSERT INTO {$table_name} SET 
                         {$sql_common}
                         , plt_idx_parent = '".$arr['plt_idx_parent']."'
-                        , plt_history = ".$arr['plt_status']."|".G5_TIME_YMDHIS."'
-                        , plt_reg_dt = '".G5_TIME_YMDHIS."'
+                        , plt_history = ".$arr['plt_status']."|".$arr['plt_dt']."'
+                        , plt_reg_dt = '".$arr['plt_dt']."'
                 ";
                 sql_query($sql,1);
                 $plt_idx = sql_insert_id();
@@ -133,8 +129,8 @@ else if($getData[0]['plt_barcode']) {
             
             $sql = "INSERT INTO {$table_name} SET 
                         {$sql_common}
-                        , plt_history = '".$arr['plt_status']."|".G5_TIME_YMDHIS."'
-                        , plt_reg_dt = '".G5_TIME_YMDHIS."'
+                        , plt_history = '".$arr['plt_status']."|".$arr['plt_dt']."'
+                        , plt_reg_dt = '".$arr['plt_dt']."'
             ";
             sql_query($sql,1);
             $plt_idx = sql_insert_id();
@@ -160,7 +156,7 @@ else if($getData[0]['plt_barcode']) {
             $ar['itm_status'] = $arr['plt_status'];
             $ar['itm_idx'] = $row['itm_idx'];
             $ar['plt_idx'] = $plt_idx;
-            update_itm_status($ar);
+            update_itm_delivery($ar);
             unset($ar);
             
         }

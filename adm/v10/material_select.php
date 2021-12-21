@@ -6,34 +6,23 @@ include_once('./_common.php');
 if($member['mb_level']<4)
 	alert_close('접근할 수 없는 메뉴입니다.');
 
-if(!$ord_idx)
-    alert_close('주문번호가 제대로 넘어오지 않았습니다.');
 
-$sql_common = " FROM {$g5['order_item_table']} AS ori
-                    LEFT JOIN {$g5['bom_table']} AS bom ON bom.bom_idx = ori.bom_idx
+$sql_common = " FROM {$g5['bom_table']} AS bom
                     LEFT JOIN {$g5['bom_category_table']} AS bct ON bct.bct_id = bom.bct_id
-                        AND bct.com_idx = '".$_SESSION['ss_com_idx']."'
-                    LEFT JOIN {$g5['company_table']} AS com ON com.com_idx = bom.com_idx_customer
+                    LEFT JOIN {$g5['company_table']} AS com ON com.com_idx = bom.com_idx_provider
 
 ";
 
 
 $where = array();
-$where[] = " bom_status NOT IN ('trash','delete','del','cancel') AND bom.com_idx = '".$_SESSION['ss_com_idx']."' AND bom_type='product' AND ori.ord_idx = '".$ord_idx."' ";   // 디폴트 검색조건
+$where[] = " bom_status NOT IN ('trash','delete','del','cancel') AND bom.com_idx = '".$_SESSION['ss_com_idx']."' AND bom_type='material' ";   // 디폴트 검색조건
 
-// 카테고리 검색
-if ($sca != "") {
-    $where[] = " bom.bct_id LIKE '".trim($sca)."%' ";
-}
 
 // 검색어 설정
 if ($stx != "") {
     switch ($sfl) {
-		case ( $sfl == 'bct_id' ) :
-			$where[] = " {$sfl} LIKE '".trim($stx)."%' ";
-            break;
 		case ( $sfl == 'bom_part_no' ) :
-			$where[] = " {$sfl} = '".trim($stx)."' ";
+			$where[] = " {$sfl} LIKE '%".trim($stx)."%' ";
             break;
         default :
 			$where[] = " $sfl LIKE '%".trim($stx)."%' ";
@@ -91,14 +80,12 @@ include_once('./_head.sub.php');
     <input type="hidden" name="frm" value="<?php echo $_GET['frm']; ?>">
     <input type="hidden" name="file_name" value="<?php echo $_REQUEST['file_name']; ?>">
     <input type="hidden" name="com_idx" value="<?php echo $_REQUEST['com_idx']; ?>">
-    <input type="hidden" name="ord_idx" value="<?php echo $_REQUEST['ord_idx']; ?>">
 
     <div id="div_search">
         <select name="sfl" id="sfl">
             <option value="bom_name"<?php echo get_selected($_GET['sfl'], "bom_name"); ?>>품명</option>
-            <option value="com_idx_customer"<?php echo get_selected($_GET['sfl'], "com_idx_customer"); ?>>거래처번호</option>
-            <option value="bom_maker"<?php echo get_selected($_GET['sfl'], "bom_maker"); ?>>메이커</option>
-            <option value="bom_memo"<?php echo get_selected($_GET['sfl'], "bom_idx"); ?>>메모</option>
+            <option value="bom_part_no"<?php echo get_selected($_GET['sfl'], "bom_part_no"); ?>>품번</option>
+            <option value="com_name"<?php echo get_selected($_GET['sfl'], "com_name"); ?>>공급처명</option>
         </select>
         <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
         <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input" style="width:160px;">
@@ -113,7 +100,7 @@ include_once('./_head.sub.php');
         <tr>
             <th scope="col"><?php echo subject_sort_link('bom_name') ?>품명</a></th>
             <th scope="col">파트넘버</th>
-            <th scope="col">업체명</th>
+            <th scope="col">공급처</th>
             <th scope="col">단가</th>
             <th scope="col">타입</th>
             <th scope="col">선택</th>
@@ -128,19 +115,17 @@ include_once('./_head.sub.php');
         <tr class="<?php echo $bg; ?>" tr_id="<?php echo $row['bom_idx'] ?>">
             <td class="td_bom_name"><?=$row['bom_name']?></td><!-- 품명 -->
             <td class="td_bom_part_no"><?=$row['bom_part_no']?></td><!-- 파트넘버 -->
-            <td class="td_com_name"><?=$row['com_name']?></td><!-- 거래처 -->
+            <td class="td_bom_provider"><?=$row['com_name']?></td><!-- 공급처 -->
             <td class="td_bom_price"><?=number_format($row['bom_price'])?></td><!-- 단가 -->
             <td class="td_bom_type"><?=$g5['set_bom_type_value'][$row['bom_type']]?></td>
             <td class="td_mng td_mng_s">
                 <button type="button" class="btn btn_03 btn_select"
-                    ori_idx="<?=$row['ori_idx']?>"
-                    ori_count="<?=$row['ori_count']?>"
                     bom_idx="<?=$row['bom_idx']?>"
                     bom_name="<?=$row['bom_name']?>"
                     bom_part_no="<?=$row['bom_part_no']?>"
-                    com_name="<?=$row['com_name']?>"
+                    bom_type="<?=$row['bom_type']?>"
                     bom_price="<?=number_format($row['bom_price'])?>"
-                    bom_price2 = "<?=$row['bom_price']?>"
+                    com_name="<?=$row['com_name']?>"
                 >선택</button>
             </td>
         </tr>
@@ -161,37 +146,29 @@ include_once('./_head.sub.php');
 <script>
 $('.btn_select').click(function(e){
     e.preventDefault();
-    var ori_idx = $(this).attr('ori_idx');
-    var ori_count = $(this).attr('ori_count');
     var bom_idx = $(this).attr('bom_idx');
-    var bom_name = $(this).attr('bom_name');  // 
-    var bom_part_no = $(this).attr('bom_part_no');
+    var bom_name = $(this).attr('bom_name');
     var com_name = $(this).attr('com_name');
-    var bom_price = $(this).attr('bom_price');    // 
-    var bom_price2 = $(this).attr('bom_price2');    // 
+    var bom_part_no = $(this).attr('bom_part_no');
+    var bom_type = $(this).attr('bom_type');
+    var bom_price = $(this).attr('bom_price');
     
     <?php
     // BOM 구성
-    if($file_name=='order_out_form') {
+    if($file_name=='material_form') {
     ?>
-        //$("input[name=com_name]", opener.document).val( com_name );
-        //$("input[name=bom_idx]", opener.document).val( bom_idx );
-        //$("input[name=bom_name]", opener.document).val( bom_name );
-        //$("#bom_info", opener.document).hide();
-        //$("#ori_count", opener.document).text(ori_count);
-        $("input[name=ori_idx]", opener.document).val(ori_idx);
-        $("input[name=oro_count]", opener.document).val(ori_count);
-        $("input[name=oro_1]", opener.document).val(ori_count);
-        $("input[name=oro_2]", opener.document).val('');
-        $("input[name=oro_3]", opener.document).val('');
-        $("input[name=oro_4]", opener.document).val('');
-        $("input[name=oro_5]", opener.document).val('');
-        $("input[name=oro_6]", opener.document).val('');
         $("input[name=bom_idx]", opener.document).val( bom_idx );
+        $("input[name=bom_part_no]", opener.document).val( bom_part_no );
+        $("input[name=mtr_name]", opener.document).val( bom_name );
+        $("input[name=mtr_type]", opener.document).val( bom_type );
+        $("input[name=mtr_price]", opener.document).val( bom_price );
+    <?php } else { ?>
+        $("input[name=bom_idx]", opener.document).val( bom_idx );
+        $("input[name=bom_part_no]", opener.document).val( bom_part_no );
         $("input[name=bom_name]", opener.document).val( bom_name );
-    <?php
-    }
-    ?>
+        $("input[name=bom_type]", opener.document).val( bom_type );
+        $("input[name=bom_price]", opener.document).val( bom_price );
+    <?php } ?>
 
     window.close();
 });

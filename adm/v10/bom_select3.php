@@ -6,8 +6,6 @@ include_once('./_common.php');
 if($member['mb_level']<4)
 	alert_close('접근할 수 없는 메뉴입니다.');
 
-if(!$ord_idx)
-    alert_close('주문번호가 제대로 넘어오지 않았습니다.');
 
 $sql_common = " FROM {$g5['order_item_table']} AS ori
                     LEFT JOIN {$g5['bom_table']} AS bom ON bom.bom_idx = ori.bom_idx
@@ -19,7 +17,7 @@ $sql_common = " FROM {$g5['order_item_table']} AS ori
 
 
 $where = array();
-$where[] = " bom_status NOT IN ('trash','delete','del','cancel') AND bom.com_idx = '".$_SESSION['ss_com_idx']."' AND bom_type='product' AND ori.ord_idx = '".$ord_idx."' ";   // 디폴트 검색조건
+$where[] = " bom_status NOT IN ('trash','delete','del','cancel') AND bom.com_idx = '".$_SESSION['ss_com_idx']."' AND bom_type='product' ";   // 디폴트 검색조건
 
 // 카테고리 검색
 if ($sca != "") {
@@ -141,6 +139,7 @@ include_once('./_head.sub.php');
                     com_name="<?=$row['com_name']?>"
                     bom_price="<?=number_format($row['bom_price'])?>"
                     bom_price2 = "<?=$row['bom_price']?>"
+                    trm_com_barcode = "<?=$row['bom_ex_label']?>"
                 >선택</button>
             </td>
         </tr>
@@ -169,26 +168,17 @@ $('.btn_select').click(function(e){
     var com_name = $(this).attr('com_name');
     var bom_price = $(this).attr('bom_price');    // 
     var bom_price2 = $(this).attr('bom_price2');    // 
+    var trm_com_barcode = $(this).attr('trm_com_barcode');    // 
     
     <?php
     // BOM 구성
-    if($file_name=='order_out_form') {
+    if($file_name=='item_form') {
     ?>
-        //$("input[name=com_name]", opener.document).val( com_name );
-        //$("input[name=bom_idx]", opener.document).val( bom_idx );
-        //$("input[name=bom_name]", opener.document).val( bom_name );
-        //$("#bom_info", opener.document).hide();
-        //$("#ori_count", opener.document).text(ori_count);
-        $("input[name=ori_idx]", opener.document).val(ori_idx);
-        $("input[name=oro_count]", opener.document).val(ori_count);
-        $("input[name=oro_1]", opener.document).val(ori_count);
-        $("input[name=oro_2]", opener.document).val('');
-        $("input[name=oro_3]", opener.document).val('');
-        $("input[name=oro_4]", opener.document).val('');
-        $("input[name=oro_5]", opener.document).val('');
-        $("input[name=oro_6]", opener.document).val('');
         $("input[name=bom_idx]", opener.document).val( bom_idx );
-        $("input[name=bom_name]", opener.document).val( bom_name );
+        $("input[name=itm_name]", opener.document).val( bom_name );
+        $("input[name=itm_price]", opener.document).val( bom_price );
+        $("input[name=bom_part_no]", opener.document).val( bom_part_no );
+        $("input[name=itm_com_barcode]", opener.document).val( trm_com_barcode );
     <?php
     }
     ?>

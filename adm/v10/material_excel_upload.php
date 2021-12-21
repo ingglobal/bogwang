@@ -38,8 +38,12 @@ try {
             $rowData = $sheet -> rangeToArray("A" . $row . ":" . $highestColumn . $row, NULL, TRUE, FALSE);
             //날짜가 있는 셀에서 날짜만 추출한다.
             if($i == 0 && $row == 5){
-                $up_date = PHPExcel_Style_NumberFormat :: toFormattedString ($rowData[0][1], PHPExcel_Style_NumberFormat :: FORMAT_DATE_YYYYMMDD2);
+                $up_date_sub = PHPExcel_Style_NumberFormat :: toFormattedString ($rowData[0][1], PHPExcel_Style_NumberFormat :: FORMAT_DATE_YYYYMMDD2);
                 
+                if(preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$up_date_sub) && $up_date_sub){
+                    $up_date = $up_date_sub;
+                }
+
                 $mtrchk = sql_fetch(" SELECT COUNT(*) AS cnt FROM {$g5['material_table']} WHERE mtr_input_date = '{$up_date}' AND mtr_status NOT IN('delete','del','cancel','trash') ");
                 if($mtrchk['cnt']){
                     alert('이미 등록된 데이터가 있습니다. 엑셀파일로는 제품의 최초 등록만 가능합니다.');
@@ -158,6 +162,13 @@ foreach($conArr as $k => $v){
         $bom['bom_type'] = 'material';
         $bom['bom_price'] = $v['bom_price'];
     }
+    //해당 bom_idx 데이터가 있으면 가격정보를 업데이트 한다.
+    // else {
+    //     $bsql = " UPDATE {$g5['bom_table']} SET bom_price = '{{$v['bom_price']}}' WHERE com_idx = '{$_SESSION['ss_com_idx']}' AND bom_part_no = '{$k}' ";
+    //     sql_query($bsql);
+    //     $bom['bom_price'] = $v['bom_price'];
+    // }
+
     foreach($v['times'] as $tk => $tv){
         $sql = " INSERT INTO {$g5['material_table']} (`com_idx`,`bom_idx`,`bom_part_no`,`mtr_name`,`mtr_type`,`mtr_price`,`mtr_times`,`mtr_status`,`mtr_input_date`,`mtr_reg_dt`,`mtr_update_dt`) VALUES ";
         for($i=0;$i<$tv;$i++){

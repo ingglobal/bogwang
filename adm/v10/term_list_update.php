@@ -6,10 +6,10 @@ check_demo();
 
 auth_check($auth[$sub_menu],"w");
 
-// print_r2($trm_idx);
-// echo "<br>==========<br>";
-// print_r2($trm_status);
-// exit;
+//print_r2($trm_idx);
+//echo "<br>==========<br>";
+//print_r2($trm_status);
+//exit;
 
 //-- depth 설정 및 공백 체크
 $prev_depth = 0;
@@ -67,8 +67,9 @@ for($i=0;$i<sizeof($trm_name);$i++) {
         $trm_sort[$i] = $i;
 
     // 업체번호
-	$com_idx[$i] = $com_idx ? $com_idx : 0 ;
-
+	// $com_idx[$i] = $_SESSION['ss_com_idx'];
+	// echo $com_idx[$i]."<br>";
+	// exit;
 
 	//echo $trm_name[$i].'->'.$trm_depth[$i].":::";
 	//echo 'depth_array['.$trm_depth[$i].']카운트 -> '.$depth_array[$trm_depth[$i]].' | ';
@@ -82,9 +83,9 @@ for($i=0;$i<sizeof($trm_name);$i++) {
 	//-- 맨 처음 항목 입력 left=1, right=2 설정
 	if($i == 0) {
 		$sql = "INSERT INTO {$g5['term_table']} (trm_idx,trm_idx_parent,com_idx,trm_country,trm_name,trm_name2,trm_type,trm_taxonomy,trm_content,trm_sort,trm_left,trm_right,trm_more,trm_status,trm_reg_dt)
-					VALUES ('$trm_idx[$i]','".$idx_array[$trm_depth[$i]-1]."','$com_idx[$i]','ko_KR','$trm_name[$i]','$trm_name2[$i]','$trm_type[$i]','".$taxonomy."','$trm_content[$i]','$i', 1, 2, '".$trm_more[$i]."', '".$trm_status[$i]."', now())
+					VALUES ('$trm_idx[$i]','".$idx_array[$trm_depth[$i]-1]."','$com_idx','ko_KR','$trm_name[$i]','$trm_name2[$i]','$trm_type[$i]','".$taxonomy."','$trm_content[$i]','$i', 1, 2, '".$trm_more[$i]."', '".$trm_status[$i]."', now())
 					ON DUPLICATE KEY UPDATE trm_idx_parent = '".$idx_array[$trm_depth[$i]-1]."'
-                                            , com_idx = '$com_idx[$i]'
+                                            , com_idx = '$com_idx'
                                             , trm_name = '$trm_name[$i]'
                                             , trm_name2 = '$trm_name2[$i]'
                                             , trm_type = '$trm_type[$i]'
@@ -96,7 +97,7 @@ for($i=0;$i<sizeof($trm_name);$i++) {
                                             , trm_right = 2
 		";
 		sql_query($sql,1);
-		//echo $sql.'<br><br>';
+		echo $sql.'<br><br>';
 	}
 	else {
 
@@ -108,9 +109,9 @@ for($i=0;$i<sizeof($trm_name);$i++) {
 			sql_query("UPDATE {$g5['term_table']} SET trm_right = trm_right + 2 WHERE trm_right > @myLeft AND trm_taxonomy = '".$taxonomy."' ");
 			sql_query("UPDATE {$g5['term_table']} SET trm_left = trm_left + 2 WHERE trm_left > @myLeft AND trm_taxonomy = '".$taxonomy."' ");
 			$sql = "INSERT INTO {$g5['term_table']} (trm_idx, trm_idx_parent, com_idx, trm_country, trm_name, trm_name2, trm_type, trm_taxonomy, trm_content, trm_sort, trm_left, trm_right, trm_more, trm_status, trm_reg_dt)
-						VALUES ('$trm_idx[$i]','".$idx_array[$trm_depth[$i]-1]."','$com_idx[$i]','ko_KR','$trm_name[$i]','$trm_name2[$i]','$trm_type[$i]','".$taxonomy."','".$trm_content[$i]."','$i',@myLeft + 1,@myLeft + 2, '".$trm_more[$i]."', '".$trm_status[$i]."', now())
+						VALUES ('$trm_idx[$i]','".$idx_array[$trm_depth[$i]-1]."','$com_idx','ko_KR','$trm_name[$i]','$trm_name2[$i]','$trm_type[$i]','".$taxonomy."','".$trm_content[$i]."','$i',@myLeft + 1,@myLeft + 2, '".$trm_more[$i]."', '".$trm_status[$i]."', now())
 						ON DUPLICATE KEY UPDATE trm_idx_parent = '".$idx_array[$trm_depth[$i]-1]."'
-							, com_idx = '$com_idx[$i]'
+							, com_idx = '$com_idx'
 							, trm_name = '$trm_name[$i]'
 							, trm_name2 = '$trm_name2[$i]'
 							, trm_type = '$trm_type[$i]'
@@ -122,7 +123,7 @@ for($i=0;$i<sizeof($trm_name);$i++) {
 							, trm_right = @myLeft + 2
 			";
 			sql_query($sql,1);
-			//echo $sql.'<br><br>';
+			echo $sql.'<br><br>';
 		}
 		//-- leaf_node가 아니면 동 레벨 idx 참조해서 left, right 생성
 		else {
@@ -134,9 +135,9 @@ for($i=0;$i<sizeof($trm_name);$i++) {
 			sql_query("UPDATE {$g5['term_table']} SET trm_right = trm_right + 2 WHERE trm_right > @myRight AND trm_taxonomy = '".$taxonomy."' ");
 			sql_query("UPDATE {$g5['term_table']} SET trm_left = trm_left + 2 WHERE trm_left > @myRight AND trm_taxonomy = '".$taxonomy."' ");
 			$sql = "INSERT INTO {$g5['term_table']} (trm_idx, trm_idx_parent, com_idx, trm_country, trm_name, trm_name2, trm_type, trm_taxonomy, trm_content, trm_sort, trm_left, trm_right, trm_more, trm_status, trm_reg_dt)
-						VALUES ('$trm_idx[$i]','".$idx_array[$trm_depth[$i]-1]."','$com_idx[$i]','ko_KR','$trm_name[$i]','$trm_name2[$i]','$trm_type[$i]','".$taxonomy."','".$trm_content[$i]."','$i',@myRight + 1,@myRight + 2, '".$trm_more[$i]."', '".$trm_status[$i]."', now())
+						VALUES ('$trm_idx[$i]','".$idx_array[$trm_depth[$i]-1]."','$com_idx','ko_KR','$trm_name[$i]','$trm_name2[$i]','$trm_type[$i]','".$taxonomy."','".$trm_content[$i]."','$i',@myRight + 1,@myRight + 2, '".$trm_more[$i]."', '".$trm_status[$i]."', now())
 						ON DUPLICATE KEY UPDATE trm_idx_parent = '".$idx_array[$trm_depth[$i]-1]."'
-							, com_idx = '$com_idx[$i]'
+							, com_idx = '$com_idx'
 							, trm_name = '$trm_name[$i]'
 							, trm_name2 = '$trm_name2[$i]'
 							, trm_type = '$trm_type[$i]'

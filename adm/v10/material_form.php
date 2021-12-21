@@ -41,6 +41,8 @@ for ($i=0;$i<sizeof($check_array);$i++) {
 $html_title = ($w=='')?'추가':'수정'; 
 $g5['title'] = '자재정보 '.$html_title;
 include_once ('./_head.php');
+
+// print_r3(${$pre});
 ?>
 <style>
     .bop_price {font-size:0.8em;color:#a9a9a9;margin-left:10px;}
@@ -59,7 +61,7 @@ include_once ('./_head.php');
 <input type="hidden" name="<?=$pre?>_idx" value="<?php echo ${$pre."_idx"} ?>">
 <input type="hidden" name="sca" value="<?php echo $sca ?>">
 
-<div class="local_desc01 local_desc" style="display:no ne;">
+<div class="local_desc01 local_desc" style="display:none;">
     <p>가격 변경 이력을 관리합니다. (가격 변동 날짜 및 가격을 지속적으로 기록하고 관리합니다.)</p>
     <p>가격이 변경될 미래 날짜를 지정해 두면 해당 날짜부터 변경될 가격이 적용됩니다.</p>
 </div>
@@ -75,95 +77,62 @@ include_once ('./_head.php');
     </colgroup>
 	<tbody>
     <tr>
-        <?php
-        $ar['id'] = 'mtr_name';
-        $ar['name'] = '품명';
-        $ar['type'] = 'input';
-        $ar['width'] = '100%';
-        $ar['value'] = ${$pre}[$ar['id']];
-        $ar['required'] = 'required';
-        echo create_td_input($ar);
-        unset($ar);
-        ?>
-        <?php
-        $ar['id'] = 'mtr_price';
-        $ar['name'] = '단가';
-        $ar['type'] = 'input';
-        $ar['width'] = '80px';
-        $ar['value'] = ${$pre}[$ar['id']];
-        $ar['unit'] = '원';
-        $ar['value_type'] = 'number';
-        $ar['form_script'] = 'onClick="javascript:chk_Number(this)"';
-        echo create_td_input($ar);
-        unset($ar);
-        ?>
+        <tr>
+            <th>품명</th>
+            <td>
+                <input type="hidden" name="bom_idx" value="<?=${$pre}['bom_idx']?>">
+                <input type="hidden" name="mtr_type" value="<?=${$pre}['mtr_type']?>">
+                <input type="text" name="mtr_name" value="<?=${$pre}['mtr_name']?>" required readonly class="frm_input required readonly" style="width:200px;">
+                <a href="javascript:" link="./material_select.php?file_name=<?=$g5['file_name']?>" id="btn_mtr" class="btn btn_01">자재선택</a>
+            </td>
+            <th>단가</th>
+            <td>
+                <?php echo help("단가수정은 BOM관리에서 해 주셔야 합니다.") ?>
+                <input type="text" name="mtr_price" readonly class="frm_input readonly" value="<?=number_format(${$pre}['mtr_price'])?>" style="width:80px;text-align:right;"> 원
+            </td>
+        </tr>
     </tr>
     <tr>
-        <?php
-        $ar['id'] = 'mtr_barcode';
-        $ar['name'] = '바코드';
-        $ar['type'] = 'input';
-        $ar['value'] = ${$pre}[$ar['id']];
-        $ar['width'] = '150px';
-        echo create_td_input($ar);
-        unset($ar);
-        ?>
-        <?php
-        $ar['id'] = 'mtr_lot';
-        $ar['name'] = 'LOT';
-        $ar['type'] = 'input';
-        $ar['width'] = '120px';
-        $ar['value'] = ${$pre}[$ar['id']];
-        echo create_td_input($ar);
-        unset($ar);
-        ?>
-    </tr>
-	<tr>
-		<th scope="row">품질</th>
-		<td>
-        	<input type="radio" name="mtr_defect" value="0" id="mtr_defect_0" <?=(${$pre}['mtr_defect'])?'':'checked'?>>
-            <label for="mtr_defect_0">양품</label>
-            <input type="radio" name="mtr_defect" value="1" id="mtr_defect_1" <?=(${$pre}['mtr_defect'])?'checked':''?>>
-            <label for="mtr_defect_1">불량품</label>
-
-            <select name="mtr_defect_type" id="mtr_defect_type" style="margin-left:20px;display:<?=(!${$pre}['mtr_defect'])?'none':''?>;">
-                <option value="">선택하세요</option>
-                <?=$g5['set_mtr_defect_type_options']?>
+        <th>파트넘버(P/NO)</th>
+        <td>
+            <input type="text" name="bom_part_no" value="<?=${$pre}['bom_part_no']?>" readonly class="frm_input readonly" style="width:200px;">
+        </td>
+        <th>입고차수</th>
+        <td>
+            <select name="mtr_times" class="frm_input">
+                <?=$g5['set_mtr_times_value_options']?>
             </select>
-            <script>$('select[name="mtr_defect_type"]').val('<?=${$pre}['mtr_defect_type']?>');</script>
-		</td>
-		<th scope="row">자재위치</th>
-		<td>
-            <select name="trm_idx_location" id="trm_idx_location">
-                <option value="">선택하세요</option>
-                <?=$location_form_options?>
-                <script>$('select[name="trm_idx_location"]').val('<?=${$pre}['trm_idx_location']?>');</script>
-            </select>
-		</td>
-    </tr>
-    <?php
-    $ar['id'] = 'mtr_memo';
-    $ar['name'] = '메모';
-    $ar['type'] = 'textarea';
-    $ar['value'] = ${$pre}['mtr_memo'];
-    $ar['colspan'] = 3;
-    echo create_tr_input($ar);
-    unset($ar);
-    ?>
-    <tr>
-        <th scope="row">히스토리</th>
-        <td colspan="3">
-            <?=${$pre}[$pre.'_history']?>
+            <script>
+                <?php if($w != ''){ ?>
+                $('select[name=mtr_times]').val(<?=${$pre}['mtr_times']?>);
+                <?php } ?>
+            </script>
         </td>
     </tr>
     <tr>
+        <th>입고일</th>
+        <td>
+            <input type="text" name="mtr_input_date" value="<?=${$pre}['mtr_input_date']?>" required readonly class="frm_input readonly required" style="width:80px;">
+        </td>
         <th scope="row">상태</th>
-        <td colspan="3">
+        <td>
             <select name="<?=$pre?>_status" id="<?=$pre?>_status"
-                <?php if (auth_check($auth[$sub_menu],"d",1)) { ?>onFocus='this.initialSelect=this.selectedIndex;' onChange='this.selectedIndex=this.initialSelect;'<?php } ?>>
+            <?php if (auth_check($auth[$sub_menu],"d",1)) { ?>onFocus='this.initialSelect=this.selectedIndex;' onChange='this.selectedIndex=this.initialSelect;'<?php } ?>>
                 <?=$g5['set_mtr_status_options']?>
             </select>
             <script>$('select[name="<?=$pre?>_status"]').val('<?=${$pre}[$pre.'_status']?>');</script>
+        </td>
+    </tr>
+    <tr>
+        <th>메모</th>
+        <td colspan="3">
+            <textarea name="mtr_memo" class="frm_input" rows="7"><?=${$pre}['mtr_memo']?></textarea>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">히스토리</th>
+        <td colspan="3">
+            <?=nl2br(${$pre}[$pre.'_history'])?>
         </td>
     </tr>
 	</tbody>
@@ -199,6 +168,14 @@ $(function() {
 
 });
 
+// 제품찾기 버튼 클릭
+$("#btn_mtr").click(function(e) {
+    e.preventDefault();
+    var href = $(this).attr('link');
+    winBomSelect = window.open(href, "winBomSelect", "left=300,top=150,width=650,height=600,scrollbars=1");
+    winBomSelect.focus();
+});
+
 // 숫자만 입력
 function chk_Number(object){
     $(object).keyup(function(){
@@ -207,7 +184,17 @@ function chk_Number(object){
 }
 
 function form01_submit(f) {
+    if(!f.mtr_name.value) {
+        alert('상품을 선태해 주세요.');
+        f.mtr_name.focus();
+        return false;
+    }
 
+    if(!f.mtr_input_date.value) {
+        alert('입고일을 선택해 주세요.');
+        f.mtr_input_date.focus();
+        return false;
+    }
     return true;
 }
 

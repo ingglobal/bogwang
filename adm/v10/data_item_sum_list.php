@@ -10,7 +10,7 @@ $g5_table_name = $g5[$table_name.'_table'];
 $fields = sql_field_names($g5_table_name);
 $pre = substr($fields[0],0,strpos($fields[0],'_'));
 $fname = preg_replace("/_list/","",$g5['file_name']); // _list을 제외한 파일명
-$qstr .= '&ser_mms_idx='.$ser_mms_idx.'&st_date='.$st_date.'&en_date='.$en_date; // 추가로 확장해서 넘겨야 할 변수들
+$qstr .= '&ser_trm_line='.$ser_trm_line.'&st_date='.$st_date.'&en_date='.$en_date; // 추가로 확장해서 넘겨야 할 변수들
 
 
 $g5['title'] = '일별생산합계';
@@ -18,6 +18,7 @@ include_once('./_top_menu_data.php');
 include_once('./_head.php');
 echo $g5['container_sub_title'];
 
+// update_item_sum_by_status(160379);
 
 $sql_common = " FROM {$g5_table_name} AS ".$pre."
                     LEFT JOIN {$g5['bom_table']} AS bom USING(bom_idx)
@@ -50,9 +51,9 @@ if ($en_date) {
     $where[] = " itm_date <= '".$en_date."' ";
 }
 
-// 설비번호 검색
-if ($ser_mms_idx) {
-    $where[] = " mms_idx = '".$ser_mms_idx."' ";
+// 라인번호 검색
+if ($ser_trm_line) {
+    $where[] = " trm_idx_line = '".$ser_trm_line."' ";
 }
 
 // 최종 WHERE 생성
@@ -87,12 +88,12 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 // 각 항목명 및 항목 설정값 정의, 형식: 항목명, colspan, rowspan, 정렬링크여부(타이틀클릭)
 $items1 = array(
     "itm_idx"=>array("번호",0,0,1)
-    ,"mms_idx"=>array("설비번호",0,0,0)
-    ,"imp_idx"=>array("IMP",0,0,0)
-    ,"itm_shift"=>array("교대",0,0,0)
     ,"bom_idx"=>array("품명",0,0,0)
-    ,"itm_defect"=>array("불량여부",0,0,0)
-    ,"itm_defect_type"=>array("불량타입",0,0,0)
+    ,"bom_part_no"=>array("파트번호",0,0,0)
+    ,"trm_idx_line"=>array("라인",0,0,0)
+    ,"itm_shift"=>array("구간",0,0,0)
+    ,"itm_price"=>array("단가",0,0,0)
+    ,"itm_status"=>array("상태",0,0,0)
     ,"itm_count"=>array("생산량",0,0,0)
     ,"itm_count_sum"=>array("비교",0,0,0)
     ,"itm_date"=>array("날짜",0,0,1)
@@ -106,26 +107,27 @@ $items1 = array(
 
 <form id="fsearch" name="fsearch" class="local_sch01 local_sch" onsubmit="return sch_submit(this);" method="get">
 <label for="sfl" class="sound_only">검색대상</label>
-<select name="ser_mms_idx" id="ser_mms_idx">
-    <option value="">설비전체</option>
+<select name="ser_trm_line" id="ser_trm_line">
+    <option value="">설비라인</option>
     <?php
-    // 해당 범위 안의 모든 설비를 select option으로 만들어서 선택할 수 있도록 한다.
-    // Get all the mms_idx values to make them optionf for selection.
-    $sql2 = "SELECT mms_idx, mms_name
-            FROM {$g5['mms_table']}
-            WHERE com_idx = '".$_SESSION['ss_com_idx']."'
-            ORDER BY mms_idx       
+    // 설비라인
+    $sql2 = "SELECT trm_idx, trm_name
+            FROM {$g5['term_table']}
+            WHERE trm_status = 'ok'
+                AND com_idx = '".$_SESSION['ss_com_idx']."'
+                AND trm_taxonomy = 'line'
+            ORDER BY trm_left
     ";
     // echo $sql2.'<br>';
     $result2 = sql_query($sql2,1);
     for ($i=0; $row2=sql_fetch_array($result2); $i++) {
         // print_r2($row2);
-        echo '<option value="'.$row2['mms_idx'].'" '.get_selected($ser_mms_idx, $row2['mms_idx']).'>'.$row2['mms_name'].'</option>';
-        $mms_name[$row2['mms_idx']] = $row2['mms_name'];    // 아래쪽에서 사용하기 위해서 변수 설정
+        echo '<option value="'.$row2['trm_idx'].'" '.get_selected($ser_trm_line, $row2['trm_idx']).'>'.$row2['trm_name'].'</option>';
+        $line_name[$row2['trm_idx']] = $row2['trm_name'];    // 아래쪽에서 사용하기 위해서 변수 설정
     }
     ?>
 </select>
-<script>$('select[name=ser_mms_idx]').val("<?=$ser_mms_idx?>").attr('selected','selected');</script>
+<script>$('select[name=ser_trm_line]').val("<?=$ser_trm_line?>").attr('selected','selected');</script>
 
 <input type="text" name="st_date" value="<?=$st_date?>" id="st_date" class="frm_input" autocomplete="off" style="width:80px;" placeholder="검색시작일">
 ~
@@ -134,7 +136,7 @@ $items1 = array(
 <select name="sfl" id="sfl">
     <option value="">검색항목</option>
     <?php
-    $skips = array('com_idx','mms_idx');
+    $skips = array('com_idx','mms_idx','bom_part_no');
     if(is_array($items1)) {
         foreach($items1 as $k1 => $v1) {
             if(in_array($k1,$skips)) {continue;}
@@ -142,6 +144,7 @@ $items1 = array(
         }
     }
     ?>
+    <option value="itm.bom_part_no" <?=get_selected($sfl, 'itm.bom_part_no')?>>파트번호</option>
 </select>
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
@@ -206,18 +209,17 @@ function sch_submit(f){
     <?php
     for ($i=0; $row=sql_fetch_array($result); $i++) {
         // print_r2($row);
-        $row['mms'] = sql_fetch(" SELECT mms_name FROM {$g5['mms_table']} WHERE mms_idx = '".$row['mms_idx']."' ");
         
         // 합산 추출
-        $row['st_dt'] = strtotime($row['itm_date'].' 00:00:00');
-        $row['en_dt'] = strtotime($row['itm_date'].' 23:59:59');
         $sql1 = "SELECT COUNT(itm_idx) AS itm_count_sum
-                FROM {$g5['item_table']}
+                FROM {$g5['item_table']} AS itm
+                    LEFT JOIN g5_1_order_out_practice AS oop ON oop.oop_idx = itm.oop_idx
+                    LEFT JOIN g5_1_order_practice AS orp ON orp.orp_idx = oop.orp_idx
                 WHERE itm_date = '".$row['itm_date']."'
+                    AND trm_idx_line = '".$row['trm_idx_line']."'
                     AND itm_shift = '".$row['itm_shift']."'
-                    AND bom_part_no = '".$row['bom_part_no']."'
-                    AND itm_defect = '".$row['itm_defect']."'
-                    AND itm_defect_type = '".$row['itm_defect_type']."'
+                    AND oop.bom_idx = '".$row['bom_idx']."'
+                    AND itm_status = '".$row['itm_status']."'
         ";
         // echo $sql1.'<br>';
         $sum1 = sql_fetch($sql1,1);
@@ -252,8 +254,8 @@ function sch_submit(f){
                     $list[$k1] = '<span class="font_size_8">'.date("y-m-d H:i:s",$row[$k1]).'</span>';
 //                    $list[$k1] = substr($row[$k1],0,10);
                 }
-                else if($k1=='mms_idx') {
-                    $list[$k1] = $mms_name[$row['mms_idx']];
+                else if($k1=='trm_idx_line') {
+                    $list[$k1] = $line_name[$row['trm_idx_line']];
                 }
                 else if($k1=='itm_count') {
                     $list[$k1] = number_format($row[$k1]);
@@ -282,7 +284,6 @@ function sch_submit(f){
 
 <div class="btn_fixed_top">
     <?php if(!auth_check($auth[$sub_menu],"d",1)) { ?>
-    <input type="submit" name="act_button" value="Chart" onclick="document.pressed=this.value" class="btn_02 btn">
     <input type="submit" name="act_button" value="일괄입력" onclick="document.pressed=this.value" class="btn_02 btn">
     <input type="submit" name="act_button" value="테스트입력" onclick="document.pressed=this.value" class="btn_03 btn">
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn_02 btn" style="display:none;">
@@ -369,7 +370,7 @@ function form01_submit(f)
 
 	if(document.pressed == "일괄입력") {
         if(confirm('하루치(1일) 데이타를 입력합니다. 창을 닫지 마세요. 입력을 시작합니다.')) {
-            winDataInsert = window.open('<?=G5_USER_ADMIN_URL?>/convert/data_run1.php', "winDataInsert", "left=100,top=100,width=520,height=600,scrollbars=1");
+            winDataInsert = window.open('<?=G5_USER_ADMIN_URL?>/convert/data_item1.php', "winDataInsert", "left=100,top=100,width=520,height=600,scrollbars=1");
             winDataInsert.focus();
             return false;
         }
@@ -377,7 +378,7 @@ function form01_submit(f)
 	}
 
     if(document.pressed == "테스트입력") {
-		window.open('<?=G5_URL?>/device/output/form.php');
+		window.open('<?=G5_URL?>/device/itm_ing/form.php');
         return false;
 	}
 

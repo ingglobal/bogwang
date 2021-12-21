@@ -59,7 +59,7 @@ for($i=0;$row=sql_fetch_array($result);$i++){
             com_idx = '{$_SESSION['ss_com_idx']}'
             ,bom_idx = '{$row['bom_idx']}'
             ,moi_idx = ''
-            ,orp_idx = ''
+            ,oop_idx = ''
             ,itm_idx = ''
             ,bom_part_no = '{$row['bom_part_no']}'
             ,mtr_name = '{$row['bom_name']}'

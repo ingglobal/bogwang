@@ -33,7 +33,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 <section id="anc_cf_default">
 	<h2 class="h2_frm">기본설정</h2>
 	<?php echo $pg_anchor ?>
-	
+
 	<div class="tbl_frm01 tbl_wrap">
 		<table>
 		<caption>기본설정</caption>
@@ -445,6 +445,20 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
 			</td>
 		</tr>
 		<tr>
+			<th scope="row">고객처재고상태</th>
+			<td colspan="3">
+				<?php echo help('pending=대기,ok=완료,cancel=취소,trash=삭제'); ?>
+				<input type="text" name="set_gst_status" value="<?php echo $g5['setting']['set_gst_status']; ?>" class="frm_input" style="width:70%;">
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">자재입고차수</th>
+			<td colspan="3">
+				<?php echo help('1=1차,2=2차,3=3차,4=4차,5=5차,6=6차,7=7차,8=8차,9=9차,10=10차'); ?>
+				<input type="text" name="set_mtr_times" value="<?php echo $g5['setting']['set_mtr_times']; ?>" class="frm_input" style="width:70%;">
+			</td>
+		</tr>
+		<tr>
 			<th scope="row">자재상태</th>
 			<td colspan="3">
 				<?php echo help('stock=재고,repairing=수리중,repairstock=수리완료재고,scrap=폐기,pendign=불출대기,used=사용완료,trash=삭제'); ?>
@@ -459,9 +473,16 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
 			</td>
 		</tr>
 		<tr>
+			<th scope="row">완제품생산시간대</th>
+			<td colspan="3">
+				<?php echo help('1=시간1,2=시간2,3=시간3,4=시간4,5=시간5,6=시간6,7=시간7,8=시간8,9=시간9,10=시간10'); ?>
+				<input type="text" name="set_itm_shift2" value="<?php echo $g5['setting']['set_itm_shift2']; ?>" class="frm_input" style="width:70%;">
+			</td>
+		</tr>
+		<tr>
 			<th scope="row">완제품상태</th>
 			<td colspan="3">
-				<?php echo help('pending=대기,ing=생산중,finish=생산완료,delivery=출고완료,return=반품,refund=환불,scrap=폐기,trash=삭제'); ?>
+				<?php echo help('pending=대기,ing=생산중,finish=생산완료,return=반품,refund=환불,scrap=폐기,trash=삭제'); ?>
 				<input type="text" name="set_itm_status" value="<?php echo $g5['setting']['set_itm_status']; ?>" class="frm_input" style="width:70%;">
 			</td>
 		</tr>
@@ -490,7 +511,7 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
             <tr>
 			<th scope="row">생산시간구간</th>
 			<td colspan="3">
-				<?php echo help('1=05:01:00-10:09:59,2=10:10:00-12:59:59,3=13:00:00-15:09:59,4=15:10:00-17:09:59,5=17:10:00-19:09:59,6=19:10:00-21:09:59,7=21:10:00-23:09:59,8=23:10:00-01:09:59,9=01:09:00-03:09:59,10=03:10:00-05:00:59'); ?>
+				<?php echo help('01=05:10:00-10:09:59,02=10:10:00-12:59:59,03=13:00:00-15:09:59,04=15:10:00-17:09:59,05=17:10:00-19:09:59,06=19:10:00-21:09:59,07=21:10:00-23:09:59,081=23:10:00-23:59:59,082=00:00:00-01:09:59,09=01:10:00-03:09:59,10=03:10:00-05:09:59'); ?>
 				<input type="text" name="set_itm_shift" value="<?php echo $g5['setting']['set_itm_shift']; ?>" class="frm_input" style="width:70%;">
 			</td>
 		</tr>
@@ -500,7 +521,7 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
 </section>
 
 
-    
+
 <section id="anc_cf_message">
     <h2 class="h2_frm">메시지설정</h2>
     <?php echo $pg_anchor; ?>

@@ -13,45 +13,38 @@ if (!count($_POST['chk'])) {
 auth_check($auth[$sub_menu], 'w');
 
 check_admin_token();
-
+//print_r2($_POST);exit;
 if ($_POST['act_button'] == "선택수정") {
-
-    for ($i=0; $i<count($_POST['chk']); $i++)
-    {
-        // 실제 번호를 넘김
-        $k = $_POST['chk'][$i];
+    foreach($_POST['chk'] as $mtr_idx_v) {
 
         // 천단위 제거
-        $_POST['mtr_price'][$k] = preg_replace("/,/","",$_POST['mtr_price'][$k]);
-        $_POST['mtr_lead_time'][$k] = preg_replace("/,/","",$_POST['mtr_lead_time'][$k]);
+        $_POST['mtr_price'][$mtr_idx_v] = preg_replace("/,/","",$_POST['mtr_price'][$mtr_idx_v]);
 
-        $sql = "UPDATE {$g5['material_table']} SET
-                    mtr_barcode = '".sql_real_escape_string($_POST['mtr_barcode'][$k])."',
-                    mtr_lot = '".$_POST['mtr_lot'][$k]."',
+        if($_POST['mtr_status'] == 'trash') {
+            $history = " CONCAT(mtr_history,'\n삭제 by ".$member['mb_name'].", ".G5_TIME_YMDHIS."') ";
+        }
+        else {
+            $history = " CONCAT(mtr_history,'\n".$_POST['mtr_status'][$mtr_idx_v]."|".G5_TIME_YMDHIS."') ";
+        }
+        $sql = " UPDATE {$g5['material_table']} SET
+                    mtr_status = '".$_POST['mtr_status'][$mtr_idx_v]."',
+                    mtr_history = ".$history.",
                     mtr_update_dt = '".G5_TIME_YMDHIS."'
-                WHERE mtr_idx = '".$_POST['mtr_idx'][$k]."'
+                WHERE mtr_idx = '".$mtr_idx_v."'
         ";
-        // echo $sql.'<br>';
+        //echo $sql.'<br>';
         sql_query($sql,1);
-    
     }
-
+    //exit;
 } else if ($_POST['act_button'] == "선택삭제") {
-
-    for ($i=0; $i<count($_POST['chk']); $i++)
-    {
-        // 실제 번호를 넘김
-        $k = $_POST['chk'][$i];
-
-        // 
-        $sql = "UPDATE {$g5['material_table']} SET
+    foreach($_POST['chk'] as $mtr_idx_v){
+        $sql = " UPDATE {$g5['material_table']} SET
                     mtr_status = 'trash'
                     , mtr_history = CONCAT(mtr_history,'\n삭제 by ".$member['mb_name'].", ".G5_TIME_YMDHIS."')
-                WHERE mtr_idx = '".$mb['mtr_idx']."'
+                WHERE mtr_idx = '".$mtr_idx_v."'
         ";
         sql_query($sql,1);
     }
-
 }
 
 if ($msg)

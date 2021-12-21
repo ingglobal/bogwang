@@ -578,7 +578,7 @@ SELECT bom.bom_idx, com_idx_customer, bom.bom_name, bom_part_no, bom_price, bom_
 FROM g5_1_bom_item AS bit1 
   JOIN g5_1_bom_item AS bit2
   LEFT JOIN g5_1_bom AS bom ON bom.bom_idx = bit2.bom_idx_child
-WHERE bit1.bom_idx = '300' AND bit2.bom_idx = '300'
+WHERE bit1.bom_idx = '1083' AND bit2.bom_idx = '1083'
   AND bit1.bit_num = bit2.bit_num AND bit2.bit_reply LIKE CONCAT(bit1.bit_reply,'%')
 GROUP BY bit1.bit_num, bit1.bit_reply
 ORDER BY bit1.bit_num DESC, bit1.bit_reply
@@ -590,3 +590,49 @@ SELECT * FROM g5_1_item
 WHERE bom_part_no = '88700-J9110PUR' AND itm_status = 'finish' ORDER BY itm_idx LIMIT 100
 
 
+<<<<<<< HEAD
+=======
+SELECT bom_idx,com_idx,bct_id,bom_name,bom_part_no FROM g5_1_bom
+WHERE com_idx = '11'
+    AND bom_type = 'product'
+    AND bom_status = 'ok'
+ORDER BY RAND() LIMIT 1
+
+// itme_sum
+SELECT itm_date, itm_shift, itm_status
+  , COUNT(itm_idx) AS itm_count_sum
+FROM g5_1_item
+WHERE itm_status NOT IN ('trash','delete')
+      AND itm_date != '0000-00-00'
+GROUP BY itm_date, itm_shift, itm_status
+ORDER BY itm_date ASC, itm_shift, itm_status
+
+
+SELECT itm.com_idx, itm_date, itm_shift, trm_idx_line, bom_idx, bom_part_no, itm_price
+, COUNT(itm_idx) AS itm_count
+FROM g5_1_item AS itm
+    LEFT JOIN g5_1_order_practice AS orp USING(orp_idx)
+WHERE itm_status NOT IN ('trash','delete')
+    AND itm_date != '0000-00-00'
+GROUP BY itm_date, trm_idx_line, itm_shift, itm_status
+ORDER BY itm_date ASC, trm_idx_line, itm_shift, itm_status
+
+// now, let's get the product count for defect and defect_type respectively
+SELECT itm.com_idx, itm_date, itm_shift, trm_idx_line, bom_idx, bom_part_no, itm_price, itm_status
+, COUNT(itm_idx) AS itm_count
+FROM g5_1_item AS itm
+    LEFT JOIN g5_1_order_practice AS orp USING(orp_idx)
+WHERE itm_status NOT IN ('trash','delete')
+    AND itm_date != '0000-00-00'
+GROUP BY itm_date, trm_idx_line, itm_shift, bom_idx, itm_status
+ORDER BY itm_date ASC, trm_idx_line, itm_shift, bom_idx, itm_status
+
+
+// itm_price update
+UPDATE g5_1_item AS itm SET
+itm_price = (SELECT bom_price FROM g5_1_bom WHERE bom_idx = itm.bom_idx)
+
+
+delete FROM `g5_1_item` WHERE itm_reg_dt > '2021-12-14 00:00:00';
+delete FROM `g5_1_item_sum` WHERE itm_date > '2021-12-13';
+>>>>>>> ef744c6ce64cb64639cb1b12db60128a5b0d7461
