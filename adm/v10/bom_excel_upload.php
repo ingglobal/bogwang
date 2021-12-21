@@ -150,7 +150,7 @@ try {
     // 업로드한 PHP 파일을 읽어온다.
 	$objPHPExcel = PHPExcel_IOFactory::load($filename);
 	$sheetsCount = $objPHPExcel -> getSheetCount();
-
+    
 	// 시트Sheet별로 읽기
     $allData = array();
 	for($i = 0; $i < $sheetsCount; $i++) {
