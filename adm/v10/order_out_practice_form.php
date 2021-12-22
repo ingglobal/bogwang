@@ -106,11 +106,11 @@ else if($w == 'u' || $w == 'c'){
 }
 //print_r3($g5['set_oop_status_value']);
 
-$bom = sql_fetch(" SELECT bom_name FROM {$g5['bom_table']} WHERE bom_idx = '".${$pre}['bom_idx']."' ");
+$bom = sql_fetch(" SELECT bom_name,bom_part_no FROM {$g5['bom_table']} WHERE bom_idx = '".${$pre}['bom_idx']."' ");
 
 $html_title = ($w=='')?'추가':'수정';
 $html_title = ($w=='c')?'복제':$html_title;
-$g5['title'] = '(제품별)출하생산계획 '.$html_title.' - '.$bom['bom_name'];
+$g5['title'] = '(제품별)출하생산계획 '.$html_title.' - '.$bom['bom_name'].'['.$bom['bom_part_no'].']';
 
 include_once('./_head.php');
 ?>

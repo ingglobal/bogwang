@@ -147,8 +147,8 @@ $qstr .= '&sca='.$sca.'&ser_bom_type='.$ser_bom_type; // 추가로 확장해서 
         </th>
         <th scope="col"><?php echo subject_sort_link('bom_name') ?>품명</a></th>
         <th scope="col">파트넘버</th>
-        <th scope="col">거래처</th>
-        <th scope="col">메이커</th>
+        <th scope="col">고객처</th>
+        <th scope="col">공급처</th>
         <th scope="col">카테고리</th>
         <th scope="col">단가</th>
         <th scope="col">재료비</th>
@@ -164,6 +164,7 @@ $qstr .= '&sca='.$sca.'&ser_bom_type='.$ser_bom_type; // 추가로 확장해서 
     <tbody>
     <?php
     for ($i=0; $row=sql_fetch_array($result); $i++) {
+        //print_r2($row);
         if($row['bct_name']){
             $cat_tree = category_tree_array($row['bct_id']);
             $row['bct_name_tree'] = '';
@@ -172,6 +173,8 @@ $qstr .= '&sca='.$sca.'&ser_bom_type='.$ser_bom_type; // 추가로 확장해서 
                 $row['bct_name_tree'] .= ($k == 0) ? $cat_str['bct_name'] : ' > '.$cat_str['bct_name'];
             }
         }
+        $com_p = get_table_meta('company','com_idx',$row['com_idx_provider']);
+        $com_c = get_table_meta('company','com_idx',$row['com_idx_customer']);
         // bom_item 에서 뽑아야 하는 제품만 (완재품, 반제품)
         if(in_array($row['bom_type'], $g5['set_bom_type_displays'])) {
             $sql1 = "SELECT bom.bom_idx, com_idx_customer, bom.bom_name, bom_part_no, bom_price, bom_status, com_name
@@ -226,8 +229,8 @@ $qstr .= '&sca='.$sca.'&ser_bom_type='.$ser_bom_type; // 추가로 확장해서 
             <input type="text" name="bom_name[<?php echo $i; ?>]" value="<?php echo htmlspecialchars2(cut_str($row['bom_name'],250, "")); ?>" required class="tbl_input required" style="width:250px;">
         </td>
         <td class="td_bom_part_no"><?=$row['bom_part_no']?></td><!-- 파트넘버 -->
-        <td class="td_com_name"><?=$row['com_name']?></td><!-- 거래처 -->
-        <td class="td_bom_maker"><?=$row['bom_maker']?></td><!-- 메이커 -->
+        <td class="td_com_name"><?=$com_c['com_name']?></td><!-- 고객처/공급처 -->
+        <td class="td_bom_maker"><?=$com_p['com_name']?></td><!-- 메이커 -->
         <td class="td_bct_name"><?=$row['bct_name_tree']?></td><!-- 카테고리 -->
         <td class="td_bom_price">
             <label for="price_<?php echo $i; ?>" class="sound_only">단가</label>
