@@ -202,6 +202,7 @@ $('.data_blank').on('click',function(e){
         </th>
         <th scope="col">ID</th>
         <th scope="col">품명</th>
+        <th scope="col">P/NO</th>
         <th scope="col">수주ID</th>
         <th scope="col">생산계획ID</th>
         <th scope="col">(수주일)<br>생산일</th>
@@ -233,6 +234,8 @@ $('.data_blank').on('click',function(e){
         //$s_copy = '<a href="./order_out_practice_form.php?'.$qstr.'&w=c&oop_idx='.$row['oop_idx'].'" class="btn btn_03" style="margin-right:5px;">복제</a>';
 
         $bg = 'bg'.($i%2);
+
+        $bom = get_table_meta('bom','bom_idx',$row['bom_idx']);
     ?>
 
     <tr class="<?php echo $bg; ?>" tr_id="<?php echo $row['orp_idx'] ?>">
@@ -258,6 +261,7 @@ $('.data_blank').on('click',function(e){
             echo $bom_name;
             ?>
         </td>
+        <td class="td_bom_part_no"><?=$bom['bom_part_no']?></td>
         <td class="td_ord_idx"><a href="./order_out_practice_list.php?sfl=oop.ord_idx&stx=<?=$row['ord_idx']?>"><?=$row['ord_idx']?></a></td>
         <td class="td_orp_idx"><a href="./order_out_practice_list.php?sfl=oop.orp_idx&stx=<?=$row['orp_idx']?>"><?=$row['orp_idx']?></a></td>
         <td class="td_orp_start_date">
