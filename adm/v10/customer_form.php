@@ -20,7 +20,7 @@ if ($w == '') {
     $html_title = '추가';
     
     // 권한이 없는 경우
-    if(auth_check($auth[$sub_menu],"d",1)) {
+    if(auth_check($auth[$sub_menu],"w",1)) {
         $style_mb_id = 'background-color:#dadada !important;';
         $style_mb_id_saler = 'background-color:#dadada !important;';
         $style_mb_name = 'background-color:#dadada !important;';
@@ -65,7 +65,7 @@ else if ($w == 'u') {
 	}
 	
 	// 영업자 정보 변경 불가항목!
-	if($w=='u' && auth_check($auth[$sub_menu],"d",1)) {
+	if($w=='u' && auth_check($auth[$sub_menu],"w",1)) {
 		$saler_readonly = 'readonly';
 		$saler_mark = '<span style="color:darkorange;">★</span>';
 	}
@@ -209,7 +209,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
 			<?php echo help("사업장 주소가 명확하지 않은 경우 [주소검색]을 통해 정확히 입력해 주세요."); ?>
 			<label for="com_zip" class="sound_only">우편번호</label>
 			<input type="text" name="com_zip" value="<?php echo $com['com_zip1'].$com['com_zip2']; ?>" id="com_zip" class="frm_input readonly" maxlength="6" style="width:65px;" <?=$saler_readonly?>>
-			<?php if(!auth_check($auth[$sub_menu],'d',1) || $w=='') { ?>
+			<?php if(!auth_check($auth[$sub_menu],'w',1) || $w=='') { ?>
 			<button type="button" class="btn_frmline" onclick="win_zip('form01', 'com_zip', 'com_addr1', 'com_addr2', 'com_addr3', 'com_addr_jibeon');">주소 검색</button>
 			<?php } ?>
 			<br>
@@ -258,7 +258,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
 		<td colspan="3">
 			<?php echo help("상태값은 관리자만 수정할 수 있습니다."); ?>
 			<select name="com_status" id="com_status"
-				<?php if (auth_check($auth[$sub_menu],"d",1)) { ?>onFocus='this.initialSelect=this.selectedIndex;' onChange='this.selectedIndex=this.initialSelect;'<?php } ?>>
+				<?php if (auth_check($auth[$sub_menu],"w",1)) { ?>onFocus='this.initialSelect=this.selectedIndex;' onChange='this.selectedIndex=this.initialSelect;'<?php } ?>>
 				<?=$g5['set_com_status_options']?>
 			</select>
 			<script>$('select[name="com_status"]').val('<?=$com['com_status']?>');</script>
