@@ -65,7 +65,7 @@ function update_item_sum($arr) {
                 LEFT JOIN {$g5['order_out_practice_table']} AS oop ON oop.oop_idx = itm.oop_idx
                 LEFT JOIN {$g5['order_practice_table']} AS orp ON orp.orp_idx = oop.orp_idx
             WHERE {$sql_where}
-                AND itm.com_idx = '".$_SESSION['ss_com_idx']."'
+                AND itm.com_idx = '".$arr['com_idx']."'
                 AND itm.bom_idx	= '".$arr['bom_idx']."'
     ";
     $sum = sql_fetch($sql,1);
@@ -77,7 +77,7 @@ function update_item_sum($arr) {
     $sql = "SELECT itm_idx
             FROM {$g5['item_sum_table']}
             WHERE {$sql_where}
-                AND com_idx = '".$_SESSION['ss_com_idx']."'
+                AND com_idx = '".$arr['com_idx']."'
                 AND bom_idx	= '".$arr['bom_idx']."'
     ";
     // echo $sql.'<br>';
@@ -96,7 +96,7 @@ function update_item_sum($arr) {
         $bom = get_table('bom', 'bom_idx', $arr['bom_idx']);
 
         $sql = " INSERT INTO {$g5['item_sum_table']} SET
-                    com_idx = '".$_SESSION['ss_com_idx']."'
+                    com_idx = '".$arr['com_idx']."'
                     , imp_idx = '".$arr['imp_idx']."'
                     , mms_idx = '".$arr['mms_idx']."'
                     , mmg_idx = '".$arr['mmg_idx']."'
@@ -116,6 +116,7 @@ function update_item_sum($arr) {
         $row['itm_idx'] = sql_insert_id();
     }
     // echo $sql.'<br>';
+    //sql_query(" INSERT INTO {$g5['meta_table']} SET mta_db_table ='extend', mta_db_id ='10', mta_key ='itm_ing', mta_value = '".addslashes($sql)."' ");
 
     return $row['itm_idx'];
 }

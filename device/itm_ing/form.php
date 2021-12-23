@@ -66,6 +66,7 @@ $mms_idx_array = array(7,8,9,10);
 	<tr><td>위치</td><td><input type="text" name="trm_idx_location" value="<?=rand(1,4)?>"></td></tr>
 	<tr><td>날짜</td><td><input type="text" name="itm_date" value="<?=date("y.m.d",time())?>"></td></tr>
 	<tr><td>시간</td><td><input type="text" name="itm_time" value="<?=date("H:i:s",time()-rand(0,86400))?>"></td></tr>
+	<tr><td>플래그</td><td><input type="text" name="itm_flag" value="test"></td></tr>
 	<!-- <tr><td>메시지</td><td><input type="text" name="itm_message" value="에러코드입니다."></td></tr> -->
 </table>
 <?php

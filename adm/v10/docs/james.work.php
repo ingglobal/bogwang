@@ -590,8 +590,6 @@ SELECT * FROM g5_1_item
 WHERE bom_part_no = '88700-J9110PUR' AND itm_status = 'finish' ORDER BY itm_idx LIMIT 100
 
 
-<<<<<<< HEAD
-=======
 SELECT bom_idx,com_idx,bct_id,bom_name,bom_part_no FROM g5_1_bom
 WHERE com_idx = '11'
     AND bom_type = 'product'
@@ -632,7 +630,5 @@ ORDER BY itm_date ASC, trm_idx_line, itm_shift, bom_idx, itm_status
 UPDATE g5_1_item AS itm SET
 itm_price = (SELECT bom_price FROM g5_1_bom WHERE bom_idx = itm.bom_idx)
 
-
 delete FROM `g5_1_item` WHERE itm_reg_dt > '2021-12-14 00:00:00';
 delete FROM `g5_1_item_sum` WHERE itm_date > '2021-12-13';
->>>>>>> ef744c6ce64cb64639cb1b12db60128a5b0d7461

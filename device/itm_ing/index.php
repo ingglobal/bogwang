@@ -1,5 +1,5 @@
 <?php
-// 크롬 요소검사 열고 확인하면 되겠습니다. 
+// 크롬 요소검사 열고 확인하면 되겠습니다.
 // print_r2 안 쓰고 print_r로 확인하는 게 좋습니다.
 header('Content-Type: application/json; charset=UTF-8');
 include_once('./_common.php');
@@ -23,7 +23,7 @@ else if($getData[0]['bom_part_no']) {
     $arr['itm_status'] = 'ing';
     $arr['itm_timestamp'] = strtotime(preg_replace('/\./','-',$arr['itm_date'])." ".$arr['itm_time']); // 1639579897
     $arr['itm_dt'] = date("Y-m-d H:i:s",$arr['itm_timestamp']);   // 2021-10-10 10:11:11
-    
+
     // $table_name = 'g5_1_item_'.$arr['mms_idx'];  // 향후 테이블 분리가 필요하면..
     $table_name = 'g5_1_item';
 
@@ -88,7 +88,7 @@ else if($getData[0]['bom_part_no']) {
     $itm = sql_fetch($sql_dta,1);
     // 정보 업데이트
     if($itm['itm_idx']) {
-        $sql = "UPDATE {$table_name} SET 
+        $sql = "UPDATE {$table_name} SET
                     {$sql_common}
                     , itm_update_dt = '".G5_TIME_YMDHIS."'
                 WHERE itm_idx = '".$itm['itm_idx']."'
@@ -100,9 +100,9 @@ else if($getData[0]['bom_part_no']) {
     }
     // 정보 입력
     else{
-        
+
         //print_r2($shif);
-        $sql = "INSERT INTO {$table_name} SET 
+        $sql = "INSERT INTO {$table_name} SET
                     {$sql_common}
                     , itm_reg_dt = '".$arr['itm_dt']."'
                     , itm_update_dt = '".$arr['itm_dt']."'
@@ -110,7 +110,7 @@ else if($getData[0]['bom_part_no']) {
         sql_query($sql,1);
         $itm['itm_idx'] = sql_insert_id();
         $result_arr['code'] = 200;
-        $result_arr['message'] = "Inserted OK!";        
+        $result_arr['message'] = "Inserted OK!";
     }
     // echo $sql.'<br>';
     $result_arr['itm_idx'] = $itm['itm_idx'];   // 고유번호
@@ -151,14 +151,19 @@ else if($getData[0]['bom_part_no']) {
     $result_arr['list'] = $list;
 
     // Statistics process / This is the first input, so you have to treet this directly once.
+    unset($ar);
+    $ar['com_idx'] = $bom['com_idx'];
     $ar['itm_date'] = $ingArr['workday'];
     $ar['trm_idx_line'] = $orp['trm_idx_line'];
     $ar['itm_shift'] = $ingArr['shift'];
     $ar['bom_idx'] = $oop['bom_idx'];
     $ar['itm_status'] = $arr['itm_status'];
     update_item_sum($ar);
+    //sql_query(" INSERT INTO {$g5['meta_table']} SET mta_db_table ='".$ar['itm_date']."', mta_db_id ='10', mta_key ='itm_ing', mta_value = '".json_encode($ar)."' ");
     unset($ar);
-	
+    // sql_query(" INSERT INTO {$g5['meta_table']} SET mta_db_table ='".$arr['itm_flag']."', mta_db_id ='10', mta_key ='itm_ing', mta_value = '".addslashes($arr)."' ");
+    //sql_query(" INSERT INTO {$g5['meta_table']} SET mta_db_table ='".$ar['itm_date']."', mta_db_id ='10', mta_key ='itm_ing', mta_value = '".json_encode($arr)."' ");
+
 }
 else {
 	$result_arr = array("code"=>599,"message"=>"error");
