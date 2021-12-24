@@ -182,7 +182,7 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
 		<td>
             <input type="hidden" name="com_idx_customer" value="<?=$bom['com_idx_customer']?>"><!-- 고객처번호 -->
 			<input type="text" name="com_name" value="<?php echo $com['com_name'] ?>" id="com_name" class="frm_input required" required readonly>
-            <a href="./customer_select.php?file_name=<?php echo $g5['file_name']?>" class="btn btn_02" id="btn_customer">고객처찾기</a>
+            <a href="javascript:" link="./customer_select.php?file_name=<?php echo $g5['file_name']?>" class="btn btn_02" id="btn_customer">고객처찾기</a>
 		</td>
     </tr>
     <tr>
@@ -195,7 +195,7 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
 		<td>
             <input type="hidden" name="com_idx_provider" value="<?=$bom['com_idx_provider']?>"><!-- 고객처번호 -->
 			<input type="text" name="com_name2" value="<?php echo $com2['com_name'] ?>" id="com_name2" class="frm_input required" required readonly>
-            <a href="./customer_select.php?file_name=<?php echo $g5['file_name']?>&provider=1" class="btn btn_02" id="btn_provider">공급처찾기</a>
+            <a href="jvaascript:" link="./customer_select.php?file_name=<?php echo $g5['file_name']?>&provider=1" class="btn btn_02" id="btn_provider">공급처찾기</a>
 		</td>
     </tr>
     <tr>
@@ -208,19 +208,7 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
         $ar['help'] = '구매단위를 숫자로 입력하세요.';
         $ar['width'] = '50px';
         $ar['unit'] = '개';
-        $ar['form_script'] = 'onClick="javascript:chk_Number(this)"';
-        echo create_td_input($ar);
-        unset($ar);
-        ?>
-        <?php
-        $ar['id'] = 'bom_lead_time';
-        $ar['name'] = '평균리드타임';
-        $ar['type'] = 'input';
-        $ar['help'] = '리드타임을 초단위로 입력하세요.(1일=86400)';
-        $ar['value'] = ${$pre}[$ar['id']];
-        $ar['width'] = '60px';
-        $ar['unit'] = '초';
-        $ar['value_type'] = 'number';
+        $ar['colspan'] = '3';
         $ar['form_script'] = 'onClick="javascript:chk_Number(this)"';
         echo create_td_input($ar);
         unset($ar);
@@ -426,8 +414,9 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
 $(function() {
     //코드형식에 맞는지 확인
     chk_Code(document.getElementById('bom_part_no'));
+    <?php if(${$pre}['bom_type'] == 'product'){ ?>
     chk_exCode(document.getElementById('bom_ex_label'));
-
+    <?php } ?>
 
     <?php if($w == 'u' && ${$pre}['bom_type'] == 'product'){ ?>
     var bom_file_cnt = $('.bom_file').length;
@@ -453,7 +442,7 @@ $(function() {
     // 거래처찾기 버튼 클릭
 	$("#btn_customer").click(function(e) {
 		e.preventDefault();
-        var href = $(this).attr('href');
+        var href = $(this).attr('link');
 		winCustomerSelect = window.open(href, "winCustomerSelect", "left=300,top=150,width=550,height=600,scrollbars=1");
         winCustomerSelect.focus();
 	});
@@ -461,7 +450,7 @@ $(function() {
     // 공급처찾기 버튼 클릭
     $("#btn_provider").click(function(e) {
         e.preventDefault();
-        var href = $(this).attr('href');
+        var href = $(this).attr('link');
         winProviderSelect = window.open(href, "winProviderSelect", "left=300,top=150,width=550,height=600,scrollbars=1");
         winProviderSelect.focus();
     });
@@ -561,14 +550,15 @@ function chk_Code(object){
     }
 }
 
-
+<?php if(${$pre}['bom_type'] == 'product'){ ?>
 function chk_exCode(object){
     var ex = /[\{\}\[\]\/?.,;:|\)*~`!^\+┼<>@\#$%&\'\"\\\(\=ㄱ-ㅎㅏ-ㅣ가-힣]*/g;
     var hx = /[A-Z0-9-_]{5,20}/;
+    
     //var pt = /^[^-_][a-zA-Z0-9]+[-_]?[a-zA-Z0-9]+[-_]?[a-zA-Z0-9]+[^-_]$/;
     //var hx = /^[^-_][a-zA-Z0-9]+[-][a-zA-Z0-9]+[-][a-zA-Z0-9]+[^-_]$/; //한국수지만의 패턴
     object.value = object.value.replace(ex,"");//-_제외한 특수문자,한글입력 불가
-    var str = object.value; 
+    var str = object.value;  
     
     if(hx.test(str)){
         var st = $.trim(str.toUpperCase());
@@ -589,6 +579,7 @@ function chk_exCode(object){
         }
     }
 }
+<?php } ?>
 
 function form01_submit(f) {
 

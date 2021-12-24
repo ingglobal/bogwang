@@ -375,6 +375,24 @@ $g5['write_default_fields'] = array(
 	,"wr_10" => "varchar(255) NOT NULL"
 );
 
+
+if (isset($_REQUEST['sst2']))  {
+    $sst2 = trim($_REQUEST['sst2']);
+    $sst2 = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*\s]/", "", $sst2);
+    if ($sst2)
+        $qstr .= '&amp;sst2=' . urlencode($sst2); // search sort (검색 정렬 필드)
+} else {
+    $sst2 = '';
+}
+
+if (isset($_REQUEST['sod2']))  { // search order (검색 오름, 내림차순)
+    $sod2 = preg_match("/^(asc|desc)$/i", $sod2) ? $sod2 : '';
+    if ($sod2)
+        $qstr .= '&amp;sod2=' . urlencode($sod2);
+} else {
+    $sod2 = '';
+}
+
 // 로그인을 할 때마다 로그 파일 삭제해야 용량을 확보할 수 있음 
 if(basename($_SERVER["SCRIPT_FILENAME"]) == 'login_check.php') {
 	// 지난시간을 초로 계산해서 적어주시면 됩니다.

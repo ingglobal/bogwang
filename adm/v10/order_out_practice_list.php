@@ -63,17 +63,21 @@ if ($where)
     $sql_search = ' WHERE '.implode(' AND ', $where);
 
 if (!$sst) {
-    $sst = "orp.orp_idx desc, oop.oop_idx desc";
-    $sod = "";
+    $sst = "orp.orp_idx";
+    $sod = "desc";
+}
+if (!$sst2) {
+    $sst2 = ", oop.oop_idx";
+    $sod2 = "desc";
 }
 
-$sql_order = " ORDER BY {$sst} {$sod} ";
+$sql_order = " ORDER BY {$sst} {$sod} {$sst2} {$sod2} ";
 $sql_group = "";//" GROUP BY oop.orp_idx ";
 $sql = " select count(*) as cnt {$sql_common} {$sql_search} ";
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
-$rows = 1000;//$config['cf_page_rows'];
+$rows = 20;//$config['cf_page_rows'];
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
@@ -186,6 +190,8 @@ $('.data_blank').on('click',function(e){
 <form name="form01" id="form01" action="./order_out_practice_list_update.php" onsubmit="return form01_submit(this);" method="post">
 <input type="hidden" name="sst" value="<?php echo $sst ?>">
 <input type="hidden" name="sod" value="<?php echo $sod ?>">
+<input type="hidden" name="sst2" value="<?php echo $sst2 ?>">
+<input type="hidden" name="sod2" value="<?php echo $sod2 ?>">
 <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
 <input type="hidden" name="stx" value="<?php echo $stx ?>">
 <input type="hidden" name="page" value="<?php echo $page ?>">

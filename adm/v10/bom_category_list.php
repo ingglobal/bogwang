@@ -40,7 +40,7 @@ $sql = " select count(*) as cnt {$sql_common} {$sql_search} ";
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
-$rows = 300;//$config['cf_page_rows'];
+$rows = 50;//$config['cf_page_rows'];
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
@@ -133,9 +133,9 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         else $s_add = '';
         $s_upd = '<a href="./bom_category_form.php?w=u&amp;bct_id='.$row['bct_id'].'&amp;'.$qstr.'" class="btn btn_02"><span class="sound_only">'.get_text($row['bct_name']).' </span>수정</a> ';
 
-        if ($is_admin == 'super')
+        if ($is_admin == 'super'){ //(auth_check($auth[$sub_menu],"w",1)) { //($is_admin == 'super')
             $s_del = '<a href="./bom_category_form_update.php?w=d&amp;bct_id='.$row['bct_id'].'&amp;'.$qstr.'" onclick="return delete_confirm(this);" class="btn btn_02"><span class="sound_only">'.get_text($row['bct_name']).' </span>삭제</a> ';
-
+        }
         // 해당 분류에 속한 제품의 수
         $sql1 = " SELECT COUNT(*) AS cnt FROM {$g5['bom_table']} WHERE bct_id = '{$row['bct_id']}' ";
         $row1 = sql_fetch($sql1,1);

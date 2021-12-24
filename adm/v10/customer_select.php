@@ -7,10 +7,11 @@ if($member['mb_level']<4)
 	alert_close('접근할 수 없는 메뉴입니다.');
 
 $where = array();
-$where[] = " com_level = 2 AND com_status NOT IN ('trash','delete') ";   // 디폴트 검색조건
+//$where[] = " com_level = 2 AND com_status NOT IN ('trash','delete','del') ";   // 디폴트 검색조건
+$where[] = " com_level >= 2 AND com_status NOT IN ('trash','delete','del') ";   // 디폴트 검색조건
 
 // 운영권한이 없으면 자기것만
-if (!$member['mb_manager_yn']) {
+if (false) { //(!$member['mb_manager_yn']) {
     $where[] = " mb_id_saler = '".$member['mb_id']."' ";
 }
 
@@ -95,7 +96,7 @@ $qstr1 = 'frm='.$frm.'&d='.$d.'&sch_field='.$sch_field.'&sch_word='.urlencode($s
         </select>
         <script>$('select[name=sch_field]').val('<?php echo $sch_field?>').attr('selected','selected')</script>
         <input type="text" name="sch_word" id="sch_word" value="<?php echo get_text($sch_word); ?>" class="frm_input required" required size="20">
-        <input type="submit" value="검색" class="btn_frmline btn btn_10">
+        <input type="submit" value="검색" class="btn btn_01">
         <a href="<?php echo $_SERVER['SCRIPT_NAME']?>?frm=<?php echo $_REQUEST['frm']?>&d=<?php echo $_REQUEST['d']?>" class="btn btn_b10">검색취소</a>
     </div>
     
@@ -145,7 +146,7 @@ $qstr1 = 'frm='.$frm.'&d='.$d.'&sch_field='.$sch_field.'&sch_word='.urlencode($s
     </div>
     </form>
 
-    <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr1.'&amp;page='); ?>
+    <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr1.'&amp;provider='.$provider.'&amp;page='); ?>
 
     <div class="win_btn ">
         <button type="button" onclick="window.close();" class="btn btn-secondary">닫기</button>

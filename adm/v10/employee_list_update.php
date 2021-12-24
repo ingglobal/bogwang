@@ -11,7 +11,6 @@ if (!count($_POST['chk'])) {
 // print_r2($_POST);
 // exit;
 auth_check($auth[$sub_menu], 'w');
-
 check_admin_token();
 
 if ($_POST['act_button'] == "선택수정") {

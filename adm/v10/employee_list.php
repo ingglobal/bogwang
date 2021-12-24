@@ -100,7 +100,7 @@ $colspan = 16;
 </div>
 
 
-<form name="fmemberlist" id="fmemberlist" action="./member_list_update.php" onsubmit="return fmemberlist_submit(this);" method="post">
+<form name="fmemberlist" id="fmemberlist" action="./employee_list_update.php" onsubmit="return fmemberlist_submit(this);" method="post">
 <input type="hidden" name="sst" value="<?php echo $sst ?>">
 <input type="hidden" name="sod" value="<?php echo $sod ?>">
 <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
@@ -181,8 +181,8 @@ $colspan = 16;
 
 <div class="btn_fixed_top">
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02" style="display:none;">
-    <?php if($member['mb_manager_yn']) { ?>
-    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
+    <?php if (!auth_check($auth[$sub_menu],'w')) { //($member['mb_manager_yn']) { ?>
+    <input type="submit" name="act_button" value="선택탈퇴" onclick="document.pressed=this.value" class="btn btn_02">
     <?php } ?>
     <?php if (!auth_check($auth[$sub_menu],'w')) { ?>
     <a href="./employee_form.php" id="member_add" class="btn btn_01">사원추가</a>
