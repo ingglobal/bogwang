@@ -153,8 +153,10 @@ $qstr .= '&sca='.$sca.'&ser_bom_type='.$ser_bom_type; // 추가로 확장해서 
         <th scope="col">단가</th>
         <th scope="col">재료비</th>
         <th scope="col">재료비율</th>
+        <!--
         <th scope="col">평균리드타임</th>
         <th scope="col">알림개수</th>
+        -->
         <th scope="col">타입</th>
         <th scope="col">관리</th>
     </tr>
@@ -242,6 +244,7 @@ $qstr .= '&sca='.$sca.'&ser_bom_type='.$ser_bom_type; // 추가로 확장해서 
         <td class="td_bom_profit"><!-- 마진율 -->
             <?=$row['bom_profit_ratio']?>
         </td>
+        <!--
         <td class="td_bom_lead_time">
             <label for="price_<?php echo $i; ?>" class="sound_only">평균리드타임</label>
             <input type="text" name="bom_lead_time[<?php echo $i; ?>]" value="<?=number_format($row['bom_lead_time'])?>" class="tbl_input sit_amt" style="width:50px;">
@@ -250,6 +253,7 @@ $qstr .= '&sca='.$sca.'&ser_bom_type='.$ser_bom_type; // 추가로 확장해서 
             <label for="bom_min_cnt_<?php echo $i; ?>" class="sound_only">알림개수</label>
             <input type="text" name="bom_min_cnt[<?php echo $i; ?>]" value="<?=number_format($row['bom_min_cnt'])?>" class="tbl_input sit_amt" style="width:50px;">
         </td>
+        -->
         <td class="td_bom_type"><?=$g5['set_bom_type_value'][$row['bom_type']]?></td><!-- 타입 -->
         <td class="td_mng">
             <?=($row['bom_type']!='material')?$s_bom:''?><!-- 자재가 아닌 경우만 BOM 버튼 -->
@@ -276,7 +280,7 @@ $qstr .= '&sca='.$sca.'&ser_bom_type='.$ser_bom_type; // 추가로 확장해서 
     <?php
     }
     if ($i == 0)
-        echo "<tr><td colspan='21' class=\"empty_table\">자료가 없습니다.</td></tr>";
+        echo "<tr><td colspan='11' class=\"empty_table\">자료가 없습니다.</td></tr>";
     ?>
     </tbody>
     </table>

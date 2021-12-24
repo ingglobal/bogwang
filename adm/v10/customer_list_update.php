@@ -16,17 +16,22 @@ if($w == 'u') {
         $k = $_POST['chk'][$i];
 		$com = sql_fetch(" SELECT * FROM {$g5['company_table']} WHERE com_idx = '".$_POST['com_idx'][$k]."' ");
 		$mb = get_member($com['mb_id']);
-
+        /*
         if (!$mb['mb_id']) {
-            ;//$msg .= $mb['mb_id'].' : 회원자료가 존재하지 않습니다.\\n';
+            $msg .= $mb['mb_id'].' : 회원자료가 존재하지 않습니다.\\n';
         } else if ($is_admin != 'super' && $mb['mb_level'] >= $member['mb_level']) {
-            ;//$msg .= $mb['mb_id'].' : 자신보다 권한이 높거나 같은 회원은 수정할 수 없습니다.\\n';
+            $msg .= $mb['mb_id'].' : 자신보다 권한이 높거나 같은 회원은 수정할 수 없습니다.\\n';
         } else {
 			$sql = " UPDATE {$g5['company_table']} SET
 						com_status = '{$_POST['com_status'][$k]}'
 					WHERE com_idx = '{$_POST['com_idx'][$k]}' ";
 			sql_query($sql,1);
         }
+        */
+        $sql = " UPDATE {$g5['company_table']} SET
+                    com_status = '{$_POST['com_status'][$k]}'
+                WHERE com_idx = '{$_POST['com_idx'][$k]}' ";
+        sql_query($sql,1);
     }
 
 }
@@ -38,7 +43,7 @@ else if($w == 'd') {
         $k = $_POST['chk'][$i];
 		$com = sql_fetch(" SELECT * FROM {$g5['company_table']} WHERE com_idx = '".$_POST['com_idx'][$k]."' ");
 		$mb = get_member($com['mb_id']);
-
+        /*
         if (!$mb['mb_id']) {
             $msg .= $mb['mb_id'].' : 회원자료가 존재하지 않습니다.\\n';
         } else if ($is_admin != 'super' && $mb['mb_level'] >= $member['mb_level']) {
@@ -62,6 +67,24 @@ else if($w == 'd') {
 			}
 			unset($pieces);unset($piece);
         }
+        */
+        // 레코드 삭제
+        $sql = " UPDATE {$g5['company_table']} SET com_status = 'trash' WHERE com_idx = '{$_POST['com_idx'][$k]}' ";
+        sql_query($sql,1);
+
+        // 연결 영업자 정보 업데이트
+        $pieces = explode(',', $com['mb_id_salers']);
+        foreach ($pieces as $piece) {
+            list($mb_1, $mb_saler_id, $mb_saler_name, $mb_saler_trm_idx) = explode('^', $piece);
+            if($mb_saler_id) {
+                company_member_update(array(
+                    "mb_id_saler"=>$mb_saler_id
+                    , "com_idx"=>$_POST['com_idx'][$k]
+                    , "cmm_status"=>"trash"
+                ));
+            }
+        }
+        unset($pieces);unset($piece);
     }
 }
 

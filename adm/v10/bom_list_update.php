@@ -46,7 +46,6 @@ if ($_POST['act_button'] == "선택수정") {
     }
 
 } else if ($_POST['act_button'] == "선택삭제") {
-
     for ($i=0; $i<count($_POST['chk']); $i++)
     {
         // 실제 번호를 넘김
@@ -56,7 +55,7 @@ if ($_POST['act_button'] == "선택수정") {
         $sql = "UPDATE {$g5['bom_table']} SET
                     bom_status = 'trash'
                     , bom_memo = CONCAT(bom_memo,'\n삭제 by ".$member['mb_name'].", ".G5_TIME_YMDHIS."')
-                WHERE bom_idx = '".$mb['bom_idx']."'
+                WHERE bom_idx = '".$_POST['bom_idx'][$k]."'
         ";
         sql_query($sql,1);
     }
