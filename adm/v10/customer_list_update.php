@@ -1,5 +1,5 @@
 <?php
-$sub_menu = "915150";
+$sub_menu = "915120";
 include_once('./_common.php');
 
 check_demo();
@@ -18,9 +18,9 @@ if($w == 'u') {
 		$mb = get_member($com['mb_id']);
 
         if (!$mb['mb_id']) {
-            $msg .= $mb['mb_id'].' : 회원자료가 존재하지 않습니다.\\n';
+            ;//$msg .= $mb['mb_id'].' : 회원자료가 존재하지 않습니다.\\n';
         } else if ($is_admin != 'super' && $mb['mb_level'] >= $member['mb_level']) {
-            $msg .= $mb['mb_id'].' : 자신보다 권한이 높거나 같은 회원은 수정할 수 없습니다.\\n';
+            ;//$msg .= $mb['mb_id'].' : 자신보다 권한이 높거나 같은 회원은 수정할 수 없습니다.\\n';
         } else {
 			$sql = " UPDATE {$g5['company_table']} SET
 						com_status = '{$_POST['com_status'][$k]}'

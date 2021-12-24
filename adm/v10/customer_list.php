@@ -100,7 +100,7 @@ $pending_count = $row['cnt'];
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
 
-$colspan = 12;
+$colspan = 11;
 
 // 검색어 확장
 $qstr .= $qstr.'&ser_trm_idxs='.$ser_trm_idxs.'&ser_com_type='.$ser_com_type.'&ser_trm_idx_salesarea='.$ser_trm_idx_salesarea;
@@ -135,7 +135,7 @@ $qstr .= $qstr.'&ser_trm_idxs='.$ser_trm_idxs.'&ser_com_type='.$ser_com_type.'&s
 <input type="submit" class="btn_submit" value="검색">
 </form>
 
-<div class="local_desc01 local_desc">
+<div class="local_desc01 local_desc" style="display:none;">
     <p>업체측 담당자를 관리하시려면 업체담당자 항목의 <i class="fa fa-edit"></i> 편집아이콘을 클릭하세요. 담당자는 여러명일 수 있고 이직을 하는 경우 다른 업체에 소속될 수도 있습니다. </p>
 </div>
 
@@ -163,7 +163,7 @@ $qstr .= $qstr.'&ser_trm_idxs='.$ser_trm_idxs.'&ser_com_type='.$ser_com_type.'&s
 		<th scope="col" class="td_left">업체명</th>
 		<th scope="col">대표자명</th>
 		<th scope="col">이메일</th>
-		<th scope="col">업체담당자</th>
+		<?php if(false){ ?><th scope="col">업체담당자</th><?php } ?>
 		<th scope="col" class="td_left">업종</th>
 		<th scope="col" style="width:120px;">대표전화</th>
 		<th scope="col" style="width:120px;">팩스</th>
@@ -252,10 +252,12 @@ $qstr .= $qstr.'&ser_trm_idxs='.$ser_trm_idxs.'&ser_com_type='.$ser_com_type.'&s
 		<td class="td_com_email font_size_8"><!-- 이메일 -->
 			<?php echo cut_str($row['com_email'],21,'..'); ?>
 		</td>
+        <?php if(false){ ?>
 		<td class="td_com_manager td_left"><!-- 담당자 -->
 			<?php echo $row['com_managers_text']; ?>
             <div style="display:<?=($is_admin=='super')?:'no ne'?>"><a href="javascript:" com_idx="<?=$row['com_idx']?>" class="btn_manager"><i class="fa fa-edit"></i></a></div>
 		</td>
+        <?php } ?>
         <td class="td_com_type td_left font_size_8"><!-- 업종 -->
             <?php echo $g5['set_com_type_value'][$row['com_type']] ?>
         </td>
@@ -283,7 +285,7 @@ $qstr .= $qstr.'&ser_trm_idxs='.$ser_trm_idxs.'&ser_com_type='.$ser_com_type.'&s
 </div>
 
 <div class="btn_fixed_top">
-    <?php if(!auth_check($auth[$sub_menu],"d",1)) { ?>
+    <?php if(!auth_check($auth[$sub_menu],"w",1)) { ?>
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn_02 btn" style="display:none;">
     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn_02 btn">
     <?php } ?>

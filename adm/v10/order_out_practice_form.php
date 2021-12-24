@@ -243,7 +243,7 @@ foreach($f1 as $hk=>$hv){
                 $fctag .= '<a href="./order_practice_select.php?frm=form01&file_name='.$g5['file_name'].'&w='.$w.'&orp_idx='.$fv['value'].'" class="btn btn_02" id="btn_orp">생산계획ID(라인설비별)찾기</a>'.PHP_EOL;
             }
             if($fk == 'oop_1'){
-                $time_arr = array('시간1<br>08:00~10:00','시간2<br>10:10~12:00','시간3<br>13:00~15:00','시간4<br>15:10~17:00','시간5<br>17:10~19:00','시간6<br>19:10~21:00','시간7<br>21:10~23:00','시간8<br>23:10~01:00');
+                $time_arr = array('시간1<br>08:00~10:00','시간2<br>10:10~12:00','시간3<br>13:00~15:00','시간4<br>15:10~17:00','시간5<br>17:10~19:00','시간6<br>19:10~21:00','시간7<br>21:10~23:00','시간8<br>23:10~01:00','시간9<br>01:10~03:00','시간10<br>03:10~05:00');
                 $fctag .= '<ul id="cnt_per_time">'.PHP_EOL;
                 for($i=1;$i<=sizeof($time_arr);$i++){
                     $tkey = 'oop_'.$i;

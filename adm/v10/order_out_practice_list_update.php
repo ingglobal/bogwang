@@ -32,6 +32,8 @@ if ($_POST['act_button'] == "선택수정") {
                     ,oop_6 = '".$_POST['oop_6'][$oop_idx_v]."' 
                     ,oop_7 = '".$_POST['oop_7'][$oop_idx_v]."' 
                     ,oop_8 = '".$_POST['oop_8'][$oop_idx_v]."' 
+                    ,oop_9 = '".$_POST['oop_9'][$oop_idx_v]."' 
+                    ,oop_10 = '".$_POST['oop_10'][$oop_idx_v]."' 
                 WHERE oop_idx = '".$oop_idx_v."'
         ";
         sql_query($sql,1);
@@ -55,4 +57,5 @@ if ($msg)
 
 // exit;
 $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 넘겨야 할 변수들
+//echo $qstr;exit;
 goto_url('./order_out_practice_list.php?'.$qstr);
