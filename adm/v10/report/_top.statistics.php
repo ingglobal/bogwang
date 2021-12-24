@@ -4,11 +4,12 @@ if (!defined('_GNUBOARD_')) exit;
 
 
 // 목표달성 & 불량
-$sql = "SELECT SUM( dta_value ) AS output_sum
-            , SUM( CASE WHEN dta_defect = 1 THEN dta_value ELSE 0 END ) AS output_defect
-        FROM {$g5['data_output_sum_table']}
-        WHERE dta_date >= '".$st_date."'
-            AND dta_date <= '".$en_date."'
+$sql = "SELECT SUM( itm_count ) AS output_sum
+            , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ok_array'])."') THEN itm_count ELSE 0 END ) AS output_ok
+            , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ng_array'])."') THEN itm_count ELSE 0 END ) AS output_ng
+        FROM {$g5['item_sum_table']}
+        WHERE itm_date >= '".$st_date."'
+            AND itm_date <= '".$en_date."'
             AND com_idx='".$com_idx."'
             {$sql_mmses}
 ";
@@ -16,7 +17,8 @@ $sql = "SELECT SUM( dta_value ) AS output_sum
 $output1 = sql_fetch($sql,1);
 // 목표달성율, 불량율 입력
 $sum_target = @number_format( $output1['output_sum']/$target['total']*100,1 );
-$sum_defect = @number_format( $output1['output_defect']/$output1['output_sum']*100, 2);
+$sum_ok = @number_format( $output1['output_ok']/$output1['output_sum']*100, 2);
+$sum_ng = @number_format( $output1['output_ng']/$output1['output_sum']*100, 2);
 
 
 
@@ -109,7 +111,7 @@ $sum_plan = number_format($plan['plan_cnt']);
 			</li>
 			<li>
 			   <span class="title">불량율</span>
-				<span class="content" id="sum_defect"><?=$sum_defect?></span>
+				<span class="content" id="sum_defect"><?=$sum_ng?></span>
 				<span class="unit">%</span>
 			</li>
 			<li>

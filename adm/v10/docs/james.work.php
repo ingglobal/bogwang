@@ -632,3 +632,12 @@ itm_price = (SELECT bom_price FROM g5_1_bom WHERE bom_idx = itm.bom_idx)
 
 delete FROM `g5_1_item` WHERE itm_reg_dt > '2021-12-14 00:00:00';
 delete FROM `g5_1_item_sum` WHERE itm_date > '2021-12-13';
+
+
+// Output production target query
+SELECT bom_idx, trm_idx_line, orp_done_date, oop_count, oop_1, oop_2, oop_3, oop_4, oop_5, oop_6, oop_7, oop_8, oop_9, oop_10
+FROM g5_1_order_out_practice AS oop
+    LEFT JOIN g5_1_order_practice AS orp ON orp.orp_idx = oop.orp_idx
+WHERE orp_done_date != '0000-00-00'
+GROUP BY bom_idx, trm_idx_line, orp_done_date, oop_count, oop_1, oop_2, oop_3, oop_4, oop_5, oop_6, oop_7, oop_8, oop_9, oop_10
+ORDER BY bom_idx, trm_idx_line, orp_done_date

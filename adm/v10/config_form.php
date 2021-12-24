@@ -487,6 +487,20 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
 			</td>
 		</tr>
 		<tr>
+			<th scope="row">완제품상태중 양품상태</th>
+			<td colspan="3">
+				<?php echo help('영문상태값만 쉽표로 구분해서 입력하세요. 예) ing,finish'); ?>
+				<input type="text" name="set_itm_status_ok" value="<?php echo $g5['setting']['set_itm_status_ok']; ?>" class="frm_input" style="width:70%;">
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">완제품상태중 불량품상태</th>
+			<td colspan="3">
+				<?php echo help('영문상태값만 쉽표로 구분해서 입력하세요. 예) error_stitch,error_wrinkle,error_fabric,error_push,error_pollution,error_bottom,error_etc'); ?>
+				<input type="text" name="set_itm_status_ng" value="<?php echo $g5['setting']['set_itm_status_ng']; ?>" class="frm_input" style="width:70%;">
+			</td>
+		</tr>
+		<tr>
 			<th scope="row">출하상태</th>
 			<td colspan="3">
 				<?php echo help('pending=대기,ok=출하완료,trash=삭제'); ?>

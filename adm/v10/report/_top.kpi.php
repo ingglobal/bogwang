@@ -50,7 +50,7 @@ if( preg_match("/-/",$mmg_idx) ) {
 // echo $mms_idx.' ---- mms_idx <br>';
 // exit;
 
-// down_idxs를 뽑아두자. 라인별 합계를 위해서 미리 추출
+// Get a mmsGroup variables : down_idxs를 뽑아두자. 라인별 합계를 위해서 미리 추출
 $sql = "SELECT parent.mmg_idx
             , GROUP_CONCAT(cast(mmg.mmg_idx as char) ORDER BY mmg.mmg_left) AS down_idxs
         FROM {$g5['mms_group_table']} AS mmg, 
@@ -121,104 +121,60 @@ else {
 }
 
 
-
-// 교대별 기종별 목표 먼저 추출 (아래 부분 목표 추출하는 부분에서 활용합니다.)
-$sql = "SELECT shf_idx, sig_shf_no, mmi_no, sig_item_target
-        FROM {$g5['shift_item_goal_table']} AS sig 
-            LEFT JOIN {$g5['mms_item_table']} AS mmi ON mmi.mmi_idx = sig.mmi_idx
-        WHERE (1)
+// 지시수량 목표 먼저 추출 (아래 부분 목표 추출하는 부분에서 활용합니다.)
+$sql = "SELECT bom_idx, trm_idx_line, orp_done_date, oop_count, oop_1, oop_2, oop_3, oop_4, oop_5, oop_6, oop_7, oop_8, oop_9, oop_10
+        FROM {$g5['order_out_practice_table']} AS oop
+            LEFT JOIN {$g5['order_practice_table']} AS orp ON orp.orp_idx = oop.orp_idx
+        WHERE orp_done_date != '0000-00-00'
             {$sql_mmses}
-        ORDER BY shf_idx, sig_shf_no 
+        GROUP BY bom_idx, trm_idx_line, orp_done_date, oop_count, oop_1, oop_2, oop_3, oop_4, oop_5, oop_6, oop_7, oop_8, oop_9, oop_10
+        ORDER BY bom_idx, trm_idx_line, orp_done_date
 ";
 // echo $sql.'<br>';
 $rs = sql_query($sql,1);
 for($j=0;$row=sql_fetch_array($rs);$j++){
-    // print_r2($row1);
-    $target['shift_no_mmi'][$row['shf_idx']][$row['sig_shf_no']][$row['mmi_no']] += $row['sig_item_target'];    // 교대별 기종별 목표
-}
-// print_r2($target['shift_mmi']);
-// echo '----------<br>';
-
-
-// 목표추출 get target fetch
-// 전체기간 설정이 있는 경우는 마지막 부분에서 돌면서 없는 날짜 목표를 채워줍니다.
-$sql = "SELECT mms_idx, shf_idx, shf_period_type
-        , shf_start_dt AS db_shf_start_dt
-        , shf_end_dt AS db_shf_end_dt
-        , GREATEST('".$st_date." 00:00:00', shf_start_dt ) AS shf_start_dt
-        , LEAST('".$en_date." 23:59:59', shf_end_dt ) AS shf_end_dt
-        FROM {$g5['shift_table']}
-        WHERE com_idx = '".$com['com_idx']."'
-            AND shf_status NOT IN ('trash','delete')
-            AND shf_end_dt >= '".$st_date."'
-            AND shf_start_dt <= '".$en_date."'
-            {$sql_mmses}
-        ORDER BY mms_idx, shf_period_type, shf_start_dt
-";
-// echo $sql.'<br>';
-$rs = sql_query($sql,1);
-$byunit = 86400;
-for($i=0;$row=sql_fetch_array($rs);$i++){
-    $row['mmg_idx'] = $g5['mms'][$row['mms_idx']]['mmg_idx'];
     // print_r2($row);
+    $date1 = preg_replace("/[ :-]/","",substr($row['orp_done_date'],0,10));   // 날짜중에서 일자 추출하여 배열키값으로!
+    $date2 = preg_replace("/[ :-]/","",date("Y-m",strtotime($date1)));     // 날짜중에서 월 추출하여 배열키값으로!
+    $date3 = preg_replace("/[ :-]/","",date("Y",strtotime($date1)));       // 년도만
+    $week1 = date("w",strtotime($date1)); // 0 (for Sunday) through 6 (for Saturday)
+    // 주차값 (1년 중 몇 주, date('w')랑 기준이 달라서 일요일인 경우 다음차수로 넘김)
+    $week2 = (!$week1) ? date("W",strtotime($date1))+1 : date("W",strtotime($date1));
+    // echo $week1.'(0=sunsay..) : '.$week2.'주차 : ';
+    // echo date("Y-m-d",$k).'(오늘날짜) : ';
+    // echo date('Y-m-d', strtotime(date("Y-m-d",$k)." -".$week1."days")).'(주첫날)<br>';
+    $target['week_day'][$week2] = date('Y-m-d', strtotime(date("Y-m-d",strtotime($date1))." -".$week1."days"));  // 주차의 시작 일요일
 
-    // 날짜범위를 for 돌면서 배열변수 생성
-    $ts1 = strtotime(substr($row['shf_start_dt'],0,10));    // 시작 timestamp
-    $ts2 = strtotime(substr($row['shf_end_dt'],0,10));    // 종료 timestamp
-    // 종료일시가 오전인 경우는 전날로 바꾸어서 중복이 생기지 않도록 처리한다.
-    if(substr($row['shf_end_dt'],11,2) < 12) {
-        $ts2 = strtotime(substr($row['shf_end_dt'],0,10))-86400;
-    }
-    // echo date("Y-m-d",$ts1).'~'.date("Y-m-d",$ts2).'<br>';
-    for($k=$ts1;$k<=$ts2;$k+=$byunit) {
-        $date1 = preg_replace("/[ :-]/","",date("Y-m-d",$k));   // 날짜중에서 일자 추출하여 배열키값으로!
-
-        // 전체기간 설정일 때는 동일설비, 같은 날짜값이 있으면 통과, 중복 계산하지 않도록 한다.
-        if( $row['shf_period_type'] && $mms_date[$row['mms_idx']][$date1] ) {
-            continue;
-        }
-
-        $date2 = preg_replace("/[ :-]/","",date("Y-m",$k));     // 날짜중에서 월 추출하여 배열키값으로!
-        $date3 = preg_replace("/[ :-]/","",date("Y",$k));       // 년도만
-        $week1 = date("w",$k); // 0 (for Sunday) through 6 (for Saturday)
-        // 주차값 (1년 중 몇 주, date('w')랑 기준이 달라서 일요일인 경우 다음차수로 넘김)
-        $week2 = (!$week1) ? date("W",$k)+1 : date("W",$k);
-        // echo $week1.'(0=sunsay..) : '.$week2.'주차 : ';
-        // echo date("Y-m-d",$k).'(오늘날짜) : ';
-        // echo date('Y-m-d', strtotime(date("Y-m-d",$k)." -".$week1."days")).'(주첫날)<br>';
-        $target['week_day'][$week2] = date('Y-m-d', strtotime(date("Y-m-d",$k)." -".$week1."days"));  // 주차의 시작 일요일
-
-        $target['date'][$date1] += $row['shf_target_sum'];  // 날짜별 목표
-        $target['week'][$week2] += $row['shf_target_sum'];  // 주차별 목표
-        $target['month'][$date2] += $row['shf_target_sum'];  // 월별 목표
-        $target['year'][$date3] += $row['shf_target_sum'];  // 연도별 목표
-        $target['mms'][$row['mms_idx']] += $row['shf_target_sum'];  // 설비별 목표
-        $target['mmg'][$row['mmg_idx']] += $row['shf_target_sum'];  // 그룹별 목표
-        $target['total'] += $row['shf_target_sum'];  // 전체 목표
-        // 날짜별 교대별 목표
-        for($j=1;$j<4;$j++) {
-            // echo $row['shf_target_'.$j].'<br>';
-            $target['date_shift'][$date1][$j] += $row['shf_target_'.$j];    // 날짜별 교대별 목표
-            $target['shift'][$j] += $row['shf_target_'.$j];    // 교대별 목표만
-            $target['mms_shift'][$row['mms_idx']][$j] += $row['shf_target_'.$j];    // 설비별 교대별 목표만
-            // 날짜별 교대별 목표. $target['shift_no_mmi'][shf_idx][shf_no][mmi_no] = 200 과 같은 구조로 되어 있음
-            if( is_array($target['shift_no_mmi'][$row['shf_idx']]) ) {
-                if(is_array($target['shift_no_mmi'][$row['shf_idx']][$j])) {
-                    // $j=교대번호
-                    foreach($target['shift_no_mmi'][$row['shf_idx']][$j] as $k1=>$v1) {
-                        // k1=기종번호, $v1=목표값
-                        $target['mms_mmi'][$row['mms_idx']][$k1] += $v1;    // 설비별 기종목표
-                    }
-                }
-            }
-        }
-        $mms_date[$row['mms_idx']][$date1] = 1; // 중복 체크를 위해서 배열 생성해 둠
-        // echo '------<br>';
-    }
-    // echo '<br>--------------<br>';
+    $target['bom'][$row['bom_idx']] += (int)$row['oop_count'];  // 제품별 목표
+    $target['line'][$row['trm_idx_line']] += (int)$row['oop_count'];  // 제품별 목표
+    $target['date_shift'][$date1]['1'] += (int)$row['oop_1'];  // 날짜별-1구간 목표
+    $target['date_shift'][$date1]['2'] += (int)$row['oop_2'];  // 날짜별-2구간 목표
+    $target['date_shift'][$date1]['3'] += (int)$row['oop_3'];  // 날짜별-3구간 목표
+    $target['date_shift'][$date1]['4'] += (int)$row['oop_4'];  // 날짜별-4구간 목표
+    $target['date_shift'][$date1]['5'] += (int)$row['oop_5'];  // 날짜별-5구간 목표
+    $target['date_shift'][$date1]['6'] += (int)$row['oop_6'];  // 날짜별-6구간 목표
+    $target['date_shift'][$date1]['7'] += (int)$row['oop_7'];  // 날짜별-7구간 목표
+    $target['date_shift'][$date1]['8'] += (int)$row['oop_8'];  // 날짜별-8구간 목표
+    $target['date_shift'][$date1]['9'] += (int)$row['oop_9'];  // 날짜별-9구간 목표
+    $target['date_shift'][$date1]['10'] += (int)$row['oop_10'];  // 날짜별-10구간 목표
+    $target['shift']['1'] += (int)$row['oop_1'];  // 1구간 목표
+    $target['shift']['2'] += (int)$row['oop_2'];  // 2구간 목표
+    $target['shift']['3'] += (int)$row['oop_3'];  // 3구간 목표
+    $target['shift']['4'] += (int)$row['oop_4'];  // 4구간 목표
+    $target['shift']['5'] += (int)$row['oop_5'];  // 5구간 목표
+    $target['shift']['6'] += (int)$row['oop_6'];  // 6구간 목표
+    $target['shift']['7'] += (int)$row['oop_7'];  // 7구간 목표
+    $target['shift']['8'] += (int)$row['oop_8'];  // 8구간 목표
+    $target['shift']['9'] += (int)$row['oop_9'];  // 9구간 목표
+    $target['shift']['10'] += (int)$row['oop_10'];  // 날짜별-10구간 목표
+    $target['date'][$date1] += (int)$row['oop_count'];  // 날짜별 목표
+    $target['week'][$week2] += (int)$row['oop_count'];  // 주차별 목표
+    $target['month'][$date2] += (int)$row['oop_count'];  // 월별 목표
+    $target['year'][$date3] += (int)$row['oop_count'];  // 연도별 목표
+    $target['total'] += (int)$row['oop_count'];  // 전체 목표
 }
-// print_r2($mms_date);
 // print_r2($target);
+// echo '----------<br>';
 
 
 // 비가동추출 get offwork time
@@ -275,8 +231,6 @@ for($i=0;$row=sql_fetch_array($rs);$i++){
     // echo '<br>정리<br>';
     // print_r2($offwork[$i]);
     // echo '<br>----------------------------------------<br>';
-
-    
 }
 // print_r2($mms_date);
 // print_r2($offwork);
