@@ -27,8 +27,8 @@ $defect_type_array = array('error_stitch'
                             ,'error_wrinkle','error_wrinkle','error_wrinkle','error_wrinkle','error_wrinkle','error_wrinkle','error_wrinkle'
                             ,'error_fabric','error_push','error_pollution','error_bottom','error_etc');
 
-$total = 1000;
-$start_time = time()-86400*1; //<<<<<<<<<<<<<<==================================
+$total = 10000;
+$start_time = time()-86400*60; //<<<<<<<<<<<<<<==================================
 $end_time = time();   //<<<<<<<<<<<<<<==================================
 // $start_time = time()-86400*200; //<<<<<<<<<<<<<<==================================
 // $end_time = time()-86400*190;   //<<<<<<<<<<<<<<==================================
