@@ -100,16 +100,17 @@ a.btn_price_add {color:#3a88d8 !important;cursor:pointer;}
     </colgroup>
 	<tbody>
 	<tr>
-        <th scope="row">거래처</th>
+        <th scope="row">고객처</th>
 		<td>
             <input type="hidden" name="com_idx_customer" value="<?=${$pre}['com_idx_customer']?>"><!-- 거래처번호 -->
 			<input type="text" name="com_name" value="<?php echo $com['com_name'] ?>" id="com_name" class="frm_input required readonly" required readonly>
-            <a href="./customer_select.php?file_name=<?php echo $g5['file_name']?>" class="btn btn_02" id="btn_customer">거래처찾기</a>
+            <a href="./customer_select.php?file_name=<?php echo $g5['file_name']?>" class="btn btn_02" id="btn_customer">고객처찾기</a>
 		</td>
         <th scope="row">수주번호</th>
         <td>
             <?php if($w == ''){ ?>
-            <input type="text" name="ord_idx" value="<?=$oro['ord_idx']?>" class="frm_input" style="width:80px;" onclick="javascript:only_Number(this)">
+            <input type="text" name="ord_idx" value="<?=$oro['ord_idx']?>" class="frm_input required readonly" style="width:80px;">
+            <a href="./order_select.php?file_name=<?php echo $g5['file_name']?>" class="btn btn_02" id="btn_order">수주찾기</a>
             <?php } else { ?>
             <input type="text" name="ord_idx" value="<?=$oro['ord_idx']?>" readonly required class="frm_input readonly required" style="width:80px;">
             <?php } ?>
@@ -149,7 +150,7 @@ a.btn_price_add {color:#3a88d8 !important;cursor:pointer;}
     </tr>
     <tr>
         <th scope="row">출하계획</th>
-        <td>
+        <td colspan="3">
             <ul id="oro_ex">
                 <li>
                     <label>주간(09:00)</label><br>
@@ -174,6 +175,14 @@ a.btn_price_add {color:#3a88d8 !important;cursor:pointer;}
                 <li>
                     <label>D+1(07:00)</label><br>
                     <input type="text" name="oro_6" id="oro_6" value="<?php echo $oro['oro_6']; ?>" class="frm_input oro_ex" style="width:80px;text-align:right;" onclick="javascript:chk_Number(this)">
+                </li>
+                <li>
+                    <label>D+1(08:00)</label><br>
+                    <input type="text" name="oro_7" id="oro_7" value="<?php echo $oro['oro_7']; ?>" class="frm_input oro_ex" style="width:80px;text-align:right;" onclick="javascript:chk_Number(this)">
+                </li>
+                <li>
+                    <label>D+1(09:00)</label><br>
+                    <input type="text" name="oro_8" id="oro_8" value="<?php echo $oro['oro_8']; ?>" class="frm_input oro_ex" style="width:80px;text-align:right;" onclick="javascript:chk_Number(this)">
                 </li>
             </ul>
         </td>
@@ -244,6 +253,14 @@ $(function() {
         var href = $(this).attr('href');
 		winCustomerSelect = window.open(href, "winCustomerSelect", "left=300,top=150,width=550,height=600,scrollbars=1");
         winCustomerSelect.focus();
+	});
+
+    // 수주찾기 버튼 클릭
+	$("#btn_order").click(function(e) {
+		e.preventDefault();
+        var href = $(this).attr('href');
+		winOrderSelect = window.open(href, "winOrderSelect", "left=300,top=150,width=550,height=600,scrollbars=1");
+        winOrderSelect.focus();
 	});
 
     // 제품찾기 버튼 클릭

@@ -20,13 +20,17 @@ $ori_sql = " SELECT COUNT(*) AS cnt FROM {$g5['order_out_table']} AS oro
                 LEFT JOIN {$g5['order_item_table']} AS ori ON oro.ori_idx = ori.ori_idx
                 WHERE oro.ord_idx = '{$_POST['ord_idx']}' AND ori.bom_idx = '{$_POST['bom_idx']}' AND oro.oro_status NOT IN('delete','del','trash','cancel')               
  ";
+$ori_sql .= ($w != '') ? " AND oro.ori_idx != '{$_POST['ori_idx']}'" : "";
 $ori = sql_fetch($ori_sql);
-if($ori['cnt'])
-    alert('선택하신 제품이 동일한 수주번호의 출하목록에 이미 포함되어 있습니다.');
+if($ori['cnt']){
+    alert("선택하신 제품이 동일한 수주번호의 출하목록에 이미 포함되어 있습니다.");
+}
 
 if(!$_POST['oro_count'])
     alert('출하수량을 설정해 주세요.');
 
+if(!$_POST['oro_date_plan'] || $_POST['oro_date_plan'] == '0000-00-00')
+    alert('출하예정일을 선택해 주세요.');
 
 // 변수 설정, 필드 구조 및 prefix 추출
 $table_name = 'order_out';

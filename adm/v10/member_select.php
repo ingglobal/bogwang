@@ -8,13 +8,13 @@
 // /adm/v10/order_out_practice_form.php: 실행계획폼
 include_once('./_common.php');
 
-if($member['mb_level']<6)
+if($member['mb_level']<4)
     alert_close('접근할 수 없는 메뉴입니다.');
 
 $sql_common = " FROM {$g5['member_table']} ";
 
 // 디폴트 검색기준
-$sql_where = " WHERE mb_leave_date = '' AND mb_level <= 4 ";
+$sql_where = " WHERE mb_leave_date = '' AND mb_level >= 4 ";
 
 // 검색 조건
 if($mb_where) {
@@ -47,7 +47,7 @@ if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이�
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
 // 운영권한이 없으면 검색했을 때만 결과가 나옴
-if(!$member['mb_manager_yn']&&!$sch_word&&$page<2) {
+if(false){//(!$member['mb_manager_yn']&&!$sch_word&&$page<2) {
     $rows = 0;
     $total_page = 0;
 }
@@ -93,8 +93,8 @@ $qstr2 = 'frm='.$frm.'&tar1='.$tar1.'&tar2='.$tar2.'&tar3='.$tar3.'&file_name='.
 
     <div id="scp_list_find">
         <input type="text" name="sch_word" id="sch_word" value="<?php echo get_text($sch_word); ?>" class="frm_input required" required size="20">
-        <input type="submit" value="검색" class="btn_frmline">
-        <a href="<?php echo $_SERVER['SCRIPT_NAME']?>?<?php echo $qstr2?>" class="btn btn_b10 btn_h38">검색취소</a>
+        <input type="submit" value="검색" class="btn btn_01">
+        <a href="<?php echo $_SERVER['SCRIPT_NAME']?>?<?php echo $qstr2?>" class="btn btn_02">검색취소</a>
     </div>
     
     <div class="tbl_head01 tbl_wrap new_win_con">
