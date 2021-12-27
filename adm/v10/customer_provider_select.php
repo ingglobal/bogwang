@@ -7,10 +7,11 @@ if($member['mb_level']<4)
 	alert_close('접근할 수 없는 메뉴입니다.');
 
 $where = array();
+//$where[] = " com_level = 2 AND com_status NOT IN ('trash','delete','del') ";   // 디폴트 검색조건
 $where[] = " com_level >= 2 AND com_status NOT IN ('trash','delete','del') ";   // 디폴트 검색조건
 
 // 운영권한이 없으면 자기것만
-if (false){ //(!$member['mb_manager_yn']) {
+if (false) { //(!$member['mb_manager_yn']) {
     $where[] = " mb_id_saler = '".$member['mb_id']."' ";
 }
 
@@ -162,51 +163,14 @@ $('.btn_select').click(function(e){
     e.preventDefault();
     <?php
     // 이전 파일의 폼에 따라 전달 내용 변경
-    //if($file_name == 'bom_form' || $file_name == 'order_form' || $file_name == 'order_list' || $file_name == 'order_out_form') {
-    if($file_name == 'order_out_form'
-        ||$file_name == 'order_out_list') {
+    if($file_name == 'bom_form') {
     ?>
-        $("input[name=com_idx_shipto]", opener.document).val( $(this).closest('td').attr('com_idx') );
+        $("input[name=com_idx_provider]", opener.document).val( $(this).closest('td').attr('com_idx') );
         $("input[name=com_name2]", opener.document).val( $(this).closest('td').attr('com_name') );
-        $("input#com_idx_shipto", opener.document).val( $(this).closest('td').attr('com_idx') );
-        $("input#com_name2", opener.document).val( $(this).closest('td').attr('com_name') );
     <?php
     }
-    // 대시보드 설비 추가 or 대시보드 설비그룹, 설비검색
-    else if($file_name=='dashboard_mms_add'
-            ||$file_name=='dashboard_mms_group'
-            ||$file_name=='company_member_add'
-            ||$file_name=='data_graph_add'
-            ||$file_name=='mms_select') {
-    ?>
-        var com_idx = $(this).closest('td').attr('com_idx');
-        var file_name = $("input[name=file_name]", opener.document).val();
-        opener.document.location = './<?=$file_name?>.php?com_idx='+com_idx+'&file_name='+file_name;
-    <?php
-    }
-    else {
-    ?>
-        // 폼이 존재하면
-        if( $("form[name=<?php echo $frm;?>]", opener.document).length > 0 ) {
-            $("input[name=com_idx]", opener.document).val( $(this).closest('td').attr('com_idx') );
-            $("input[name=com_name]", opener.document).val( $(this).closest('td').attr('com_name') );
-            $("input[name=com_tel]", opener.document).val( $(this).closest('td').attr('com_hp') );    // mb_tel이 거의 없어서 mb_hp로 대체함
-            $("input[name=com_hp]", opener.document).val( $(this).closest('td').attr('com_hp') );
-            $("input[name=com_email]", opener.document).val( $(this).closest('td').attr('com_email') );
-        }
-        else {
-            alert('값을 전달할 폼이 존재하지 않습니다.');
-        }
-    <?php
-    }
-
-    // ajax 호출이 있을 때는 너무 빨리 창을 닫으면 안 됨
-    if($file_name!='company_list') {
     ?>
     window.close();
-    <?php
-    }
-    ?>
 });
 </script>
 

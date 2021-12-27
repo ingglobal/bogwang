@@ -100,7 +100,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_CSS_URL.'/nestable.
         <th scope="row"><label for="ord_date">수주일</label></th>
         <td colspan="3">
             <input type="text" name="ord_date" id="ord_date" value="<?=$ord['ord_date']?>" readonly required class="date frm_input readonly required" style="width:130px;">
-            <span id="sp_notice" class="sp_error">수주일을 입력해 주세요.</span>
+            <span id="sp_notice" class="<?=(($ord['ord_date'])?'':'sp_error')?>"><?=(($ord['ord_date'])?'':'수주일을 입력해 주세요.')?></span>
         </td>
     </tr>
 	</tbody>

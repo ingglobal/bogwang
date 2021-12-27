@@ -181,7 +181,7 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
 		<th scope="row">납품회사(고객처)</th>
 		<td>
             <input type="hidden" name="com_idx_customer" value="<?=$bom['com_idx_customer']?>"><!-- 고객처번호 -->
-			<input type="text" name="com_name" value="<?php echo $com['com_name'] ?>" id="com_name" class="frm_input required" required readonly>
+			<input type="text" name="com_name" value="<?php echo $com['com_name'] ?>" id="com_name" class="frm_input readonly" readonly>
             <a href="javascript:" link="./customer_select.php?file_name=<?php echo $g5['file_name']?>" class="btn btn_02" id="btn_customer">고객처찾기</a>
 		</td>
     </tr>
@@ -195,7 +195,7 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
 		<td>
             <input type="hidden" name="com_idx_provider" value="<?=$bom['com_idx_provider']?>"><!-- 고객처번호 -->
 			<input type="text" name="com_name2" value="<?php echo $com2['com_name'] ?>" id="com_name2" class="frm_input required" required readonly>
-            <a href="jvaascript:" link="./customer_select.php?file_name=<?php echo $g5['file_name']?>&provider=1" class="btn btn_02" id="btn_provider">공급처찾기</a>
+            <a href="jvaascript:" link="./customer_provider_select.php?file_name=<?php echo $g5['file_name']?>" class="btn btn_02" id="btn_provider">공급처찾기</a>
 		</td>
     </tr>
     <tr>
