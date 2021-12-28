@@ -21,7 +21,8 @@
 /*.div_serialize {display:none;}*/
 .add_items {position:absolute;top:5px;right:0;display:inline-block;}
 .add_items > span {margin-right:10px;font-weight:normal;}
-.add_items .bit_count {font-weight:bold;}
+.add_items .bom_price b{display:inline-block;width:60px;text-align:right;margin-right:3px;}
+.add_items .bit_count {font-weight:bold;display:inline-block;width:30px;text-align:right;color:yellow;margin-right:5px;}
 .add_items img {margin-right:15px;cursor:pointer;}
 .btn_control {margin-top:10px;}
 .btn_control:after {display:block;visibility:hidden;clear:both;content:'';}

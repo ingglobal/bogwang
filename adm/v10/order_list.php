@@ -46,6 +46,9 @@ else if(!$ord_date_from && $ord_date_to){
 else if($ord_date_from && $ord_date_to && $ord_date_from != $ord_date_to){
     $where[] = " ord.ord_date >= '".$ord_date_from."' AND ord.ord_date <= '".$ord_date_to."' ";
 }
+else if($ord_date_from && $ord_date_to && $ord_date_from == $ord_date_to){
+    $where[] = " ord.ord_date = '".$ord_date_from."' ";
+}
 else{
     $where[] = " ord.ord_date >= '".G5_TIME_YMD."' AND ord.ord_date <= '".G5_TIME_YMD."' ";
 }
@@ -88,13 +91,24 @@ $result = sql_query($sql);
 .td_bom_items {color:#818181 !important;}
 .span_bom_part_no {margin-left:10px;}
 .span_bom_price b, .span_ori_count b {color:#737132;font-weight:normal;}
-.div_item {font-size:0.9em;line-height:140%;}
-
+.div_item {font-size:0.9em;line-height:140%;border-bottom:1px dotted #555;}
+.div_item > span{display:inline-block;}
+.div_item .span_bom_name{width:240px;}
+.div_item .span_bom_part_no{width:110px;}
+.div_item .span_bom_price{}
+.div_item .span_bom_price b{display:inline-block;width:45px;text-align:right;}
+.div_item .span_ori_count{}
+.div_item .span_ori_count b{display:inline-block;width:30px;text-align:right;}
 .sch_label{position:relative;}
 .sch_label span{position:absolute;top:-23px;left:5px;z-index:2;}
 .sch_label .date_blank{position:absolute;top:-21px;right:5px;z-index:2;font-size:1.1em;cursor:pointer;}
 .slt_label{position:relative;}
 .slt_label span{position:absolute;top:-23px;left:5px;z-index:2;}
+
+
+.md_ol > li{margin-top:10px;}
+.loading{display:inline-block;}
+.loading_hide{display:none;}
 </style>
 
 <div class="local_ov01 local_ov">
@@ -132,8 +146,7 @@ $('.date_blank').on('click',function(e){
 });
 </script>
 <div class="local_desc01 local_desc" style="display:no ne;">
-    <p>제품개수에 <span style="color:red;">빨간색 깜빡임</span>은 출하데이터가 존재하지 않거나 출하데이터의 갯수와 일치하지 않다는 의미 입니다.(갯수를 맞춰 주셔야 합니다.)</p>
-    <p>제품명에 <span style="color:orange;">주황색 깜빡임</span>은 해당 BOM데이터에 가격과 카테고리 설정이 안되어 있다는 의미입니다.(해당 BOM페이지로 이동하여 설정완료 해 주세요.)</p>
+    <p>제품명에 <span style="color:orange;">주황색</span>은 해당 BOM데이터에 가격과 카테고리 설정이 안되어 있다는 의미입니다.(해당 BOM페이지로 이동하여 설정완료 해 주세요.)</p>
 </div>
 
 
@@ -196,11 +209,11 @@ $('.date_blank').on('click',function(e){
             $otq = sql_fetch($otq_sql);
 			$out_cnt = ($otq['ous']) ? $otq['ous'] : 0;
 			//echo $out_cnt;
-			$cnt_blick = ($out_cnt != $row1['ori_count']) ? 'txt_redblink' : '';
+			$cnt_blick = 'txt_brown';//($out_cnt != $row1['ori_count']) ? 'txt_red' : '';
 			
             if(!$row1['bom_price']) $out_flag = false;//가격이 책정되어 있지 않으면 출하불가능
             //$bom_mod = ($row1['bom_price'] && $row1['bct_id']) ? $row1['nbsp'].$row1['bom_name'] : '<a href="'.G5_USER_ADMIN_URL.'/bom_form.php?w=u&bom_idx='.$row1['bom_idx'].'" target="_blank" class="txt_orangeblink">'.$row1['nbsp'].$row1['bom_name'].'</a>';
-            $bom_mod = ($row1['bom_price']) ? $row1['nbsp'].$row1['bom_name'] : '<a href="'.G5_USER_ADMIN_URL.'/bom_form.php?w=u&bom_idx='.$row1['bom_idx'].'" target="_blank" class="txt_orangeblink">'.$row1['nbsp'].$row1['bom_name'].'</a>';
+            $bom_mod = ($row1['bom_price'] && $row1['bct_id']) ? $row1['nbsp'].$row1['bom_name'] : '<a href="'.G5_USER_ADMIN_URL.'/bom_form.php?w=u&bom_idx='.$row1['bom_idx'].'" target="_blank" class="txt_orange">'.$row1['nbsp'].$row1['bom_name'].'</a>';
 
             $row['item_list'][] = '<div class="div_item">
                                         <span class="span_bom_name">'.$bom_mod.'('.$row1['ori_idx'].')</span>
@@ -245,9 +258,9 @@ $('.date_blank').on('click',function(e){
 
     <tr class="<?php echo $bg; ?>" tr_id="<?php echo $row['ord_idx'] ?>">
         <td class="td_chk">
-            <input type="hidden" name="ord_idx[<?php echo $i ?>]" value="<?php echo $row['ord_idx'] ?>" id="ord_idx_<?php echo $i ?>">
+            <input type="hidden" name="ord_idx[<?php echo $row['ord_idx']; ?>]" value="<?php echo $row['ord_idx'] ?>" id="ord_idx_<?php echo $i ?>">
             <label for="chk_<?php echo $i; ?>">
-            <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i ?>">
+            <input type="checkbox" name="chk[]" value="<?php echo $row['ord_idx'] ?>" id="chk_<?php echo $i ?>">
             </label>
         </td>
         <td class="td_num"><?php echo $row['ord_idx']; ?></td>
@@ -299,9 +312,10 @@ $('.date_blank').on('click',function(e){
         <tbody>
         <tr>
             <td style="line-height:130%;padding:10px 0;">
-                <ol>
+                <ol class="md_ol">
                     <li>엑셀은 97-2003통합문서만 등록가능합니다. (*.xls파일로 저장)</li>
                     <li>엑셀은 하단에 탭으로 여러개 있으면 등록 안 됩니다. (한개의 독립 문서이어야 합니다.)</li>
+                    <li style="color:orange;">대량데이터처리이므로 시간이 걸리는 작업입니다. 실행 되는동안 절대 창을 닫거나 다른 버튼을 클릭하지 마세요. 저장되는 데이터에 문제가 발생할 수 있습니다.</li>
                 </ol>
             </td>
         </tr>
@@ -320,6 +334,10 @@ $('.date_blank').on('click',function(e){
         <tr>
             <td style="padding:15px 5px;">
                 <button type="submit" class="btn btn_01">확인</button>
+                <p class="loading loading_hide" style="padding-left:10px;">
+                    <img src="<?=G5_USER_ADMIN_IMG_URL?>/loading_small.gif">
+                    <b style="color:yellow;padding-left:10px;">실행중...</b>
+                </p>
             </td>
         </tr>
         </tbody>
@@ -386,6 +404,19 @@ function form01_submit(f)
 		}
     }
 
+    return true;
+}
+
+function form02_submit(f){
+    if(!f.file_excel.value){
+        alert('파일을 선택해 주세요.');
+        return false;
+    }
+
+    if(!confirm("대량데이터처리이므로 시간이 1분이상 소요될수 있습니다.\n실행하는 동안 창을 닫거나, 다른버튼을 클릭해서는 안됩니다.\n작업을 진행하시겠습니까?")){
+        return false;
+    }
+    $('.loading').removeClass('loading_hide');
     return true;
 }
 </script>

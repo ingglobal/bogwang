@@ -110,7 +110,6 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_CSS_URL.'/nestable.
 <div class="local_desc01 local_desc" style="display:no ne;">
     <p>오른편에서 품명을 검색하고 입력한 다음 주문상품목록을 구성하세요.</p>
     <p>구성이 끝났으면 상단 [확인] 버튼을 클릭하여 저장하세요.</p>
-	<p>제품개수에 <span style="color:red;">빨간색 깜빡임</span>은 출하데이터가 존재하지 않거나 출하데이터의 갯수와 일치하지 않다는 의미 입니다.(갯수를 맞춰 주셔야 합니다.)</p>
 </div>
 <div class="tbl_frm01">
     <div class="div_wrapper div_left">
@@ -140,7 +139,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_CSS_URL.'/nestable.
             $otq = sql_fetch($otq_sql);
 			$out_cnt = ($otq['ous']) ? $otq['ous'] : 0;
 			//echo $out_cnt;
-			$cnt_blick = ($out_cnt != $row['ori_count']) ? ' txt_redblink' : '';
+			$cnt_blick = '';//($out_cnt != $row['ori_count']) ? ' txt_redblink' : '';
             echo '
             <li class="dd-item dd3-item" data-id="'.$row['idx'].'">
                 <div class="dd-handle dd3-handle">Drag</div>
@@ -148,7 +147,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_CSS_URL.'/nestable.
                     <span class="bom_name">'.cut_str($row['bom_name'],20).'('.$row['ori_idx'].')</span>
                     <div class="add_items">
                         <span class="bom_part_no">'.$row['bom_part_no'].'</span>
-                        <span class="bom_price" price="'.$row['ori_price'].'">'.number_format($row['ori_price']).'원</span>
+                        <span class="bom_price" price="'.$row['ori_price'].'"><b>'.number_format($row['ori_price']).'</b>원</span>
                         <span class="span_count"><span class="bit_count'.$cnt_blick.'">'.$row['ori_count'].'</span>개</span>
                         <img src="https://icongr.am/clarity/times.svg?size=30&color=444444" class="btn_remove" title="삭제">
                     </div>

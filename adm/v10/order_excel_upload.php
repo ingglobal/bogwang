@@ -20,6 +20,7 @@ $pnoArr = array(); //bom에 등록되지 않은 pno배열(등록해야함을 유
 $gstkArr = array(); //guest_stock_array(고객처 재고 배열)
 $dateArr = array(9 => '',10 => '',11 => '',12 => '',13 => '',14 => '',15 => '',16 => '',17 => '',18 => '',19 => '',20 => '',21 => '');
 $ordArr = array();
+$partsArr = array();
 // 파일의 저장형식이 utf-8일 경우 한글파일 이름은 깨지므로 euc-kr로 변환해준다.
 $filename = iconv("UTF-8", "EUC-KR", $filename);
 $todate = G5_TIME_YMD;
@@ -87,6 +88,7 @@ try {
 }
 
 /*
+//89G70-CG980USY 나파그레이_최후석
 echo $com_idx."<br>";
 print_r2($dateArr);
 echo 'pnoArr<br>';
@@ -164,11 +166,18 @@ foreach($ordArr as $ok => $ov){
                 ,ori_update_dt = '".G5_TIME_YMDHIS."'
             ";
             sql_query($isql,1);
+
+            $partsArr[$ok][] = $bom['bom_idx'];
         }
         //누적 총합계 수주금액 업데이트
         sql_query(" UPDATE {$g5['order_table']} SET ord_price = '{$ord_price}' WHERE ord_idx = '{$ord_idx}' ");
+
+        $del_where = (@sizeof($partsArr[$ok]))? " AND bom_idx NOT IN (".implode(",",$partsArr[$ok]).") ":"";
+        $sql = "DELETE FROM {$g5['order_item_table']}  WHERE ord_idx='".$ord_idx."' {$del_where} ";
+        //echo $sql."<br>";
+        sql_query($sql,1);
     }
 }
-
+//exit;
 
 goto_url('./order_list.php?'.$qstr, false);
