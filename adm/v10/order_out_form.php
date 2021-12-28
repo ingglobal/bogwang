@@ -17,7 +17,7 @@ if ($w == '') {
     $w_display_none = ';display:none';  // 쓰기에서 숨김
 
     ${$pre}[$pre.'_start_date'] = G5_TIME_YMD;
-    ${$pre}[$pre.'_status'] = 'ok';
+    ${$pre}[$pre.'_status'] = 'pending';
 
     if($ord_idx){
         $ord_sql = " SELECT com_idx_customer FROM {$g5['order_table']} WHERE ord_idx = '{$ord_idx}' ";
@@ -85,7 +85,7 @@ a.btn_price_add {color:#3a88d8 !important;cursor:pointer;}
 <input type="hidden" name="<?=$pre?>_6" value="<?php echo ${$pre}['oro_6'] ?>">
 <input type="hidden" name="sca" value="<?php echo $sca ?>">
 
-<div class="local_desc01 local_desc" style="display:no ne;">
+<div class="local_desc01 local_desc" style="display:none;">
     <p><span style="color:red;">[조정필요]빨간색 깜빡임</span>은 수주상품의 총갯수와 전체 납품 수량이 일치하지 않다는 의미 입니다.(갯수를 맞춰 주셔야 합니다.)</p> 
 </div>
 
@@ -122,7 +122,9 @@ a.btn_price_add {color:#3a88d8 !important;cursor:pointer;}
             <input type="hidden" name="ori_idx" value="<?=$ori['ori_idx']?>">
             <input type="hidden" name="bom_idx" value="<?=$ori['bom_idx']?>">
             <input type="text" name="bom_name" value="<?php echo $bom['bom_name'] ?>" id="bom_name" class="frm_input required readonly" required readonly>
-            <a href="javascript:" link="./bom_select.php?file_name=<?php echo $g5['file_name']?>&ord_idx=<?=$ori['ord_idx']?>" class="btn btn_02" id="btn_bom">제품찾기</a>
+            <?php if($w == ''){ ?>
+            <a href="javascript:" link="./order_out_bom_select.php?file_name=<?php echo $g5['file_name']?>&w=<?=$w?>&ord_idx=<?=$ori['ord_idx']?>" class="btn btn_02" id="btn_bom">제품찾기</a>
+            <?php } ?>
         </td>
         <?php
         /*
@@ -217,9 +219,10 @@ a.btn_price_add {color:#3a88d8 !important;cursor:pointer;}
         <th scope="row">상태</th>
         <td>
             <select name="<?=$pre?>_status" id="<?=$pre?>_status"
-                <?php if (auth_check($auth[$sub_menu],"d",1)) { ?>onFocus='this.initialSelect=this.selectedIndex;' onChange='this.selectedIndex=this.initialSelect;'<?php } ?>>
+                <?php if (auth_check($auth[$sub_menu],"w",1)) { ?>onFocus='this.initialSelect=this.selectedIndex;' onChange='this.selectedIndex=this.initialSelect;'<?php } ?>>
                 <?=$g5['set_oro_status_options']?>
             </select>
+            
             <script>$('select[name="<?=$pre?>_status"]').val('<?=${$pre}[$pre.'_status']?>');</script>
         </td>
     </tr>

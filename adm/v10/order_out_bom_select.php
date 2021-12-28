@@ -9,17 +9,27 @@ if($member['mb_level']<4)
 if(!$ord_idx)
     alert_close('주문번호가 제대로 넘어오지 않았습니다.');
 
-$sql_common = " FROM {$g5['order_item_table']} AS ori
-                    LEFT JOIN {$g5['bom_table']} AS bom ON bom.bom_idx = ori.bom_idx
+$sql = " SELECT GROUP_CONCAT(bom_idx) as bom_idxs FROM {$g5['order_item_table']} 
+            WHERE ord_idx = '{$ord_idx}'
+                AND ori_status NOT IN('delete','del','trash')
+";
+$boms = sql_fetch($sql,1);
+//$bomstr = implode(',',$boms['bom_idxs']);
+$bom_list = '';
+if($boms['bom_idxs'])
+    $bom_list = " AND bom_idx NOT IN(".$boms['bom_idxs'].") ";
+
+
+
+$sql_common = " FROM {$g5['bom_table']} AS bom
                     LEFT JOIN {$g5['bom_category_table']} AS bct ON bct.bct_id = bom.bct_id
                         AND bct.com_idx = '".$_SESSION['ss_com_idx']."'
                     LEFT JOIN {$g5['company_table']} AS com ON com.com_idx = bom.com_idx_customer
 
 ";
 
-
 $where = array();
-$where[] = " bom_status NOT IN ('trash','delete','del','cancel') AND bom.com_idx = '".$_SESSION['ss_com_idx']."' AND bom_type='product' AND ori.ord_idx = '".$ord_idx."' ";   // 디폴트 검색조건
+$where[] = " bom_status NOT IN ('trash','delete','del','cancel') AND bom.com_idx = '".$_SESSION['ss_com_idx']."' AND bom_type='product' ".$bom_list;   // 디폴트 검색조건
 
 // 카테고리 검색
 if ($sca != "") {
@@ -53,10 +63,10 @@ if (!$sst) {
 
 $sql_order = " ORDER BY {$sst} {$sod} ";
 
-$sql = " select count(*) as cnt {$sql_common} {$sql_search} ";
+$sql = " select count(*) as cnt {$sql_common} {$sql_search} {$sql_order} ";
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
-
+//echo $total_count;
 $rows = $config['cf_page_rows'];
 $rows = 50;//10
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
@@ -67,7 +77,7 @@ $sql = "SELECT *
         {$sql_common} {$sql_search} {$sql_order}
         LIMIT {$from_record}, {$rows}
 ";
-// print_r3($sql);
+//print_r2($sql);
 $result = sql_query($sql,1);
 
 $qstr .= '&sca='.$sca.'&file_name='.$file_name; // 추가로 확장해서 넘겨야 할 변수들
@@ -154,7 +164,7 @@ include_once('./_head.sub.php');
     </div>
     </form>
 
-    <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.(($file_name == 'order_out_form')?'ord_idx='.$ord_idx.'&':'').$qstr.'&amp;page='); ?>
+    <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?w='.$w.'&ord_idx='.$ord_idx.'&'.$qstr.'&amp;page='); ?>
 
 </div>
 

@@ -67,7 +67,7 @@ $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
-$sql = "SELECT oro.*, ori.bom_idx, ori.ori_count, bom.bom_name, bom.bct_id, ord.ord_date, ord.ord_reg_dt
+$sql = "SELECT oro.*, ori.bom_idx, ori.ori_count, bom.bom_name, bom.bom_part_no, bom.bct_id, ord.ord_date, ord.ord_reg_dt
         {$sql_common} {$sql_search} {$sql_order}
         LIMIT {$from_record}, {$rows}
 ";
@@ -294,7 +294,8 @@ $('.data_blank').on('click',function(e){
         <!--td class="td_com_name"><a href="?sfl=oro.com_idx_customer&stx=<?=$row['com_idx_customer']?>"><?=$g5['customer'][$row['com_idx_customer']]['com_name']?></a></td--><!-- 납품처 -->
         <td class="td_bom_name">
             <?=$row['bct_name_tree']?><br>
-            <?=$row['bom_name']?>(<?=$row['ori_idx']?>)
+            <?=$row['bom_name']?>(<?=$row['ori_idx']?>)<br>
+            [<?=$row['bom_part_no']?>]
             <input type="hidden" name="bom_idx[<?=$row['oro_idx']?>]" value="<?=$row['bom_idx']?>">
             <input type="hidden" name="com_idx_customer[<?=$row['com_idx_customer']?>]" value="<?=$row['com_idx_customer']?>">
         </td><!-- 제품 -->

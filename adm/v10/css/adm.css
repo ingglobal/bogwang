@@ -235,11 +235,18 @@ td.td_grpset{border-left:1px solid #4b5465;}
 .top_inf .top_mag #mng_name{width:120px;}
 .top_inf .top_mag #mng_email{width:200px;}
 
+.txt_blueb{color:#0000ff;}
 .txt_blueblink{color:#0000ff;animation:blink .5s ease-in-out infinite alternate;-webkit-animation:blink .5s ease-in-out infinite alternate;-moz-animation:blink .5s ease-in-out infinite alternate;-ms-animation:blink .5s ease-in-out infinite alternate;-o-animation:blink .5s ease-in-out infinite alternate;}
+.txt_orange{color:#ffa500 !important;}
 .txt_orangeblink{color:#ffa500 !important;animation:blink .5s ease-in-out infinite alternate;-webkit-animation:blink .5s ease-in-out infinite alternate;-moz-animation:blink .5s ease-in-out infinite alternate;-ms-animation:blink .5s ease-in-out infinite alternate;-o-animation:blink .5s ease-in-out infinite alternate;}
+.txt_red{color:#ff0000;}
 .txt_redblink{color:#ff0000;animation:blink .5s ease-in-out infinite alternate;-webkit-animation:blink .5s ease-in-out infinite alternate;-moz-animation:blink .5s ease-in-out infinite alternate;-ms-animation:blink .5s ease-in-out infinite alternate;-o-animation:blink .5s ease-in-out infinite alternate;}
 .txt_gray{color:#aaa;}
 .txt_green{color:green;}
+.txt_skyblue{color:skyblue;}
+.txt_brown{color:brown;}
+.txt_yellow{color:yellow;}
+.txt_pink{color:pink;}
 
 
 #pc_change{display:block;position:fixed;bottom:10px;right:70px;width:30px;height:30px;line-height:28px;text-align:center;font-size:1.2em;background: rgba(255,255,255,0.4);color:#000;}
