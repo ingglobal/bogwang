@@ -7,7 +7,12 @@ if($member['mb_level']<4)
 	alert_close('접근할 수 없는 메뉴입니다.');
 
 $where = array();
-$where[] = "com_idx = '".$_SESSION['ss_com_idx']."' AND orp_status NOT IN ('trash','delete','del','cancel') ";   // 디폴트 검색조건
+// 디폴트 검색조건
+$where[] = "com_idx = '".$_SESSION['ss_com_idx']."' AND orp_status NOT IN ('trash','delete','del','cancel') ";   
+
+if($sch_field != 'orp_start_date'){
+    $where[] = " orp_start_date >= '".G5_TIME_YMD."' ";
+}
 
 //$sch_field = ($w == '') ? 'orp_idx' : $sch_field;
 
@@ -114,7 +119,7 @@ add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/bwg_datepicker.js"></scrip
         <caption>검색결과</caption>
         <thead>
         <tr>
-            <th scope="col">ID</th>
+            <th scope="col">생산계획ID</th>
             <th scope="col">지시번호</th>
             <th scope="col">설비라인</th>
             <th scope="col">생산(시작)일</th>
@@ -177,7 +182,7 @@ function schFieldDate(){
     var slt_val = $('#sch_field').val();
     if(slt_val == 'orp_start_date'){
         $('#sch_word').addClass('orp_start_date').attr('readonly',true).val('');
-        $(".orp_start_date").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-99:c+99" });
+        $(".orp_start_date").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-99:c+99", minDate: 0 });
     }else{
         if($(".orp_start_date").length){
             $(".orp_start_date").datepicker("destroy");
@@ -190,35 +195,17 @@ $('.btn_select').click(function(e){
     e.preventDefault();
     <?php
     // 이전 파일의 폼에 따라 전달 내용 변경
-    if($file_name=='order_out_practice_form') {
+    if($file_name=='order_out_list') {
     ?>
-        // 폼이 존재하면
-        if( $("form[name=<?php echo $frm;?>]", opener.document).length > 0 ) {
-            $("input[name=orp_idx]", opener.document).val( $(this).closest('td').attr('orp_idx') ).attr('required',true);
-            $("input[name=line_name]", opener.document).val( $(this).closest('td').attr('line_name') ).attr('required',true).addClass('required');
-
-            //설비선택 해제
-            $("#trm_idx_line", opener.document).val('').attr('required',false).removeClass('required');
-            //생산담당자 해제
-            $("#mb_id", opener.document).val('').attr('required',false);
-            $("#mb_name", opener.document).val('').attr('required',false).removeClass('required');
-            //생산일정 해제
-            $("#orp_start_date", opener.document).val('').attr('required',false).removeClass('required');
-            $("#orp_end_date", opener.document).val('').attr('required',false).removeClass('required');
-        }
-        else {
-            alert('값을 전달할 폼이 존재하지 않습니다.');
-        }
+        $("input[name=orp_order_no]", opener.document).val( $(this).closest('td').attr('orp_order_no') );
+        $(".sp_note", opener.document).addClass('sp_old').text('기존 등록된 작업지시번호입니다.');
+        $("#orp_no_old", opener.document).val("1");
+        $('#orp_submit', opener.document).attr('onclick',"form03_submit(document.getElementById('form02'));");
+        $('.tr_flag', opener.document).hide();
     <?php
     }
-
-    // ajax 호출이 있을 때는 너무 빨리 창을 닫으면 안 됨
-    if($file_name!='company_list') {
     ?>
     window.close();
-    <?php
-    }
-    ?>
 });
 </script>
 
