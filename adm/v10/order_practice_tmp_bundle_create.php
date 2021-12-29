@@ -37,6 +37,7 @@ $oro_idx_arr = $_POST['oro_idx'];
 $oro_count_arr = $_POST['oro_count'];
 $bom_idx_arr = $_POST['bom_idx'];
 
+$overlap_bom = '';
 //기존 생산계획의 작업지시번호를 기준으로 추가적으로 생산상품을 등록할때
 if($orp_no_old){
 
@@ -48,8 +49,13 @@ if($orp_no_old){
                                 AND oop.bom_idx = '{$bom_idx_arr[$oro_idx_v1]}'
                                 AND oop.oop_status NOT IN('trash','del','delete','cancel') ";
         $chk_result = sql_fetch($chk_sql);
-        //기존 생산실행 레코드가 있으면 다음루프로 넘어간다.
-        if($chk_result['cnt']) alert('선택하신 항목중에 이미 생산계획에 등록된 항목이 있네요.\\n다시 확인하시기 바랍니다.');
+
+        $bom = sql_fetch(" SELECT bom_name,bom_part_no FROM {$g5['bom_table']} WHERE bom_idx = '{$bom_idx_arr[$oro_idx_v1]}' ");
+        if($bom['bom_part_no']){
+            $overlap_bom .= '['.$bom['bom_part_no'].']('.$bom['bom_name'].')';
+        }
+        //기존 생산실행 동일한 상품레코드가 있으면 정지
+        if($chk_result['cnt']) alert('선택하신 항목중에 '.$overlap_bom.'상품이 이미 생산계획에 등록되어 있네요.\\n다시 확인하시기 바랍니다.');
     }
 
     //orp_idx를 조회한다.
@@ -121,8 +127,13 @@ else {
                         LEFT JOIN {$g5['order_practice_table']} AS orp ON oop.orp_idx = orp.orp_idx
                             WHERE oop.bom_idx = '{$bom_idx_arr[$oro_idx_v1]}' AND oop.oop_status NOT IN('trash','del','delete','cancel') ";
         $chk_result = sql_fetch($chk_sql);
-        //기존 생산실행 레코드가 있으면 다음루프로 넘어간다.
-        if($chk_result['cnt']) alert('선택하신 항목중에 이미 생산계획에 등록된 항목이 있네요.\\n다시 확인하시기 바랍니다.');
+
+        $bom = sql_fetch(" SELECT bom_name,bom_part_no FROM {$g5['bom_table']} WHERE bom_idx = '{$bom_idx_arr[$oro_idx_v1]}' ");
+        if($bom['bom_part_no']){
+            $overlap_bom .= '['.$bom['bom_part_no'].']('.$bom['bom_name'].')';
+        }
+        //기존 생산실행 상품레코드가 있으면 정지.
+        if($chk_result['cnt']) alert('선택하신 항목중에 '.$overlap_bom.'상품이 이미 생산계획에 등록되어 있네요.\\n다시 확인하시기 바랍니다.');
     }
     
     //orp테이블에 1개의 레코드를 등록
