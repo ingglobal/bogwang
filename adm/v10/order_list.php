@@ -192,15 +192,20 @@ $('.date_blank').on('click',function(e){
         $row['oro'] = sql_fetch($sql2,1);
 
         // 제품목록
-        $sql1 = "SELECT bom.bom_idx, bom.bct_id, bom.bom_name, bom_part_no, bom_price, bom_status
-                    , ori.ori_idx, ori.ori_count
+        $sql1 = "SELECT bom.bom_idx, bom.bct_id, bom.bom_name, bom_part_no, bom_price, bom_status, ori.ori_idx, ori.ori_count
                 FROM {$g5['order_item_table']} AS ori
                     LEFT JOIN {$g5['bom_table']} AS bom ON bom.bom_idx = ori.bom_idx
                 WHERE ori.ord_idx = '".$row['ord_idx']."' AND ori.ori_status NOT IN('trash','delete','del','cancel')
-                ORDER BY ori_reg_dt
+                ORDER BY FIELD(bom.bom_price,0) desc,FIELD(bom.bct_id,'') desc,ori_reg_dt LIMIT 0,40
         ";
-        // print_r3($sql1);
+        //print_r3($sql1);
         $rs1 = sql_query($sql1,1);
+        $cnt1 = sql_fetch(" SELECT COUNT(*) AS cnt FROM {$g5['order_item_table']} AS ori
+            LEFT JOIN {$g5['bom_table']} AS bom ON bom.bom_idx = ori.bom_idx
+            WHERE ori.ord_idx = '".$row['ord_idx']."' AND ori.ori_status NOT IN('trash','delete','del','cancel')
+        ");
+        $total_cnt1 = $cnt1['cnt'];
+        //echo $total_cnt1;
         $out_flag = true;//출하가능여부 변수
         for ($j=0; $row1=sql_fetch_array($rs1); $j++) {
             // print_r2($row1);
@@ -264,7 +269,10 @@ $('.date_blank').on('click',function(e){
             </label>
         </td>
         <td class="td_num"><?php echo $row['ord_idx']; ?></td>
-        <td class="td_ord_price" style="text-align:right;"><?=number_format($row['ord_price'])?></td><!-- 수주금액 -->
+        <td class="td_ord_price" style="text-align:right;">
+            <?=number_format($row['ord_price'])?> 원<br>
+            총 <?=number_format($total_cnt1)?> 건
+        </td><!-- 수주금액 -->
         <td class="td_com_name"><!-- 제품 -->
             <?=implode(" ",$row['item_list'])?>
         </td>

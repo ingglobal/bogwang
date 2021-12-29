@@ -62,7 +62,7 @@ $sql = " select count(*) as cnt {$sql_common} {$sql_search} ";
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
-$rows = 1000;//$config['cf_page_rows'];
+$rows = ($schrows)?$schrows:100;//$config['cf_page_rows'];
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
@@ -113,7 +113,7 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
     <span class="btn_ov01"><span class="ov_txt">총 </span><span class="ov_num"> <?php echo number_format($total_count) ?>건 </span></span>
 </div>
 
-<form id="fsearch" name="fsearch" class="local_sch01 local_sch" method="get">
+<form id="fsearch" name="fsearch" class="local_sch01 local_sch" method="get" autocomplete="off">
 	<label for="sfl" class="sound_only">검색대상</label>
 	<select name="sfl" id="sfl">
 		<option value="oro.com_idx_customer"<?php echo get_selected($_GET['sfl'], "oro.com_idx_customer"); ?>>거래처번호</option>
@@ -124,6 +124,10 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 	</select>
 	<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 	<input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
+    <label for="schrows" class="sch_label">
+        <span>표시갯수<i class="fa fa-times data_blank" aria-hidden="true"></i></span>
+        <input type="text" name="schrows" placeholder="표시할 갯수" value="<?php echo $schrows ?>" id="schrows" class="frm_input" style="width:100px;text-align:right;" onClick="javascript:chk_Number(this)">
+    </label>
 	<label for="ord_date" class="sch_label">
 		<span>수주일<i class="fa fa-times data_blank" aria-hidden="true"></i></span>
 		<input type="text" name="ord_date" value="<?php echo $ord_date ?>" id="ord_date" readonly class="frm_input readonly" placeholder="수주일" style="width:100px;" autocomplete="off">
@@ -204,7 +208,7 @@ $('.data_blank').on('click',function(e){
     <tr>
         <th scope="col" id="oro_list_chk">
             <label for="chkall" class="sound_only">전체</label>
-            <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
+            <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all2($(this.form))">
         </th>
         <th scope="col">번호</th>
         <th scope="col">제품(수주상품번호)</th>
@@ -287,7 +291,7 @@ $('.data_blank').on('click',function(e){
             <input type="hidden" name="ori_idx[<?php echo $row['oro_idx'] ?>]" value="<?php echo $row['ori_idx'] ?>" class="ori_idx_<?php echo $row['oro_idx'] ?>">
             <input type="hidden" name="oro_idx[<?php echo $row['oro_idx'] ?>]" value="<?php echo $row['oro_idx'] ?>" class="oro_idx_<?php echo $row['oro_idx'] ?>">
             <label for="chk_<?php echo $i; ?>" class="sound_only"><?php echo get_text($row['oro_name']); ?> <?php echo get_text($row['oro_nick']); ?>님</label>
-            <input type="checkbox" name="chk[]" value="<?php echo $row['oro_idx'] ?>" id="chk_<?php echo $i ?>">
+            <input type="checkbox" name="chk[<?php echo $row['oro_idx'] ?>]" value="1" id="chk_<?php echo $i ?>">
             <div class="chkdiv_btn" chk_no="<?=$i?>"></div>
         </td>
         <td class="td_oro_idx"><?=$row['oro_idx']?></td><!-- 출하idx -->
@@ -396,7 +400,7 @@ $('.data_blank').on('click',function(e){
 
 </form>
 
-<?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?'.$qstr.'&amp;page='); ?>
+<?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, '?schrows='.$schrows.'&amp'.$qstr.'&amp;page='); ?>
 
 <div id="modal01" title="실행계획묶음등록" style="display:none;">
     <form name="form02" id="form02" autocomplete="off">
@@ -661,7 +665,7 @@ function slet_input(f){
 
 function form01_submit(f)
 {
-    if (!is_checked("chk[]")) {
+    if (!is_checked2($('input[name^="chk"'))) {
         alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
         return false;
     }

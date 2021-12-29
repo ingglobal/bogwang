@@ -226,3 +226,26 @@ function getGraphURL(url) {
 }    
 }
 
+//전체 체크/체크해제
+if(typeof(check_all2)!='function') {
+function check_all2(f) {
+    //alert($('input[name="chk[]"]').length);
+    if($('#chkall').is(':checked')) {
+        $('input[name^="chk"]').attr('checked',true);
+    }
+    else {
+        $('input[name^="chk"]').attr('checked',false);
+    }
+}    
+}
+//
+if(typeof(is_checked2)!='function') {
+function is_checked2(chk_obj)
+{
+    var checked = false;
+    chk_obj.each(function(){
+        if($(this).is(':checked')) checked = true;
+    });
+    return checked;
+}
+}
