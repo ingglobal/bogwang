@@ -40,7 +40,7 @@ $bom_idx_arr = $_POST['bom_idx'];
 $overlap_bom = '';
 //기존 생산계획의 작업지시번호를 기준으로 추가적으로 생산상품을 등록할때
 if($orp_no_old){
-
+    print_r2($chk_arr);exit;
     foreach($chk_arr as $oro_idx_v1){
         //삭제,취소 등의 상태값이 아닌 생산실행 상품레코드가 있으면 중복 레코드를 생성하면 안된다.
         $chk_sql = " SELECT COUNT(*) AS cnt FROM {$g5['order_out_practice_table']} AS oop
@@ -52,7 +52,7 @@ if($orp_no_old){
 
         $bom = sql_fetch(" SELECT bom_name,bom_part_no FROM {$g5['bom_table']} WHERE bom_idx = '{$bom_idx_arr[$oro_idx_v1]}' ");
         if($bom['bom_part_no']){
-            $overlap_bom .= '['.$bom['bom_part_no'].']('.$bom['bom_name'].')\\n';
+            $overlap_bom .= '('.$bom_idx_arr[$oro_idx_v1].')['.$bom['bom_part_no'].']('.$bom['bom_name'].')\\n';
         }
         //기존 생산실행 상품레코드가 있으면 정지.
         if($chk_result['cnt']){
@@ -133,7 +133,7 @@ else {
 
         $bom = sql_fetch(" SELECT bom_name,bom_part_no FROM {$g5['bom_table']} WHERE bom_idx = '{$bom_idx_arr[$oro_idx_v1]}' ");
         if($bom['bom_part_no']){
-            $overlap_bom .= '['.$bom['bom_part_no'].']('.$bom['bom_name'].')\\n';
+            $overlap_bom .= '('.$bom_idx_arr[$oro_idx_v1].')['.$bom['bom_part_no'].']('.$bom['bom_name'].')\\n';
         }
         //기존 생산실행 상품레코드가 있으면 정지.
         if($chk_result['cnt']){
