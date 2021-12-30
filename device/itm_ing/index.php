@@ -51,10 +51,13 @@ else if($getData[0]['bom_part_no']) {
     $bom = get_table_meta('bom','bom_idx',$oop['bom_idx']);
 
     // 외부 라벨 추출
-    if(strlen($arr['itm_barcode'])>40) {
+    $bcArr = explode('_',$arr['itm_barcode']);
+    //if(strlen($arr['itm_barcode'])>40) {
+    if(count($bcArr) >= 3) {
         $arr['itm_barcodes'] = explode("_",$arr['itm_barcode']);
         // print_r2($arr['itm_barcodes']);
-        $arr['itm_com_barcode'] = $arr['itm_barcodes'][3];
+        //$arr['itm_com_barcode'] = $arr['itm_barcodes'][3];
+        $arr['itm_com_barcode'] = $bcArr[2];
     }
 
     //구간재설정
