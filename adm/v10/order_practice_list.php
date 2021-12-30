@@ -8,16 +8,14 @@ $g5['title'] = '생산실행계획';
 // include_once('./_top_menu_orp.php');
 include_once('./_head.php');
 // echo $g5['container_sub_title'];
+/*
 $sql_common = " FROM {$g5['order_practice_table']} AS orp
     LEFT JOIN {$g5['order_out_practice_table']} AS oop ON orp.orp_idx = oop.orp_idx
     LEFT JOIN {$g5['order_out_table']} AS oro ON oop.oro_idx = oro.oro_idx
 "; 
-/*
-$sql_common = " FROM {$g5['order_practice_table']} AS orp
-LEFT JOIN {$g5['order_out_practice_table']} AS oop USING(orp_idx)
-LEFT JOIN {$g5['order_out_table']} AS oro USING(oro_idx)
-"; 
 */
+$sql_common = " FROM {$g5['order_practice_table']} AS orp
+"; 
 
 $where = array();
 // 디폴트 검색조건 (used 제외)
@@ -48,7 +46,7 @@ if (!$sst) {
 }
 
 $sql_order = " ORDER BY {$sst} {$sod} ";
-$sql_group = " GROUP BY oop.orp_idx ";
+$sql_group = ""; //" GROUP BY orp.orp_idx ";
 $sql = " select count(*) as cnt {$sql_common} {$sql_search} ";
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
@@ -58,8 +56,7 @@ $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
-$sql = " SELECT *,
-        SUM(oop.oop_count) AS orp_count
+$sql = " SELECT *
         {$sql_common} {$sql_search} {$sql_group} {$sql_order}
         LIMIT {$from_record}, {$rows}
 ";
@@ -193,9 +190,9 @@ $('.data_blank').on('click',function(e){
         <th scope="col">라인</th>
         <th scope="col">시작일</th>
         <th scope="col">완료일</th>
-        <th scope="col">지시수량</th>
-        <th scope="col">실시간생산</th>
-        <th scope="col">수주/출하</th>
+        <th scope="col">계획수량</th>
+        <!--th scope="col">실시간생산</th-->
+        <!--th scope="col">수주/출하</th-->
         <th scope="col">상태</th>
         <th scope="col">관리</th>
     </tr>
@@ -203,10 +200,9 @@ $('.data_blank').on('click',function(e){
     </tr>
     </thead>
     <tbody>
-    <?php
+        <?php
     for ($i=0; $row=sql_fetch_array($result); $i++) {
-        
-
+        $oop = sql_fetch(" SELECT SUM(oop_count) AS cnt FROM {$g5['order_out_practice_table']} WHERE orp_idx = '{$row['orp_idx']}' ");
         $s_mod = '<a href="./order_practice_form.php?'.$qstr.'&amp;w=u&amp;orp_idx='.$row['orp_idx'].'" class="btn btn_03">수정</a>';
         $s_copy = '<a href="./order_practice_form.php?'.$qstr.'&w=c&orp_idx='.$row['orp_idx'].'" class="btn btn_03" style="margin-right:5px;">복제</a>';
 
@@ -221,7 +217,7 @@ $('.data_blank').on('click',function(e){
         </td>
         <td class="td_orp_id"><?=$row['orp_idx']?></td>
         <td class="td_orp_order_no">
-            <input type="text" name="orp_order_no[<?=$row['orp_idx']?>]" value="<?=$row['orp_order_no']?>" class="tbl_input orp_order_no_<?=$row['orp_idx']?>" style="width:100px;">
+            <input type="text" name="orp_order_no[<?=$row['orp_idx']?>]" value="<?=$row['orp_order_no']?>" class="tbl_input orp_order_no_<?=$row['orp_idx']?>" style="width:140px;">
         </td><!-- 지시번호 -->
         <td class="td_orp_operation_line"><!-- 공정/라인 -->
             <input type="hidden" name="trm_idx_line[<?=$row['orp_idx']?>]" value="<?=$row['trm_idx_line']?>" class="trm_idx_line_<?=$row['orp_idx']?>">
@@ -236,14 +232,14 @@ $('.data_blank').on('click',function(e){
             <input type="text" name="orp_done_date[<?=$row['orp_idx']?>]" value="<?=$row['orp_done_date']?>" readonly class="tbl_input orp_done_date_<?=$row['orp_idx']?>" style="width:80px;">
         </td>
         <td class="td_orp_count"><!-- 지시수량 -->
-            <?=number_format($row['orp_count'])?>&nbsp;&nbsp;개
+        <?=number_format($oop['cnt'])?>&nbsp;&nbsp;개
         </td>
-        <td class="td_orp_output"><?=$row['orp_output']?></td><!-- 실시간생산 -->
-        <td class="td_ord_idx"><!-- 수주/출하번호 -->
-            <a href="?sfl=oro.ord_idx&stx=<?=$row['ord_idx']?>"><?=$row['ord_idx']?></a>
+        <!--td class="td_orp_output"><?php //$row['orp_output']?></td--><!-- 실시간생산 -->
+        <!--td class="td_ord_idx">
+            <a href="?sfl=oro.ord_idx&stx=<?php //$row['ord_idx']?>"><?php //$row['ord_idx']?></a>
             -
-            <a href="?sfl=orp.oro_idx&stx=<?=$row['oro_idx']?>"><?=$row['oro_idx']?></a>
-        </td>
+            <a href="?sfl=orp.oro_idx&stx=<?php //$row['oro_idx']?>"><?php //$row['oro_idx']?></a>
+        </td--><!-- 수주/출하번호 -->
         <td class="td_orp_status"><?=$g5['set_orp_status_value'][$row['orp_status']]?></td><!-- 상태 -->
         <td class="td_mng">
 			<?=$s_mod?>
@@ -252,7 +248,7 @@ $('.data_blank').on('click',function(e){
     <?php
     }
     if ($i == 0)
-        echo "<tr><td colspan='19' class=\"empty_table\">자료가 없습니다.</td></tr>";
+        echo "<tr><td colspan='9' class=\"empty_table\">자료가 없습니다.</td></tr>";
     ?>
     </tbody>
     </table>
