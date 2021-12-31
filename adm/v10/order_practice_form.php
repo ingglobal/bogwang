@@ -45,6 +45,9 @@ for ($i=0;$i<sizeof($check_array);$i++) {
 $html_title = ($w=='')?'추가':'수정'; 
 $g5['title'] = '실행계획 '.$html_title;
 include_once ('./_head.php');
+
+
+
 ?>
 <style>
 .span_oop_count {margin-left:20px;color:yellow;}

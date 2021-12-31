@@ -207,12 +207,24 @@ input[type="file"]::after{display:block;content:'파일선택\A(드래그앤드�
         $ar['value_type'] = 'number';
         $ar['help'] = '구매단위를 숫자로 입력하세요.';
         $ar['width'] = '50px';
-        $ar['unit'] = '개';
+        if(${$pre}['bom_type'] != 'product'){
         $ar['colspan'] = '3';
+        }
+        $ar['unit'] = '개';
         $ar['form_script'] = 'onClick="javascript:chk_Number(this)"';
         echo create_td_input($ar);
         unset($ar);
         ?>
+        <?php if(${$pre}['bom_type'] == 'product'){ ?>
+        <th scope="row">메인생산설비라인</th>
+		<td>
+            <select name="trm_idx_line" id="trm_idx_line">
+                <option value="">라인선택</option>
+                <?=$line_form_options?>
+            </select>
+            <script>$('select[name="trm_idx_line').val('<?=$bom['trm_idx_line']?>');</script>
+		</td>
+        <?php } ?>
     </tr>
     <tr>
         <th scope="row">가격정보</th>

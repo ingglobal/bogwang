@@ -3,9 +3,12 @@ include_once('./_head.sub.php');
 
 ?>
 <style>
+.update_select:after{display:block;visibility:hidden;clear:both;content:''}
+.update_select li{float:left;margin-right:5px;}
 label[for="target"] i{cursor:pointer;margin-left:10px;font-size:1.2em;}
 </style>
 <ul class="update_select">
+	<li><a href="javascript:" page="category_setting" class="btn btn_01 target_btn">카테고리셋팅/BOM완제품연결/외부코드저장</a></li>
     <li><a href="javascript:" page="bom_company_matching" class="btn btn_01 target_btn">BOM&업체매칭</a></li>
 </ul>
 <form name="form02" id="form02" action="" onsubmit="return form02_submit(this);" method="post" enctype="multipart/form-data">
@@ -14,7 +17,7 @@ label[for="target"] i{cursor:pointer;margin-left:10px;font-size:1.2em;}
     <tr>
         <td style="padding:15px 0;">
             <label for="target">
-                <input type="text" name="target_file" id="target" readonly class="frm_input readonly">
+                <input type="text" name="target_file" id="target" readonly class="frm_input readonly" style="width:300px;">
                 <i class="fa fa-times" aria-hidden="true"></i>
             </label>
         </td>
