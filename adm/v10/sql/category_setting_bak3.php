@@ -33,7 +33,6 @@ for($i=0;$i<count($ids);$i++){
 }
 //전체 엑셀 데이터를 담을 배열을 선언한다.
 $catArr = array();
-$caArr = array();
 $itmArr = array();
 $modBom = array();//update해야하는 상품
 $addBom = array();//새로 추가해야 하는 상품
@@ -71,38 +70,74 @@ try {
 				&& 	preg_match('/[A-Z\-0-9]+/',$rowData[0][5])
 				&& 	preg_match('/[가-힣ㄱ-ㅎㅏ-ㅣ\/\_A-Z]+/',$rowData[0][6])
 			){
-				
 				if(gettype($catArr[$rowData[0][1]]) != 'array'){
 					$catArr[$rowData[0][1]] = array();
+					$catArr[$rowData[0][1]]['sort'] = count($catArr);
+					$catArr[$rowData[0][1]]['bct_id'] = $idArr[count($catArr)-1];
+					$catArr[$rowData[0][1]]['subs'] = array();
+				}else{
+					$catArr[$rowData[0][1]]['sort'] = count($catArr);
+					$catArr[$rowData[0][1]]['bct_id'] = $idArr[count($catArr)-1];
 				}
+				if(gettype($catArr[$rowData[0][1]]['subs'][$rowData[0][2]]) != 'array'){
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]] = array();
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['sort'] = count($catArr[$rowData[0][1]]['subs']);
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['bct_id'] = $catArr[$rowData[0][1]]['bct_id'].$idArr[count($catArr[$rowData[0][1]]['subs'])-1];
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'] = array();
 
-				if(gettype($catArr[$rowData[0][1]][$rowData[0][2]]) != 'array'){
-					$catArr[$rowData[0][1]][$rowData[0][2]] = array();
-					
+				}else{
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['sort'] = count($catArr[$rowData[0][1]]['subs']);
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['bct_id'] = $catArr[$rowData[0][1]]['bct_id'].$idArr[count($catArr[$rowData[0][1]]['subs'])-1];
 				}
+				if(gettype($catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]) != 'array'){
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]] = array();
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['sort'] = count($catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs']);
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['bct_id'] = $catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['bct_id'].$idArr[count($catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'])-1];
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['subs'] = array();
 
-				if(gettype($catArr[$rowData[0][1]][$rowData[0][2]][$rowData[0][3]]) != 'array'){
-					$catArr[$rowData[0][1]][$rowData[0][2]][$rowData[0][3]] = array();
+				}else{
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['sort'] = count($catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs']);
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['bct_id'] = $catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['bct_id'].$idArr[count($catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'])-1];
 				}
-				
+				if(gettype($catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['subs'][$rowData[0][4]]) != 'array'){
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['subs'][$rowData[0][4]] = array();
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['subs'][$rowData[0][4]]['sort'] = count($catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['subs']);
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['subs'][$rowData[0][4]]['bct_id'] = $catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['bct_id'].$idArr[count($catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['subs'])-1];
 
-				if(gettype($catArr[$rowData[0][1]][$rowData[0][2]][$rowData[0][3]][$rowData[0][4]]) != 'array'){
-					$catArr[$rowData[0][1]][$rowData[0][2]][$rowData[0][3]][$rowData[0][4]] = array();
+				}else{
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['subs'][$rowData[0][4]]['sort'] = count($catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['subs']);
+					$catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['subs'][$rowData[0][4]]['bct_id'] = $catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['bct_id'].$idArr[count($catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['subs'])-1];
 				}
-
-				$catArr[$rowData[0][1]][$rowData[0][2]][$rowData[0][3]][$rowData[0][4]] = array();
-
+				/*
 				array_push($itmArr,array(
-					'c1' => $rowData[0][1]
-					,'c2' => $rowData[0][2]
-					,'c3' => $rowData[0][3]
-					,'c4' => $rowData[0][4]
-					,'bct_id' => ''
+					'bct_id' => $catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['subs'][$rowData[0][4]]['bct_id']
 					,'bom_part_no' => $rowData[0][5]
 					,'bom_name' => $rowData[0][6]
 					,'bom_ex_label' => $rowData[0][25]
 					,'bom_sort' => $c
 				));
+				*/
+				$bom = sql_fetch(" SELECT bom_idx FROM {$g5['bom_table']} WHERE com_idx = '{$_SESSION['ss_com_idx']}' AND bom_status NOT IN('delete','del','trash') AND bom_part_no = '{$rowData[0][5]}' ");
+
+				if($bom['bom_idx']){
+					array_push($modBom,array(
+						'bom_idx' => $bom['bom_idx']
+						,'bct_ic' => $catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['subs'][$rowData[0][4]]['bct_id']
+						,'bom_part_no' => $rowData[0][5]
+						,'bom_name' => $rowData[0][6]
+						,'bom_ex_label' => $rowData[0][25]
+						,'bom_sort' => $c
+					));
+				}
+				else {
+					array_push($addBom,array(
+						'bct_ic' => $catArr[$rowData[0][1]]['subs'][$rowData[0][2]]['subs'][$rowData[0][3]]['subs'][$rowData[0][4]]['bct_id']
+						,'bom_part_no' => $rowData[0][5]
+						,'bom_name' => $rowData[0][6]
+						,'bom_ex_label' => $rowData[0][25]
+						,'bom_sort' => $c
+					));
+				}
 
 				$c++;
 			}
@@ -118,105 +153,10 @@ try {
 	echo $e;
     exit;
 }
-
-//print_r2($catArr);exit;
-//unset($c);
-if(count($catArr)){
-	$c1 = 0;
-	foreach($catArr as $c1k => $c1v){
-		$caArr[$c1k]['sort'] = $c1;
-		$caArr[$c1k]['bct_id'] = $idArr[$c1];
-		$caArr[$c1k]['subs'] = array();
-		//continue;
-		if(count($c1v)){
-			$c2 = 0;
-			foreach($c1v as $c2k => $c2v){
-				$caArr[$c1k]['subs'][$c2k]['sort'] = $c2;
-				$caArr[$c1k]['subs'][$c2k]['bct_id'] = $caArr[$c1k]['bct_id'].$idArr[$c2];
-				$caArr[$c1k]['subs'][$c2k]['subs'] = array();
-				//continue;
-				if(count($c2v)){
-					$c3 = 0;
-					foreach($c2v as $c3k => $c3v){
-						$caArr[$c1k]['subs'][$c2k]['subs'][$c3k]['sort'] = $c3;
-						$caArr[$c1k]['subs'][$c2k]['subs'][$c3k]['bct_id'] = $caArr[$c1k]['subs'][$c2k]['bct_id'].$idArr[$c3];
-						$caArr[$c1k]['subs'][$c2k]['subs'][$c3k]['subs'] = array();
-						//continue;
-						if(count($c3v)){
-							$c4 = 0;
-							foreach($c3v as $c4k => $c4v){
-								$caArr[$c1k]['subs'][$c2k]['subs'][$c3k]['subs'][$c4k]['sort'] = $c4;
-								$caArr[$c1k]['subs'][$c2k]['subs'][$c3k]['subs'][$c4k]['bct_id'] = $caArr[$c1k]['subs'][$c2k]['subs'][$c3k]['bct_id'].$idArr[$c4];
-								$c4++;
-							}
-						}
-						$c3++;
-					}
-				}
-				$c2++;
-			}
-		}
-		$c1++;
-	}
-}
-
-
-if(count($caArr)){
-	//기존의 해당업체의 레코드를 전부 삭제한다.
-	$all_del_sql = " DELETE FROM {$g5['bom_category_table']} WHERE com_idx = '".$_SESSION['ss_com_idx']."' ";
-	// echo $all_del_sql."<br><br>";
-	sql_query($all_del_sql,1);
-
-	foreach($caArr as $c1k => $c1v){
-		$c1_sql = " INSERT INTO {$g5['bom_category_table']} SET bct_id = '{$c1v['bct_id']}', com_idx = '{$_SESSION['ss_com_idx']}', bct_name = '{$c1k}', bct_desc = '{$c1k}', bct_order = '{$c1v['sort']}', bct_reg_dt = '".G5_TIME_YMDHIS."', bct_update_dt = '".G5_TIME_YMDHIS."' ";
-		sql_query($c1_sql,1);
-		foreach($c1v['subs'] as $c2k => $c2v){
-			$c2_sql = " INSERT INTO {$g5['bom_category_table']} SET bct_id = '{$c2v['bct_id']}', com_idx = '{$_SESSION['ss_com_idx']}', bct_name = '{$c2k}', bct_desc = '{$c2k}', bct_order = '{$c2v['sort']}', bct_reg_dt = '".G5_TIME_YMDHIS."', bct_update_dt = '".G5_TIME_YMDHIS."' ";
-			sql_query($c2_sql,1);
-			foreach($c2v['subs'] as $c3k => $c3v){
-				$c3_sql = " INSERT INTO {$g5['bom_category_table']} SET bct_id = '{$c3v['bct_id']}', com_idx = '{$_SESSION['ss_com_idx']}', bct_name = '{$c3k}', bct_desc = '{$c3k}', bct_order = '{$c3v['sort']}', bct_reg_dt = '".G5_TIME_YMDHIS."', bct_update_dt = '".G5_TIME_YMDHIS."' ";
-				sql_query($c3_sql,1);
-				foreach($c3v['subs'] as $c4k => $c4v){
-					$c4_sql = " INSERT INTO {$g5['bom_category_table']} SET bct_id = '{$c4v['bct_id']}', com_idx = '{$_SESSION['ss_com_idx']}', bct_name = '{$c4k}', bct_desc = '{$c4k}', bct_order = '{$c4v['sort']}', bct_reg_dt = '".G5_TIME_YMDHIS."', bct_update_dt = '".G5_TIME_YMDHIS."' ";
-					sql_query($c4_sql,1);
-				}
-			}
-		}
-	}
-}
-
-if(count($itmArr)){
-	for($i=0;$i<count($itmArr);$i++){
-		$itmArr[$i]['bct_id'] = $caArr[$itmArr[$i]['c1']]['subs'][$itmArr[$i]['c2']]['subs'][$itmArr[$i]['c3']]['subs'][$itmArr[$i]['c4']]['bct_id'];
-
-		$bom = sql_fetch(" SELECT bom_idx FROM {$g5['bom_table']} WHERE com_idx = '{$_SESSION['ss_com_idx']}' AND bom_status NOT IN('delete','del','trash') AND bom_part_no = '{$itmArr[$i]['bom_part_no']}' ");
-
-		if($bom['bom_idx']){
-			array_push($modBom,array(
-				'bom_idx' => $bom['bom_idx']
-				,'bct_id' => $itmArr[$i]['bct_id']
-				,'bom_part_no' => $itmArr[$i]['bom_part_no']
-				,'bom_name' => $itmArr[$i]['bom_name']
-				,'bom_ex_label' => $itmArr[$i]['bom_ex_label']
-				,'bom_sort' => $itmArr[$i]['bom_sort']
-			));
-		}
-		else {
-			array_push($addBom,array(
-				'bct_id' => $itmArr[$i]['bct_id']
-				,'bom_part_no' => $itmArr[$i]['bom_part_no']
-				,'bom_name' => $itmArr[$i]['bom_name']
-				,'bom_ex_label' => $itmArr[$i]['bom_ex_label']
-				,'bom_sort' => $itmArr[$i]['bom_sort']
-			));
-		}
-	}
-}
-//print_r2($caArr);
-// print_r2($itmArr);
+print_r2($catArr);
+exit;
 // print_r2($modBom);
 // print_r2($addBom);
-// exit;
 /*
 Array
 (
@@ -252,11 +192,36 @@ Array
             [bct_id] => 10101010
             [bom_part_no] => 88700-4F160RES
             [bom_name] => 다크브라운_고정_FRT
-            [bom_ex_label] => 
+            [bom_ex_label] =>
             [bom_sort] => 0
         )
 */
 //exit;
+if(@sizeof($catArr)){
+	//기존의 해당업체의 레코드를 전부 삭제한다.
+	$all_del_sql = " DELETE FROM {$g5['bom_category_table']} WHERE com_idx = '".$_SESSION['ss_com_idx']."' ";
+	// echo $all_del_sql."<br><br>";
+	sql_query($all_del_sql,1);
+
+
+	foreach($catArr as $c1k => $c1v){
+		$c1_sql = " INSERT INTO {$g5['bom_category_table']} SET bct_id = '{$c1v['bct_id']}', com_idx = '{$_SESSION['ss_com_idx']}', bct_name = '{$c1k}', bct_desc = '{$c1k}', bct_order = '{$c1v['sort']}', bct_reg_dt = '".G5_TIME_YMDHIS."', bct_update_dt = '".G5_TIME_YMDHIS."' ";
+		sql_query($c1_sql,1);
+		foreach($c1v['subs'] as $c2k => $c2v){
+			$c2_sql = " INSERT INTO {$g5['bom_category_table']} SET bct_id = '{$c2v['bct_id']}', com_idx = '{$_SESSION['ss_com_idx']}', bct_name = '{$c2k}', bct_desc = '{$c2k}', bct_order = '{$c2v['sort']}', bct_reg_dt = '".G5_TIME_YMDHIS."', bct_update_dt = '".G5_TIME_YMDHIS."' ";
+			sql_query($c2_sql,1);
+			foreach($c2v['subs'] as $c3k => $c3v){
+				$c3_sql = " INSERT INTO {$g5['bom_category_table']} SET bct_id = '{$c3v['bct_id']}', com_idx = '{$_SESSION['ss_com_idx']}', bct_name = '{$c3k}', bct_desc = '{$c3k}', bct_order = '{$c3v['sort']}', bct_reg_dt = '".G5_TIME_YMDHIS."', bct_update_dt = '".G5_TIME_YMDHIS."' ";
+				sql_query($c3_sql,1);
+				foreach($c3v['subs'] as $c4k => $c4v){
+					$c4_sql = " INSERT INTO {$g5['bom_category_table']} SET bct_id = '{$c4v['bct_id']}', com_idx = '{$_SESSION['ss_com_idx']}', bct_name = '{$c4k}', bct_desc = '{$c4k}', bct_order = '{$c4v['sort']}', bct_reg_dt = '".G5_TIME_YMDHIS."', bct_update_dt = '".G5_TIME_YMDHIS."' ";
+					sql_query($c4_sql,1);
+				}
+			}
+		}
+	}
+}
+
 
 
 

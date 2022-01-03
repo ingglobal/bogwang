@@ -192,11 +192,19 @@ $('.date_blank').on('click',function(e){
         $row['oro'] = sql_fetch($sql2,1);
 
         // 제품목록
+        /*
         $sql1 = "SELECT bom.bom_idx, bom.bct_id, bom.bom_name, bom_part_no, bom_price, bom_status, ori.ori_idx, ori.ori_count
                 FROM {$g5['order_item_table']} AS ori
                     LEFT JOIN {$g5['bom_table']} AS bom ON bom.bom_idx = ori.bom_idx
                 WHERE ori.ord_idx = '".$row['ord_idx']."' AND ori.ori_status NOT IN('trash','delete','del','cancel')
                 ORDER BY FIELD(bom.bom_price,0) desc,FIELD(bom.bct_id,'') desc,ori_reg_dt LIMIT 0,40
+        ";
+        */
+        $sql1 = "SELECT bom.bom_idx, bom.bct_id, bom.bom_name, bom_part_no, bom.bom_price, bom.bom_sort, bom.bom_status, ori.ori_idx, ori.ori_count
+                FROM {$g5['order_item_table']} AS ori
+                    LEFT JOIN {$g5['bom_table']} AS bom ON bom.bom_idx = ori.bom_idx
+                WHERE ori.ord_idx = '".$row['ord_idx']."' AND ori.ori_status NOT IN('trash','delete','del','cancel')
+                ORDER BY bom.bom_sort LIMIT 0,10
         ";
         //print_r3($sql1);
         $rs1 = sql_query($sql1,1);

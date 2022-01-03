@@ -18,7 +18,8 @@ else if ($w == 'u') {
     $csql = sql_fetch(" SELECT com_name FROM {$g5['company_table']} WHERE com_idx = '{$ord['com_idx_customer']}' ");
     $ord['com_name_customer'] = $csql['com_name'];
 
-    $sql_it = " SELECT * FROM {$g5['order_item_table']} WHERE ord_idx = '{$ord_idx}' AND ori_status NOT IN('trash','delete','del','cancel') ORDER BY ori_idx,ori_reg_dt DESC ";
+    $sql_it = " SELECT * FROM {$g5['order_item_table']} AS ori
+                LEFT JOIN {$g5['bom_table']} AS bom ON ori.bom_idx = bom.bom_idx WHERE ord_idx = '{$ord_idx}' AND ori_status NOT IN('trash','delete','del','cancel') ORDER BY bom_sort ";
     $result = sql_query($sql_it,1);
     $total_count = sql_num_rows($result);
 }

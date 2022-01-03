@@ -99,6 +99,8 @@ for ($i=0;$i<sizeof($check_array);$i++) {
 
 $html_title = ($w=='')?'추가':'수정';
 $g5['title'] = '제품(BOM) '.$html_title;
+// print_r2($g5['line_reverse']['1라인']);
+// exit;
 include_once ('./_head.php');
 ?>
 <script src="<?=G5_USER_ADMIN_JS_URL?>/multifile/jquery.MultiFile.min.js" type="text/javascript" language="javascript"></script>
