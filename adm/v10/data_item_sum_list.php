@@ -53,7 +53,7 @@ if ($en_date) {
 
 // 라인번호 검색
 if ($ser_trm_line) {
-    $where[] = " trm_idx_line = '".$ser_trm_line."' ";
+    $where[] = " itm.trm_idx_line = '".$ser_trm_line."' ";
 }
 
 // 최종 WHERE 생성
@@ -136,7 +136,7 @@ $items1 = array(
 <select name="sfl" id="sfl">
     <option value="">검색항목</option>
     <?php
-    $skips = array('com_idx','mms_idx','bom_part_no');
+    $skips = array('com_idx','mms_idx','bom_part_no','trm_idx_line');
     if(is_array($items1)) {
         foreach($items1 as $k1 => $v1) {
             if(in_array($k1,$skips)) {continue;}

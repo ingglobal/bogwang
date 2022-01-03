@@ -641,3 +641,4 @@ FROM g5_1_order_out_practice AS oop
 WHERE orp_done_date != '0000-00-00'
 GROUP BY bom_idx, trm_idx_line, orp_done_date, oop_count, oop_1, oop_2, oop_3, oop_4, oop_5, oop_6, oop_7, oop_8, oop_9, oop_10
 ORDER BY bom_idx, trm_idx_line, orp_done_date
+

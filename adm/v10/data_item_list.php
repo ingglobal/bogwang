@@ -59,7 +59,7 @@ if ($en_date) {
 
 // 설비번호 검색
 if ($ser_trm_line) {
-    $where[] = " orp_idx IN ( SELECT orp_idx FROM {$g5['order_practice_table']} WHERE trm_idx_line = '".$ser_trm_line."' ) ";
+    $where[] = " oop_idx IN ( SELECT orp_idx FROM {$g5['order_practice_table']} WHERE trm_idx_line = '".$ser_trm_line."' ) ";
 }
 
 // 운영권한이 없으면 자기 업체만
@@ -156,7 +156,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
 <select name="sfl" id="sfl">
     <option value="">검색항목</option>
     <?php
-    $skips = array('itm_idx','trm_idx','bom_part_no','itm_barcode');
+    $skips = array('itm_idx','trm_idx','bom_part_no','itm_barcode','trm_idx_line');
     if(is_array($items1)) {
         foreach($items1 as $k1 => $v1) {
             if(in_array($k1,$skips)) {continue;}
@@ -215,7 +215,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
 	<tbody>
     <?php
     for ($i=0; $row=sql_fetch_array($result); $i++) {
-        $row['orp'] = get_table('order_practice','orp_idx',$row['orp_idx']);
+        $row['oop'] = get_table('order_out_practice','oop_idx',$row['oop_idx']);
+        $row['orp'] = get_table('order_practice','orp_idx',$row['oop']['orp_idx']);
         // print_r2($row['orp']);
         
 		// 수정 및 발송 버튼

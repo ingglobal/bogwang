@@ -655,7 +655,7 @@ $(document).on('click','#fsearch button[type=submit]',function(e){
                         +'&dta_item='+dta_item+'&dta_unit='+dta_unit
                         +'&st_date='+st_date+'&st_time='+st_time+'&en_date='+en_date+'&en_time='+en_time
                         +'&graph_id='+graph_id1;
-        // console.log(dta_url);
+        console.log(dta_url);
 
         Highcharts.getJSON(
             dta_url,

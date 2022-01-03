@@ -16,7 +16,7 @@ $sql = "SELECT SUM( itm_count ) AS output_sum
 // echo $sql;
 $output1 = sql_fetch($sql,1);
 // 목표달성율, 불량율 입력
-$sum_target = @number_format( $output1['output_sum']/$target['total']*100,1 );
+$sum_target = $target['total'] ? @number_format( $output1['output_sum']/$target['total']*100,1 ) : 0;
 $sum_ok = @number_format( $output1['output_ok']/$output1['output_sum']*100, 2);
 $sum_ng = @number_format( $output1['output_ng']/$output1['output_sum']*100, 2);
 

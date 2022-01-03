@@ -394,7 +394,7 @@ $(function() {
                 ||$file_name=='iframe.graph'||$file_name=='iframe.graph5') {
         ?>
 
-            // 전제 생산량 (합격+불량) --------------------------------
+            // 전체 생산량 (합격+불량) --------------------------------
             dta_group = "product";  // mea, product, run, error
             dta_json_file = "output";
             dta_data_url = $(this).attr('mms_data_url') || "<?=$g5['set_data_url']?>";
