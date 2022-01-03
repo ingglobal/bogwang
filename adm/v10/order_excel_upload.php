@@ -180,6 +180,10 @@ foreach($ordArr as $ok => $ov){
         $ord_price = 0;
         foreach($ov as $ik => $iv){
             $bom = sql_fetch(" SELECT bom_idx,com_idx_customer,bom_price FROM {$g5['bom_table']} WHERE bom_part_no = '{$ik}' AND bom_status NOT IN('delete','del','cancel','trash') ");
+            if(!$bom['bom_idx']){
+                alert('['.$ik.'] 품번의 상품이 BOM데이터에 등록되지 않았습니다.');
+                break;
+            }
             //수주별 가격 누적계산
             $ord_price += ($bom['bom_price'] * $iv);
 
