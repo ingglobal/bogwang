@@ -133,6 +133,7 @@ if(count($gstArr)){
         if($gst['gst_idx']){
             $gsql = " UPDATE {$g5['guest_stock_table']} SET
                             gst_count = '{$gv}'
+                            ,gst_date = '{$todate}'
                             ,gst_update_dt = '".G5_TIME_YMDHIS."'
                         WHERE gst_idx = '{$gst['gst_idx']}'
             ";
@@ -150,15 +151,17 @@ if(count($gstArr)){
             ";
         }
 
-
+        //echo $gsql."<br>";
         sql_query($gsql,1);
     }
 }
-
+//exit;
 foreach($ordArr as $ok => $ov){
     
     if(count($ov)){
-        $ord = sql_fetch(" SELECT ord_idx FROM {$g5['order_table']} WHERE ord_status NOT IN('delete','del','trash','cancel') AND ord_date = '{$ok}' ");
+        $ord_sql = " SELECT ord_idx FROM {$g5['order_table']} WHERE ord_status NOT IN('delete','del','trash','cancel') AND ord_date = '{$ok}' ";
+        //echo $ord_sql."<br>";
+        $ord = sql_fetch($ord_sql);
         if(!$ord['ord_idx']){
             $osql = " INSERT INTO {$g5['order_table']} (`com_idx`,`ord_price`,`ord_ship_date`,`ord_status`,`ord_date`,`ord_reg_dt`,`ord_update_dt`) VALUES (
                 '{$_SESSION['ss_com_idx']}'
@@ -201,6 +204,7 @@ foreach($ordArr as $ok => $ov){
                             ,ori_reg_dt = '".G5_TIME_YMDHIS."'
                             ,ori_update_dt = '".G5_TIME_YMDHIS."'
                 ";
+                // echo $isql."<br>";
                 sql_query($isql,1);
                 $ori_idx = sql_insert_id();
             }else{
@@ -209,8 +213,9 @@ foreach($ordArr as $ok => $ov){
                             ,ori_price = '{$bom['bom_price']}'
                             ,ori_update_dt = '".G5_TIME_YMDHIS."'
                         WHERE ori_idx = '{$ori['ori_idx']}'
-                            AND ord_idx = '{$ord_idx}'
-                ";
+                        AND ord_idx = '{$ord_idx}'
+                        ";
+                // echo $isql."<br>";
                 sql_query($isql,1);
                 $ori_idx = $ori['ori_idx'];
             }
@@ -219,10 +224,12 @@ foreach($ordArr as $ok => $ov){
         //누적 총합계 수주금액 업데이트
         sql_query(" UPDATE {$g5['order_table']} SET ord_price = '{$ord_price}' WHERE ord_idx = '{$ord_idx}' ");
 
+        /*
         $del_where = (@sizeof($oriArr[$ok]))? " AND ori_idx NOT IN (".implode(",",$oriArr[$ok]).") ":"";
         $sql = "DELETE FROM {$g5['order_item_table']}  WHERE ord_idx='".$ord_idx."' {$del_where} ";
         //echo $sql."<br>";
         sql_query($sql,1);
+        */
     }
 }
 
