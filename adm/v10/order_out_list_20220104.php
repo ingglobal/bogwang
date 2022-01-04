@@ -465,6 +465,14 @@ $('.data_blank').on('click',function(e){
             </td>
         </tr>
         <tr>
+            <td>
+                <p style="padding:10px 0 6px;">상태</p>
+                <select name="orp_status" id="orp_status">
+                <?=$g5['set_orp_status_options']?>
+                </select>
+            </td>
+        </tr>
+        <tr>
             <td style="padding:15px 5px;">
                 <button type="button" id="orp_submit" onclick="form02_submit(document.getElementById('form02'));" class="btn btn_01">확인</button>
             </td>
@@ -784,7 +792,7 @@ $( "#modal01" ).dialog({
         $('#form01').find('input[name="mb_id"]').remove();
         $('#form01').find('input[name="orp_start_date"]').remove();
         $('#form01').find('input[name="orp_end_date"]').remove();
-        //$('#form01').find('input[name="orp_status"]').remove();
+        $('#form01').find('input[name="orp_status"]').remove();
     }
 });
 
@@ -797,7 +805,7 @@ function form02_submit(f) {
     var mb_name = f.mb_name.value;
     var orp_start_date = f.orp_start_date.value;
     var orp_end_date = f.orp_end_date.value;
-    //var orp_status = f.orp_status.value;
+    var orp_status = f.orp_status.value;
 
     if(!orp_order_no){
         alert('작업지시번호를 입력해 주세요.');
@@ -835,7 +843,7 @@ function form02_submit(f) {
     $('<input type="hidden" name="mb_id" value="'+mb_id+'">').insertBefore(tkn_obj);
     $('<input type="hidden" name="orp_start_date" value="'+orp_start_date+'">').insertBefore(tkn_obj);
     $('<input type="hidden" name="orp_end_date" value="'+orp_end_date+'">').insertBefore(tkn_obj);
-    //$('<input type="hidden" name="orp_status" value="'+orp_status+'">').insertBefore(tkn_obj);
+    $('<input type="hidden" name="orp_status" value="'+orp_status+'">').insertBefore(tkn_obj);
     tkn_obj.val(get_ajax_token());
     document.pressed = '실행계획묶음등록';
     var form01 = document.getElementById('form01');
@@ -848,14 +856,14 @@ function form02_submit(f) {
 function form03_submit(f) {
     var orp_order_no = f.orp_order_no.value;
     var orp_no_old = f.orp_no_old.value;
-    //var orp_status = f.orp_status.value;
+    var orp_status = f.orp_status.value;
 
 
     //alert('ok');
     var tkn_obj = $('#form01').find('input[name="token"]');
     $('<input type="hidden" name="orp_order_no" value="'+orp_order_no+'">').insertBefore(tkn_obj);
     $('<input type="hidden" name="orp_no_old" value="'+orp_no_old+'">').insertBefore(tkn_obj);
-    //$('<input type="hidden" name="orp_status" value="'+orp_status+'">').insertBefore(tkn_obj);
+    $('<input type="hidden" name="orp_status" value="'+orp_status+'">').insertBefore(tkn_obj);
     tkn_obj.val(get_ajax_token());
     document.pressed = '실행계획묶음등록';
     var form01 = document.getElementById('form01');

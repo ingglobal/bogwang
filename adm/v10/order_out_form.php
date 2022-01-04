@@ -74,6 +74,9 @@ a.btn_price_add {color:#3a88d8 !important;cursor:pointer;}
 <input type="hidden" name="stx" value="<?php echo $stx ?>">
 <input type="hidden" name="sst" value="<?php echo $sst ?>">
 <input type="hidden" name="sod" value="<?php echo $sod ?>">
+<input type="hidden" name="sst2" value="<?php echo $sst2 ?>">
+<input type="hidden" name="sod2" value="<?php echo $sod2 ?>">
+<input type="hidden" name="schrows" value="<?php echo $schrows ?>">
 <input type="hidden" name="page" value="<?php echo $page ?>">
 <input type="hidden" name="token" value="">
 <input type="hidden" name="<?=$pre?>_idx" value="<?php echo ${$pre."_idx"} ?>">

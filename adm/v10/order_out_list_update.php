@@ -101,5 +101,7 @@ if ($msg)
 
 //exit;
 $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 넘겨야 할 변수들
+if($schrows)
+    $qstr .= '&schrows='.$schrows;
 goto_url('./order_out_list.php?'.$qstr);
 ?>

@@ -150,7 +150,8 @@ else
     alert('제대로 된 값이 넘어오지 않았습니다.');
 
 
-
+if($schrows)
+    $qstr .= '&schrows='.$schrows;
 
 // exit;
 goto_url('./order_out_list.php?'.$qstr.'&w=u&oro_idx='.$oro_idx, false);

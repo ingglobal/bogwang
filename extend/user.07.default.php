@@ -196,7 +196,7 @@ if( is_array($g5['set_taxonomies_value']) ) {
 }
 //print_r2($g5);
 // 공정/라인/위치/작업장 미리 추출해 두고 가져다 쓰도록 합니다.
-$g5['set_customer_category'] = array('operation','line','location','site');
+$g5['set_customer_category'] = array('operation','location','site');
 if( is_array($g5['set_customer_category']) || $_SESSION['ss_com_idx'] ) {
     foreach ($g5['set_customer_category'] as $key=>$value) {
         // print_r3($key.'/'.$value);
@@ -338,7 +338,7 @@ if( is_array($g5['set_customer_category']) || $_SESSION['ss_com_idx'] ) {
         // 분류 카테고리 옵션 생성 (다운idxs 포함해서 변수 넘길 때)
         for($i=0; $i<@sizeof($g5[$value]); $i++) {
             ${$value.'_select_options'} .= '<option value="'.$g5[$value][$i]['down_idxs'].'">'.$g5[$value][$i]['up_names'].'</option>';	// value 모든 하위값 다 가지고 있어야 함
-            ${$value.'_form_options'} .= '<option value="'.$g5[$value][$i]['term_idx'].'">'.$g5[$value][$i]['up_names'].'</option>';		// 수정(등록) 시는 특정값 설정되어야 함
+            ${$value.'_form_options'} .= '<option value="'.$g5[$value][$i]['term_idx'].'">'.$g5[$value][$i]['up_names'].'#</option>';		// 수정(등록) 시는 특정값 설정되어야 함
             ${$value.'_radio_options'} .= '<label for="set_'.$value.'_idx_'.$g5[$value][$i]['term_idx'].'" class="set_'.$value.'_idx"><input type="radio" id="set_'.$value.'_idx_'.$g5[$value][$i]['term_idx'].'" name="set_'.$value.'_idx" value="'.$g5[$value][$i]['term_idx'].'">'.$g5[$value][$i]['term_name'].'</label>';
             ${$value.'_checkbox_options'} .= '<label for="set_'.$value.'_idx_'.$g5[$value][$i]['term_idx'].'" class="set_'.$value.'_idx"><input type="checkbox" id="set_'.$value.'_idx_'.$g5[$value][$i]['term_idx'].'" name="set_'.$value.'_idx[]" value="'.$g5[$value][$i]['term_idx'].'">'.$g5[$value][$i]['term_name'].'</label>';
         }
