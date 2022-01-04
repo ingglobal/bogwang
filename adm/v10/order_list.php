@@ -118,14 +118,12 @@ $result = sql_query($sql);
 
 <form id="fsearch" name="fsearch" class="local_sch01 local_sch" method="get">
     <label for="sfl" class="sound_only">검색대상</label>
-    <select name="sfl" id="sfl">
+    <select name="sfl" id="sfl" style="display:none;">
         <option value="bom_name"<?php echo get_selected($_GET['sfl'], "bom_name"); ?>>품명</option>
-        <option value="com_idx_customer"<?php echo get_selected($_GET['sfl'], "com_idx_customer"); ?>>거래처번호</option>
-        <option value="bom_maker"<?php echo get_selected($_GET['sfl'], "bom_maker"); ?>>메이커</option>
-        <option value="bom_memo"<?php echo get_selected($_GET['sfl'], "bom_idx"); ?>>메모</option>
+        <option value="bom_part_no"<?php echo get_selected($_GET['sfl'], "bom_part_no"); ?>>품번</option>
     </select>
     <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
-    <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
+    <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input" style="display:none;">
     <label for="ord_date_from" class="sch_label">
         <span>수주일(부터)</span>
         <i class="fa fa-times date_blank" aria-hidden="true"></i>
