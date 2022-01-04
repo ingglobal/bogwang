@@ -393,6 +393,24 @@ if (isset($_REQUEST['sod2']))  { // search order (검색 오름, 내림차순)
     $sod2 = '';
 }
 
+
+if (isset($_REQUEST['sst3']))  {
+    $sst3 = trim($_REQUEST['sst3']);
+    $sst3 = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*\s]/", "", $sst3);
+    if ($sst3)
+        $qstr .= '&amp;sst3=' . urlencode($sst3); // search sort (검색 정렬 필드)
+} else {
+    $sst3 = '';
+}
+
+if (isset($_REQUEST['sod3']))  { // search order (검색 오름, 내림차순)
+    $sod3 = preg_match("/^(asc|desc)$/i", $sod3) ? $sod3 : '';
+    if ($sod3)
+        $qstr .= '&amp;sod3=' . urlencode($sod3);
+} else {
+    $sod3 = '';
+}
+
 // 로그인을 할 때마다 로그 파일 삭제해야 용량을 확보할 수 있음 
 if(basename($_SERVER["SCRIPT_FILENAME"]) == 'login_check.php') {
 	// 지난시간을 초로 계산해서 적어주시면 됩니다.

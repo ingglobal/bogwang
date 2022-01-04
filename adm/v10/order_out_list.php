@@ -66,8 +66,14 @@ $sql_order = " ORDER BY {$sst} {$sod} ";
 $sql = " select count(*) as cnt {$sql_common} {$sql_search} ";
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
-
-$rows = ($schrows)?$schrows:100;//$config['cf_page_rows'];
+//한 페이지 목록수를 100개를 넘길수 없도록 해라 로딩속도 때문에
+if($schrows){
+    $rows = ($schrows > 200) ? 200 : $schrows;
+}
+else{
+    $rows = 30;
+}
+//$rows = ($schrows)?$schrows:100;//$config['cf_page_rows'];
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
@@ -128,11 +134,10 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 <form id="fsearch" name="fsearch" class="local_sch01 local_sch" method="get" autocomplete="off">
 	<label for="sfl" class="sound_only">검색대상</label>
 	<select name="sfl" id="sfl">
-		<option value="oro.com_idx_customer"<?php echo get_selected($_GET['sfl'], "oro.com_idx_customer"); ?>>거래처번호</option>
-		<option value="oro.oro_idx"<?php echo get_selected($_GET['sfl'], "oro.oro_idx"); ?>>출하번호</option>
+		<option value="oro.ord_idx"<?php echo get_selected($_GET['sfl'], "oro.ord_idx"); ?>>수주번호</option>
 		<option value="bom_name"<?php echo get_selected($_GET['sfl'], "bom_name"); ?>>품명</option>
 		<option value="bom_part_no"<?php echo get_selected($_GET['sfl'], "bom_part_no"); ?>>품번</option>
-		<option value="oro.ord_idx"<?php echo get_selected($_GET['sfl'], "oro.ord_idx"); ?>>수주번호</option>
+		<option value="oro.oro_idx"<?php echo get_selected($_GET['sfl'], "oro.oro_idx"); ?>>출하번호</option>
 		<option value="oro.ori_idx"<?php echo get_selected($_GET['sfl'], "oro.ori_idx"); ?>>수주상품번호</option>
 	</select>
 	<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
@@ -158,8 +163,8 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 
 <div class="local_desc01 local_desc" style="display:no ne;">
     <p>부분적으로 <span style="color:pink">복수선택</span>을 할 경우에는 첫번째 항목을 <span style="color:skyblue">[Check]</span>하고, 마지막 항목을 <span style="color:skyblue">[Shft+Click]</span> 하세요.
-    <p>부분적으로 <span style="color:pink">복수선택해제</span>를 할 경우에는 첫번째 항목을 <span style="color:skyblue">[Check]</span>하고, 마지막 항목을 <span style="color:skyblue">[Alt+Click]</span> 하세요.
-    <p style="display:none;"><span style="color:red;">[조정필요]빨간색 깜빡임</span>은 수주상품의 총갯수와 전체 납품 수량이 일치하지 않다는 의미 입니다.(갯수를 맞춰 주셔야 합니다.)</p>
+    <p style="display:none;">부분적으로 <span style="color:pink">복수선택해제</span>를 할 경우에는 첫번째 항목을 <span style="color:skyblue">[Check]</span>하고, 마지막 항목을 <span style="color:skyblue">[Alt+Click]</span> 하세요.
+    <p style="display:no ne;">표시갯수는 한 페이지에 보여지는 목록의 갯수를 의미합니다.<span style="color:red;"> 최대 200개까지</span> 설정이 가능합니다.(로딩속도에 영향을 주므로 되도록 50이하의 수치로 설정해 주세요.)</p>
 </div>
 
 <div class="select_input">

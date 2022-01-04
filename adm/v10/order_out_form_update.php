@@ -32,8 +32,8 @@ auth_check($auth[$sub_menu], 'w');
 */
 
 //고객처를 입력해주세요
-if(!$_POST['com_idx_customer'])
-    alert('고객처를 선택해 주세요.');
+// if(!$_POST['com_idx_customer'])
+//     alert('고객처를 선택해 주세요.');
 
 //수주idx가 반드시 넘어와야 한다
 if(!$_POST['ord_idx'])
@@ -81,7 +81,7 @@ if($w == ''){
         sql_query($ori_sql,1);
         $ori_idx = sql_insert_id();
     }
-    //해당 수주번호로 등록된 출하목록중에 포함되어 있는 상품은 등록할 수 없다.
+    //선택한 상품이 해당 수주번호로 등록된 출하목록중에 포함되어 있는 상품은 등록할 수 없다.
     $oro = sql_fetch(" SELECT COUNT(ori_idx) AS cnt FROM {$g5['order_out_table']} 
                 WHERE ord_idx = '{$ord_idx}'
                     AND ori_idx = '{$ori_idx}'

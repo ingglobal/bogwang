@@ -107,6 +107,7 @@ add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/bwg_datepicker.js"></scrip
         <script>$('select[name=sch_field]').val('<?php echo $sch_field?>').attr('selected','selected')</script>
         <input type="text" name="sch_word" id="sch_word" value="<?php echo get_text($sch_word); ?>" class="frm_input required" required size="20" autocomplate="off">
         <input type="submit" value="검색" class="btn_frmline btn btn_02" style="height:26px;">
+        <a href="<?php echo $_SERVER['SCRIPT_NAME']?>?file_name=<?=$file_name?>" class="btn btn_b10">취소</a>
     </div>
 
     <div class="tbl_head01 tbl_wrap new_win_con">
@@ -114,7 +115,7 @@ add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/bwg_datepicker.js"></scrip
         <caption>검색결과</caption>
         <thead>
         <tr>
-            <th scope="col">ID</th>
+            <th scope="col">생산계획ID</th>
             <th scope="col">지시번호</th>
             <th scope="col">설비라인</th>
             <th scope="col">생산(시작)일</th>

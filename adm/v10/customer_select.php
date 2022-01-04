@@ -48,7 +48,7 @@ if (!$sst) {
 }
 $sql_order = " ORDER BY {$sst} {$sod} ";
 
-$rows = $config['cf_page_rows'];
+$rows = 30;//$config['cf_page_rows'];
 if (!$page) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
@@ -91,8 +91,8 @@ $qstr1 = 'frm='.$frm.'&d='.$d.'&sch_field='.$sch_field.'&sch_word='.urlencode($s
         <select name="sch_field" id="sch_field">
             <option value="com_name">업체명</option>
             <option value="com_president">대표자</option>
-            <option value="mb_name_saler">업체담당자</option>
-            <option value="com_idx">업체번호</option>
+            <!--option value="mb_name_saler">업체담당자</option-->
+            <!--option value="com_idx">업체번호</option-->
         </select>
         <script>$('select[name=sch_field]').val('<?php echo $sch_field?>').attr('selected','selected')</script>
         <input type="text" name="sch_word" id="sch_word" value="<?php echo get_text($sch_word); ?>" class="frm_input required" required size="20">

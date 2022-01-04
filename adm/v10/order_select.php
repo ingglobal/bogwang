@@ -106,7 +106,7 @@ add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/bwg_datepicker.js"></scrip
                 <td class="td_ord_idx"><?=$row['ord_idx']?></td><!--수주ID-->
                 <td class="td_ord_date"><?=$row['ord_date']?></td><!--수주일-->
                 <td class="td_ord_price"><?=number_format($row['ord_price'])?></td><!--수주금액-->
-                <td class="td_ord_status"><?=$row['ord_status']?></td><!--수주상태-->
+                <td class="td_ord_status"><?=$g5['set_ord_status_value'][$row['ord_status']]?></td><!--수주상태-->
                 <td class="td_mng td_mng_s">
                     <button type="button" class="btn btn_03 btn_select"
                         ord_idx="<?=$row['ord_idx']?>">선택</button>
@@ -127,20 +127,20 @@ add_javascript('<script src="'.G5_USER_ADMIN_JS_URL.'/bwg_datepicker.js"></scrip
 <script>
 schFieldDate();
 
-$('#sch_field').on('change',function(){
+$('#sfl').on('change',function(){
     schFieldDate();
 });
 
 
 function schFieldDate(){
-    var slt_val = $('#sch_field').val();
-    if(slt_val == 'orp_start_date'){
-        $('#sch_word').addClass('orp_start_date').attr('readonly',true).val('');
-        $(".orp_start_date").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-99:c+99" });
+    var slt_val = $('#sfl').val();
+    if(slt_val == 'ord_date'){
+        $('#stx').addClass('ord_date').attr('readonly',true).val('');
+        $(".ord_date").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-99:c+99" });
     }else{
-        if($(".orp_start_date").length){
-            $(".orp_start_date").datepicker("destroy");
-            $('#sch_word').removeClass('orp_start_date').removeAttr('readonly',false).val('');
+        if($(".ord_date").length){
+            $(".ord_date").datepicker("destroy");
+            $('#stx').removeClass('ord_date').removeAttr('readonly',false).val('');
         }
     }
 }

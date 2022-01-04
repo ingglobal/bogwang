@@ -35,8 +35,8 @@ else if ($w == 'u' || $w == 'c') {
 		alert('존재하지 않는 자료입니다.');
     // print_r3(${$pre});
 	$ori = get_table_meta('order_item', 'ori_idx', ${$pre}['ori_idx']);
-	$com = get_table_meta('company', 'com_idx', $oro['com_idx_customer']);
-	$com2 = get_table_meta('company', 'com_idx', $oro['com_idx_shipto']);
+	$com = get_table_meta('company', 'com_idx', ${$pre}['com_idx_customer']);
+	$com2 = get_table_meta('company', 'com_idx', ${$pre}['com_idx_shipto']);
 	$bom = get_table_meta('bom', 'bom_idx', $ori['bom_idx']);
 
 }
@@ -56,7 +56,7 @@ $html_title = ($w=='')?'추가':'수정';
 $html_title = ($w=='c')?'복제':$html_title; 
 $g5['title'] = '출하정보 '.$html_title;
 include_once ('./_head.php');
-
+//print_r2($g5);exit;
 //print_r3(${$pre});
 ?>
 <style>
@@ -106,13 +106,13 @@ a.btn_price_add {color:#3a88d8 !important;cursor:pointer;}
         <th scope="row">고객처</th>
 		<td>
             <input type="hidden" name="com_idx_customer" value="<?=${$pre}['com_idx_customer']?>"><!-- 거래처번호 -->
-			<input type="text" name="com_name" value="<?php echo $com['com_name'] ?>" id="com_name" class="frm_input required readonly" required readonly>
+			<input type="text" name="com_name" value="<?php echo $com['com_name'] ?>" id="com_name" class="frm_input readonly" readonly>
             <a href="./customer_select.php?file_name=<?php echo $g5['file_name']?>" class="btn btn_02" id="btn_customer">고객처찾기</a>
 		</td>
         <th scope="row">수주번호</th>
         <td>
             <?php if($w == ''){ ?>
-            <input type="text" name="ord_idx" value="<?=$oro['ord_idx']?>" class="frm_input required readonly" style="width:80px;">
+            <input type="text" name="ord_idx" value="<?=$oro['ord_idx']?>" readonly class="frm_input required readonly" style="width:80px;">
             <a href="./order_select.php?file_name=<?php echo $g5['file_name']?>" class="btn btn_02" id="btn_order">수주찾기</a>
             <?php } else { ?>
             <input type="text" name="ord_idx" value="<?=$oro['ord_idx']?>" readonly required class="frm_input readonly required" style="width:80px;">
