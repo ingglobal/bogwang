@@ -396,7 +396,7 @@ $(function() {
 
             // 전체 생산량 (합격+불량) --------------------------------
             dta_group = "product";  // mea, product, run, error
-            dta_json_file = "output";
+            dta_json_file = "item";
             dta_data_url = $(this).attr('mms_data_url') || "<?=$g5['set_data_url']?>";
             mms_idx = $(this).attr('mms_idx');
             mms_name = encodeURIComponent($(this).attr('mms_name'));
@@ -404,7 +404,7 @@ $(function() {
             dta_no = 0;    // 
             shf_no = "";
             dta_mmi_no = "";
-            dta_defect = "0,1"; // 생산전체(합격, 불량 둘다)
+            dta_defect = "0"; // 생산전체(합격, 불량 둘다)
             dta_defect_type = 0;
             dta_code = "";
             graph_type = "column";  // column graph for output
@@ -450,7 +450,7 @@ $(function() {
 
             // 목표 ---------------------------------------------
             // 중복값은 선언할 필요 없음
-            dta_json_file = "output.target";
+            dta_json_file = "item.target";
             dta_data_url = "<?=strip_http(G5_ADMIN_URL)?>/v10/ajax";
             graph_type = "spline";
             graph_line = "shortdot";    // 점선
