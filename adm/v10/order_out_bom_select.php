@@ -57,8 +57,8 @@ if ($where)
 
 
 if (!$sst) {
-    $sst = "bom_reg_dt";
-    $sod = "desc";
+    $sst = "bom_sort";
+    $sod = "";
 }
 
 $sql_order = " ORDER BY {$sst} {$sod} ";
@@ -87,6 +87,7 @@ include_once('./_head.sub.php');
 ?>
 <style>
 .scp_frame {padding:10px;}
+.sp_cat{color:orange;font-size:0.85em;}
 .new_frame_con {margin-top:10px;height:484px;overflow-y:auto;padding-bottom:25px;}
 .td_bom_name
 ,.td_bom_part_no
@@ -106,9 +107,8 @@ include_once('./_head.sub.php');
     <div id="div_search">
         <select name="sfl" id="sfl">
             <option value="bom_name"<?php echo get_selected($_GET['sfl'], "bom_name"); ?>>품명</option>
-            <option value="com_idx_customer"<?php echo get_selected($_GET['sfl'], "com_idx_customer"); ?>>거래처번호</option>
-            <option value="bom_maker"<?php echo get_selected($_GET['sfl'], "bom_maker"); ?>>메이커</option>
-            <option value="bom_memo"<?php echo get_selected($_GET['sfl'], "bom_idx"); ?>>메모</option>
+            <option value="bom_part_no"<?php echo get_selected($_GET['sfl'], "bom_part_no"); ?>>품번</option>
+            <option value="bom_memo"<?php echo get_selected($_GET['sfl'], "bom_memo"); ?>>메모</option>
         </select>
         <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
         <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input" style="width:160px;">
@@ -132,11 +132,21 @@ include_once('./_head.sub.php');
         <tbody>
         <?php
         for ($i=0; $row=sql_fetch_array($result); $i++) {
-
+            if($row['bct_id']){
+                $cat_tree = category_tree_array($row['bct_id']);
+                $row['bct_name_tree'] = '';
+                for($k=0;$k<count($cat_tree);$k++){
+                    $cat_str = sql_fetch(" SELECT bct_name FROM {$g5['bom_category_table']} WHERE bct_id = '{$cat_tree[$k]}' ");
+                    $row['bct_name_tree'] .= ($k == 0) ? $cat_str['bct_name'] : ' > '.$cat_str['bct_name'];
+                }
+            }
             $bg = 'bg'.($i%2);
         ?>
         <tr class="<?php echo $bg; ?>" tr_id="<?php echo $row['bom_idx'] ?>">
-            <td class="td_bom_name"><?=$row['bom_name']?></td><!-- 품명 -->
+            <td class="td_bom_name">
+                <?php if($row['bct_name_tree']){ echo '<span class="sp_cat">'.$row['bct_name_tree'].'</span><br>'; } ?>
+                <?=$row['bom_name']?>
+            </td><!-- 품명 -->
             <td class="td_bom_part_no"><?=$row['bom_part_no']?></td><!-- 파트넘버 -->
             <td class="td_com_name"><?=$row['com_name']?></td><!-- 거래처 -->
             <td class="td_bom_price"><?=number_format($row['bom_price'])?></td><!-- 단가 -->

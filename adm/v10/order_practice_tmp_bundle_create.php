@@ -127,7 +127,7 @@ else {
     //동일한 생산시작일에 같은 설비라인으로 등록하려는지 체크한다.
     $ord_chk_sql = sql_fetch(" SELECT COUNT(*) AS cnt FROM {$g5['order_practice_table']} WHERE orp_start_date = '{$orp_start_date}' AND trm_idx_line = '{$trm_idx_line}' AND orp_status NOT IN('delete','del','trash') ");
     if($ord_chk_sql['cnt'])
-        alert('동일한 생산시작일에 지정하신 설비 '.$g5['line_name'][$trm_idx_line].'이 이미 존재합니다.\n[찾기]에서 해당 생산계획을 찾아서 추가 등록해 주세요.');
+        alert('동일한 생산시작일에 지정하신 설비 '.$g5['line_name'][$trm_idx_line].'의 생산계획이 이미 존재합니다.\n[찾기]에서 해당 생산계획을 찾아서 추가 등록해 주세요.');
 
     foreach($chk_arr as $oro_idx_v1){
         //삭제,취소 등의 상태값이 아닌 생산실행 레코드가 있으면 중복 레코드를 생성하면 안된다.

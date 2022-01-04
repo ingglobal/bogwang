@@ -25,16 +25,16 @@ foreach ($set_values as $set_value) {
 }
 unset($set_values);unset($set_value);
 
-
 // 모든 분류 추출, 로딩속도 개선을 위해 캐시 처리, 기본적으로 12시간 (자주 안 바뀜)
 $term_cache_time = 12;
 if( is_array($g5['set_taxonomies_value']) ) {
+    //print_r2($g5);
     foreach ($g5['set_taxonomies_value'] as $key=>$value) {
-        // print_r3($key.'/'.$value);
+        //print_r3($key.'/'.$value);
         // 캐시 파일이 없거나 캐시 시간을 초과했으면 (재)생성
         $term_cache_file = G5_DATA_PATH.'/cache/term-'.$key.'.php';
         @$term_cache_filetime = filemtime($term_cache_file);
-        if( !file_exists($term_cache_file) || $term_cache_filetime < (G5_SERVER_TIME - 3600*$term_cache_time) ) {
+        if ( !file_exists($term_cache_file) || $term_cache_filetime < (G5_SERVER_TIME - 3600*$term_cache_time) ) {
             @unlink($term_cache_file);
             
             $g5[$key] = array();
@@ -119,6 +119,7 @@ if( is_array($g5['set_taxonomies_value']) ) {
             $result = sql_query($sql,1);
             //echo $sql;
             for($i=0; $row=sql_fetch_array($result); $i++) {
+                //print_r3($row);
                 $g5[$key][$i] = $row;
 				//-- 지역 키값
                 $g5[$key.'_key'][$row['term_idx']] = $row;
@@ -134,6 +135,8 @@ if( is_array($g5['set_taxonomies_value']) ) {
                 $g5[$key.'_up_names'][$row['term_idx']] = $row['up_names'];
                 //-- 부서 이름
                 $g5[$key.'_name'][$row['term_idx']] = trim($row['term_name']);
+                //-- 반전명
+                $g5[$key.'_reverse'][$row['term_name']] = trim($row['term_idx']);
                 //-- 조직코드 정렬 우선순위
                 $g5[$key.'_sort'][$row['term_idx']] = $i;
                 //-- 바로 상위 카테고리 idx
@@ -142,7 +145,7 @@ if( is_array($g5['set_taxonomies_value']) ) {
                 $g5[$key.'_uptop_idx'][$row['term_idx']] = $row['uptop_idx'];
                 //-- 카테고리 lefa_node 여부
                 $g5[$key.'_lefa_yn'][$row['term_idx']] = $row['leaf_node_yn'];
-                
+                //print_r2($g5[$key.'_reverse']);
                 // 추가 부분 unserialize
                 $unser = unserialize(stripslashes($row['trm_more']));
                 if( is_array($unser) ) {
@@ -194,7 +197,12 @@ if( is_array($g5['set_taxonomies_value']) ) {
         }
     }
 }
-//print_r2($g5);
+//exit;
+//설비라인 array('1라인'=>46)이러한 형식으로 저장
+$g5['line_reverse'] = array();
+foreach($g5['line_up_names'] as $k => $v){
+    $g5['line_reverse'][$v] = $k;
+}
 // 공정/라인/위치/작업장 미리 추출해 두고 가져다 쓰도록 합니다.
 $g5['set_customer_category'] = array('operation','location','site');
 if( is_array($g5['set_customer_category']) || $_SESSION['ss_com_idx'] ) {

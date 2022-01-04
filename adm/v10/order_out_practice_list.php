@@ -9,6 +9,7 @@ $g5['title'] = '생산실행(제품별)계획';
 include_once('./_head.php');
 // echo $g5['container_sub_title'];
 $sql_common = " FROM {$g5['order_out_practice_table']} AS oop
+    LEFT JOIN {$g5['bom_table']} AS bom ON oop.bom_idx = bom.bom_idx
     LEFT JOIN {$g5['order_practice_table']} AS orp ON orp.orp_idx = oop.orp_idx
     LEFT JOIN {$g5['order_out_table']} AS oro ON oop.oro_idx = oro.oro_idx
     LEFT JOIN {$g5['order_table']} AS ord ON oro.ord_idx = ord.ord_idx
@@ -64,14 +65,18 @@ if ($where)
 
 if (!$sst) {
     $sst = "orp.orp_idx";
-    $sod = "desc";
+    $sod = "";
 }
 if (!$sst2) {
-    $sst2 = ", oop.oop_idx";
-    $sod2 = "desc";
+    $sst2 = ", orp.trm_idx_line";
+    $sod2 = "";
+}
+if (!$sst3) {
+    $sst3 = ", bom.bom_sort";
+    $sod3 = "";
 }
 
-$sql_order = " ORDER BY {$sst} {$sod} {$sst2} {$sod2} ";
+$sql_order = " ORDER BY {$sst} {$sod} {$sst2} {$sod2} {$sst3} {$sod3} ";
 $sql_group = "";//" GROUP BY oop.orp_idx ";
 $sql = " select count(*) as cnt {$sql_common} {$sql_search} ";
 $row = sql_fetch($sql);
@@ -97,6 +102,7 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 .td_chk{position:relative;}
 .td_chk .chkdiv_btn{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,255,0,0);}
 .td_bom_name {text-align:left !important;}
+.sp_cat{font-size:0.85em;color:orange;}
 .td_orp_part_no, .td_com_name, .td_orp_maker
 ,.td_orp_items, .td_orp_items_title {text-align:left !important;}
 .td_orp_count{text-align:right !important;}
@@ -131,9 +137,10 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 <form id="fsearch" name="fsearch" class="local_sch01 local_sch" method="get">
     <label for="sfl" class="sound_only">검색대상</label>
     <select name="sfl" id="sfl">
-        <option value="customer_name"<?php echo get_selected($_GET['sfl'], "customer_name"); ?>>출하처</option>
+        <!--option value="customer_name"<?php ;//echo get_selected($_GET['sfl'], "customer_name"); ?>>출하처</option-->
         <option value="bom_name"<?php echo get_selected($_GET['sfl'], "bom_name"); ?>>품명</option>
-        <option value="oro.com_idx_customer"<?php echo get_selected($_GET['sfl'], "oro.com_idx_customer"); ?>>거래처ID</option>
+        <option value="bom_part_no"<?php echo get_selected($_GET['sfl'], "bom_part_no"); ?>>품번</option>
+        <!--option value="oro.com_idx_customer"<?php ;//echo get_selected($_GET['sfl'], "oro.com_idx_customer"); ?>>거래처ID</option-->
         <option value="oop.orp_idx"<?php echo get_selected($_GET['sfl'], "oop.orp_idx"); ?>>생산계획ID</option>
         <option value="oop.oro_idx"<?php echo get_selected($_GET['sfl'], "oop.oro_idx"); ?>>출하ID</option>
         <option value="oop.ord_idx"<?php echo get_selected($_GET['sfl'], "oop.ord_idx"); ?>>수주ID</option>
@@ -153,8 +160,8 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 
 <div class="local_desc01 local_desc" style="display:no ne;">
     <!--p>지시수량에 필요한 자재가 부족한 경우 <span class="color_red">빨간색</span>으로 표시됩니다. 자재 창고위치에 따라 현장 오차가 있을 수 있으므로 반드시 확인하시고 진행하세요.</p-->
-    <p>상태값이 '확정'인 경우는 관련 정보를 수정하지 마세요. (지시수량, 공정, 라인 정보 등..)</p>
-    <p>'생산수량' 항목의 값은 생산이 진행중일 때 표시됩니다.</p>
+    <p>생산작업이 진행되는 동안에는 생산계획 상품의 [확정]상태값을 수정하지 마세요.</p>
+    <p style="display:none;">'생산수량' 항목의 값은 생산이 진행중일 때 표시됩니다.</p>
 </div>
 
 <div class="select_input">
@@ -192,6 +199,8 @@ $('.data_blank').on('click',function(e){
 <input type="hidden" name="sod" value="<?php echo $sod ?>">
 <input type="hidden" name="sst2" value="<?php echo $sst2 ?>">
 <input type="hidden" name="sod2" value="<?php echo $sod2 ?>">
+<input type="hidden" name="sst3" value="<?php echo $sst2 ?>">
+<input type="hidden" name="sod3" value="<?php echo $sod2 ?>">
 <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
 <input type="hidden" name="stx" value="<?php echo $stx ?>">
 <input type="hidden" name="page" value="<?php echo $page ?>">
@@ -263,7 +272,7 @@ $('.data_blank').on('click',function(e){
                 $row['bct_name_tree'] .= ($k == 0) ? $cat_str['bct_name'] : ' > '.$cat_str['bct_name'];
             }
             $bom_name = $bom_sql['bom_name'];
-            echo $row['bct_name_tree'].'<br>';
+            echo ($row['bct_name_tree'])?'<span class="sp_cat">'.$row['bct_name_tree'].'</span><br>':'';
             echo $bom_name;
             ?>
         </td>
@@ -271,7 +280,9 @@ $('.data_blank').on('click',function(e){
         <td class="td_ord_idx"><a href="./order_out_practice_list.php?sfl=oop.ord_idx&stx=<?=$row['ord_idx']?>"><?=$row['ord_idx']?></a></td>
         <td class="td_orp_idx"><a href="./order_out_practice_list.php?sfl=oop.orp_idx&stx=<?=$row['orp_idx']?>"><?=$row['orp_idx']?></a></td>
         <td class="td_orp_start_date">
-
+            <?php if($row['ord_date']){ ?>
+            (<?=substr($row['ord_date'],2,8)?>)<br>
+            <?php } ?>
             <a href="./order_out_practice_list.php?sfl=oop.ord_idx&stx=<?=$row['ord_idx']?>"><?=substr($row['orp_start_date'],2,8)?></a>
         </td>
         <td class="td_trm_idx_line"><a href="./order_practice_list.php?sfl=oop.orp_idx&stx=<?=$row['orp_idx']?>"><?=$g5['line_name'][$row['trm_idx_line']]?></a></td>

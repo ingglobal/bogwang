@@ -4,6 +4,8 @@ include_once('./_common.php');
 
 auth_check($auth[$sub_menu],'w');
 
+if($member['mb_id'] != 'super') alert('준비중입니다.~!');
+
 // 변수 설정, 필드 구조 및 prefix 추출
 $table_name = 'order_out_practice';
 $g5_table_name = $g5[$table_name.'_table'];
@@ -110,7 +112,8 @@ $bom = sql_fetch(" SELECT bom_name,bom_part_no FROM {$g5['bom_table']} WHERE bom
 
 $html_title = ($w=='')?'추가':'수정';
 $html_title = ($w=='c')?'복제':$html_title;
-$g5['title'] = '(제품별)출하생산계획 '.$html_title.' - '.$bom['bom_name'].'['.$bom['bom_part_no'].']';
+$g5['title'] = '(제품별)출하생산계획 '.$html_title;
+$g5['title'] .= ($w != '') ? ' - '.$bom['bom_name'].'['.$bom['bom_part_no'].']' : '';
 
 include_once('./_head.php');
 ?>
@@ -130,6 +133,7 @@ include_once('./_head.php');
 <input type="hidden" name="token" value="">
 <input type="hidden" name="<?=$pre?>_idx" value="<?php echo ${$pre."_idx"} ?>">
 <input type="hidden" name="ser_mms_idx" value="<?php echo $ser_mms_idx ?>">
+<input type="hidden" name="orp_idx_org" value="<?php echo $$pre['orp_idx'] ?>">
 <?php
 $hskip = array();
 foreach($f1 as $hk=>$hv){
@@ -137,9 +141,9 @@ foreach($f1 as $hk=>$hv){
     echo input_hidden($hk,$hv);
 }
 
-//print_r3($g5);
+
 ?>
-<div class="local_desc01 local_desc" style="display:no ne;">
+<div class="local_desc01 local_desc" style="display:none;">
     <p>각종 고유번호(설비번호, IMP번호..)들은 내부적으로 다른 데이타베이스 연동을 통해서 정보를 가지고 오게 됩니다.</p>
 	<p class="txt_redblink" style="display:no ne;">설비idx=0 인 경우는 전체설비(설비 비선택 추가해라!!!)<br>설비idx 가 있으면 특정설비의 작업구간</p>
 </div>
@@ -178,11 +182,13 @@ foreach($f1 as $hk=>$hv){
                 <input type="text" name="mb_name" id="mb_name" value="" id="mb_name" readonly class="frm_input readonly" style="width:100px;">
                 <a href="./member_select.php?file_name=<?php echo $g5['file_name']?>" class="btn btn_02" id="btn_member">찾기</a>
             </td>
-            <th>생산일정</th>
+            <th>생산시작일</th>
             <td>
                 <input type="text" name="orp_start_date" id="orp_start_date" readonly class="frm_input readonly" style="width:100px;">
+                <!--
                 &nbsp;&nbsp;~&nbsp;&nbsp;
                 <input type="text" name="orp_end_date" id="orp_end_date" readonly class="frm_input readonly" style="width:100px;">
+                -->
             </td>
         </tr>
     </tbody>
@@ -370,11 +376,13 @@ function form01_submit(f){
         }
         
         //생산종료일을 입력해 주세요
+        /*
         if(!f.orp_end_date.value){
             alert('생산종료일을 입력해 주세요.');
             f.orp_end_date.focus();
             return false;
         }
+        */
     }
     else{
         //생산계획ID값이 없으면 안됨
