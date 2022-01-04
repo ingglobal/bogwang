@@ -81,6 +81,7 @@ $result = sql_query($sql,1);
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
 $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 넘겨야 할 변수들
+//print_r2($g5['line_name']);exit;
 ?>
 <style>
 /*.container_wr{min-width:1672px;overflow-x:auto;}*/
@@ -124,7 +125,6 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
     <?php echo $listall ?>
     <span class="btn_ov01"><span class="ov_txt">총 </span><span class="ov_num"> <?php echo number_format($total_count) ?>건 </span></span>
 </div>
-
 <form id="fsearch" name="fsearch" class="local_sch01 local_sch" method="get" autocomplete="off">
 	<label for="sfl" class="sound_only">검색대상</label>
 	<select name="sfl" id="sfl">
@@ -458,10 +458,8 @@ $('.data_blank').on('click',function(e){
         </tr>
         <tr class="tr_flag">
             <td>
-                <p style="padding:10px 0 6px;">생산시작일 ~ 생산종료일</p>
+                <p style="padding:10px 0 6px;">생산시작일</p>
                 <input type="text" name="orp_start_date" id="orp_start_date" readonly class="frm_input readonly" style="width:100px;">
-                &nbsp;&nbsp;~&nbsp;&nbsp;
-                <input type="text" name="orp_end_date" id="orp_end_date" readonly class="frm_input readonly" style="width:100px;">
             </td>
         </tr>
         <tr>
@@ -783,7 +781,7 @@ $( "#modal01" ).dialog({
         $('#form01').find('input[name="trm_idx_line"]').remove();
         $('#form01').find('input[name="mb_id"]').remove();
         $('#form01').find('input[name="orp_start_date"]').remove();
-        $('#form01').find('input[name="orp_end_date"]').remove();
+        //$('#form01').find('input[name="orp_end_date"]').remove();
         //$('#form01').find('input[name="orp_status"]').remove();
     }
 });
@@ -796,7 +794,7 @@ function form02_submit(f) {
     var mb_id = f.mb_id.value;
     var mb_name = f.mb_name.value;
     var orp_start_date = f.orp_start_date.value;
-    var orp_end_date = f.orp_end_date.value;
+    //var orp_end_date = f.orp_end_date.value;
     //var orp_status = f.orp_status.value;
 
     if(!orp_order_no){
@@ -822,19 +820,20 @@ function form02_submit(f) {
         f.orp_start_date.focus();
         return false;
     }
-
+    /*
     if(!orp_end_date){
         alert('생산종료일을 입력해 주세요');
         f.orp_end_date.focus();
         return false;
     }
+    */
     //alert('ok');
     var tkn_obj = $('#form01').find('input[name="token"]');
     $('<input type="hidden" name="orp_order_no" value="'+orp_order_no+'">').insertBefore(tkn_obj);
     $('<input type="hidden" name="trm_idx_line" value="'+trm_idx_line+'">').insertBefore(tkn_obj);
     $('<input type="hidden" name="mb_id" value="'+mb_id+'">').insertBefore(tkn_obj);
     $('<input type="hidden" name="orp_start_date" value="'+orp_start_date+'">').insertBefore(tkn_obj);
-    $('<input type="hidden" name="orp_end_date" value="'+orp_end_date+'">').insertBefore(tkn_obj);
+    //$('<input type="hidden" name="orp_end_date" value="'+orp_end_date+'">').insertBefore(tkn_obj);
     //$('<input type="hidden" name="orp_status" value="'+orp_status+'">').insertBefore(tkn_obj);
     tkn_obj.val(get_ajax_token());
     document.pressed = '실행계획묶음등록';

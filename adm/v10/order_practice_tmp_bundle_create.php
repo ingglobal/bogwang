@@ -16,7 +16,7 @@ check_admin_token();
 
 $com_idx = $_POST['com_idx'];
 $orp_order_no = $_POST['orp_order_no'];
-$orp_status = $_POST['orp_status'];
+$orp_status = 'confirm';//$_POST['orp_status']; 생산계획,생산계획상품 전부 상태값은 confirm 으로 한다.
 
 $chk_arr = $_POST['chk'];
 
@@ -115,7 +115,7 @@ else {
     $trm_idx_line = $_POST['trm_idx_line'];
     $mb_id = $_POST['mb_id'];
     $orp_start_date = $_POST['orp_start_date'];
-    $orp_end_date = $_POST['orp_end_date'];
+    $orp_end_date = $_POST['orp_start_date'];//$_POST['orp_end_date'];
     
     
     
@@ -124,6 +124,11 @@ else {
     if($ord_no_sql['cnt'])
         alert('동일한 지시번호가 이미 존재합니다. 다른 지시번호를 입력해 주세요.');
     
+    //동일한 생산시작일에 같은 설비라인으로 등록하려는지 체크한다.
+    $ord_chk_sql = sql_fetch(" SELECT COUNT(*) AS cnt FROM {$g5['order_practice_table']} WHERE orp_start_date = '{$orp_start_date}' AND trm_idx_line = '{$trm_idx_line}' AND orp_status NOT IN('delete','del','trash') ");
+    if($ord_chk_sql['cnt'])
+        alert('동일한 생산시작일에 지정하신 설비 '.$g5['line_name'][$trm_idx_line].'이 이미 존재합니다.\n[찾기]에서 해당 생산계획을 찾아서 추가 등록해 주세요.');
+
     foreach($chk_arr as $oro_idx_v1){
         //삭제,취소 등의 상태값이 아닌 생산실행 레코드가 있으면 중복 레코드를 생성하면 안된다.
         $chk_sql = " SELECT COUNT(*) AS cnt FROM {$g5['order_out_practice_table']} AS oop
@@ -142,7 +147,7 @@ else {
         }
     }
     
-    //orp테이블에 1개의 레코드를 등록
+    //orp테이블에 1개의 레코드를 등록 (상태값은 무조건 confirm)
     $sql1 = " INSERT {$g5['order_practice_table']} SET
                 com_idx = '".$com_idx."',
                 orp_order_no = '".$orp_order_no."',
@@ -151,9 +156,9 @@ else {
                 shf_idx = '',
                 mb_id = '".$member['mb_id']."',
                 orp_start_date = '".$orp_start_date."',
-                orp_done_date = '',
+                orp_done_date = '".$orp_end_date."',
                 orp_memo = '',
-                orp_status = 'confirm',
+                orp_status = '".$orp_status."',
                 orp_reg_dt = '".G5_TIME_YMDHIS."',
                 orp_update_dt = '".G5_TIME_YMDHIS."'
     ";
@@ -201,4 +206,6 @@ else {
 }
 
 $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 넘겨야 할 변수들
+if($schrows)
+    $qstr .= '&schrows='.$schrows;
 goto_url('./order_out_list.php?'.$qstr);
