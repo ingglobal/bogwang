@@ -17,14 +17,14 @@ $sql_common = " FROM {$g5['order_out_practice_table']} AS oop
 
 $where = array();
 // 디폴트 검색조건 (used 제외)
-$where[] = " orp.orp_status NOT IN ('del','delete','trash') AND orp.com_idx = '".$_SESSION['ss_com_idx']."' ";
+$where[] = " oop.oop_status NOT IN ('del','delete','trash') AND orp.com_idx = '".$_SESSION['ss_com_idx']."' ";
 
 if($orp_start_date){
     $sfl = 'orp.orp_start_date';
     $stx = $orp_start_date;
 }
 
-
+//print_r2($g5['line_reverse'][$stx]);
 // 검색어 설정
 if ($stx != "") {
     switch ($sfl) {
@@ -53,6 +53,10 @@ if ($stx != "") {
             $bmstr = sql_fetch($bsql);
             $where[] = " oop.bom_idx IN({$bmstr['bom_idxs']}) ";
             break;
+        case ( $sfl == 'trm_name' ) :
+            $trm_idx = $g5['line_reverse'][$stx];
+            $where[] = " orp.trm_idx_line = '{$trm_idx}' ";
+            break;
         default :
 			$where[] = " $sfl LIKE '%".trim($stx)."%' ";
             break;
@@ -65,7 +69,7 @@ if ($where)
 
 if (!$sst) {
     $sst = "orp.orp_idx";
-    $sod = "";
+    $sod = "desc";
 }
 if (!$sst2) {
     $sst2 = ", orp.trm_idx_line";
@@ -141,6 +145,7 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
         <option value="bom_name"<?php echo get_selected($_GET['sfl'], "bom_name"); ?>>품명</option>
         <option value="bom_part_no"<?php echo get_selected($_GET['sfl'], "bom_part_no"); ?>>품번</option>
         <!--option value="oro.com_idx_customer"<?php ;//echo get_selected($_GET['sfl'], "oro.com_idx_customer"); ?>>거래처ID</option-->
+        <option value="trm_name"<?php echo get_selected($_GET['sfl'], "trm_name"); ?>>라인설비명</option>
         <option value="oop.orp_idx"<?php echo get_selected($_GET['sfl'], "oop.orp_idx"); ?>>생산계획ID</option>
         <option value="oop.oro_idx"<?php echo get_selected($_GET['sfl'], "oop.oro_idx"); ?>>출하ID</option>
         <option value="oop.ord_idx"<?php echo get_selected($_GET['sfl'], "oop.ord_idx"); ?>>수주ID</option>

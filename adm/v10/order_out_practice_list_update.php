@@ -46,10 +46,11 @@ if ($_POST['act_button'] == "선택수정") {
                     oop_status = 'trash'
                 WHERE oop_idx = '".$oop_idx_v."'
         ";
+        // echo $sql."<br>";
         sql_query($sql,1);
     }
-
 }
+// exit;
 
 if ($msg)
     //echo '<script> alert("'.$msg.'"); </script>';
