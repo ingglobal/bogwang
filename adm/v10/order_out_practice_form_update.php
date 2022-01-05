@@ -65,7 +65,42 @@ if($first_flag){
     ";
     sql_query($sql2,1);
 }
-//생산계획변경작업시
+//완전히 새로운 등록이 아니면서, oop_idx없고, orp_idx와 bom_idx가 있을 경우, 
+else if(!$first_flag && !$oop_idx && $orp_idx && $bom_idx){
+    //기존 orp_idx 에 등록된 해당 bom_idx로 등록된 oop_idx가 존재하는지 확인하고 있으면 해당 oop_idx에서 수정하라고 튕긴다.
+    $oop = sql_fetch(" SELECT COUNT(*) AS cnt, oop_idx FROM {$g5['order_out_practice_table']}
+                    WHERE orp_idx = '{$orp_idx}' AND bom_idx = '{$bom_idx}' AND oop_status NOT IN('delelte','del','trash')
+    ");
+    // 동일제품이 있으면 튕겨내라
+    if($oop['cnt']){
+        alert("선택하신 설비라인에 이미 동일한 상품(생산계회상품ID:".$oop['oop_idx'].")이 존재합니다.\n해당 상품에서 내용을 변경해 주세요.");
+    }
+    // 동일제품이 없으면 등록해라
+    else {
+        $sql3 = " INSERT {$g5['order_out_practice_table']} SET
+            orp_idx = '".$orp_idx."',
+            bom_idx = '".$bom_idx."',
+            oop_count = '".$oop_count."',
+            oop_memo = '".$oop_memo."',
+            oop_history = '".$history."',
+            oop_status = '".$oop_status."',
+            oop_reg_dt = '".G5_TIME_YMDHIS."',
+            oop_update_dt = '".G5_TIME_YMDHIS."',
+            oop_1 = '".$oop_1."',
+            oop_2 = '".$oop_2."',
+            oop_3 = '".$oop_3."',
+            oop_4 = '".$oop_4."',
+            oop_5 = '".$oop_5."',
+            oop_6 = '".$oop_6."',
+            oop_7 = '".$oop_7."',
+            oop_8 = '".$oop_8."',
+            oop_9 = '".$oop_9."',
+            oop_10 = '".$oop_10."'
+        ";
+        sql_query($sql3,1);
+    }
+}
+//생산계획변경작업시 (!$first_flag && $oop_idx && $orp_idx)
 else{
     //우선 기존 현재 oop_idx 가 속해 있는 orp_idx 가 $orp_idx와 같은지 다른지 확인한다.
     //라인설비 정보가 동일하니 기존 oop_idx의 수량/메모/상태 정보만 수정한다.
@@ -131,6 +166,6 @@ else{
 }
 
 // exit;
-//goto_url('./order_out_practice_list.php?'.$qstr, false);
-goto_url('./order_out_practice_form.php?'.$qstr.'&w=u&oop_idx='.$oop_idx, false);
+goto_url('./order_out_practice_list.php?'.$qstr, false);
+//goto_url('./order_out_practice_form.php?'.$qstr.'&w=u&oop_idx='.$oop_idx, false);
 ?>

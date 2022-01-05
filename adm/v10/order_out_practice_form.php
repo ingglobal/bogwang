@@ -4,7 +4,7 @@ include_once('./_common.php');
 
 auth_check($auth[$sub_menu],'w');
 
-if($member['mb_id'] != 'super') alert('준비중입니다.~!');
+//if($member['mb_id'] != 'super') alert('준비중입니다.~!');
 
 // 변수 설정, 필드 구조 및 prefix 추출
 $table_name = 'order_out_practice';
