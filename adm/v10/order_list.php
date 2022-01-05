@@ -31,8 +31,8 @@ if ($stx != "") {
 }
 //검색어가 없는 디폴트 상태에서는 오늘날짜에서 13일간의 목록을 보여준다.
 /*else{
-    //$d_to_day = get_dayAddDate(G5_TIME_YMD,13);
-    //$where[] = " ord_date >= '".G5_TIME_YMD."' AND ord_date <= '".$d_to_day."' ";
+    $d_to_day = get_dayAddDate(G5_TIME_YMD,13);
+    $where[] = " ord_date >= '".G5_TIME_YMD."' AND ord_date <= '".$d_to_day."' ";
 }*/
 
 if($ord_date_from && !$ord_date_to){
@@ -50,8 +50,12 @@ else if($ord_date_from && $ord_date_to && $ord_date_from == $ord_date_to){
     $where[] = " ord.ord_date = '".$ord_date_from."' ";
 }
 else{
-    $where[] = " ord.ord_date >= '".G5_TIME_YMD."' AND ord.ord_date <= '".G5_TIME_YMD."' ";
+    $d_to_day = get_dayAddDate(G5_TIME_YMD,13);
+    $where[] = " ord_date >= '".G5_TIME_YMD."' AND ord_date <= '".$d_to_day."' ";
 }
+/*else{
+    $where[] = " ord.ord_date >= '".G5_TIME_YMD."' AND ord.ord_date <= '".G5_TIME_YMD."' ";
+}*/
 
 // 최종 WHERE 생성
 if ($where)
@@ -181,6 +185,7 @@ $('.date_blank').on('click',function(e){
     <tbody>
     <?php
     //print_r2($result);
+    $next_date = '';
     for ($i=0; $row=sql_fetch_array($result); $i++) {
         $csql = sql_fetch(" SELECT com_name FROM {$g5['company_table']} WHERE com_idx = '{$row['com_idx_customer']}' ");
         $row['com_name_customer'] = $csql['com_name'];
@@ -188,7 +193,7 @@ $('.date_blank').on('click',function(e){
         // 출하 건수
         $sql2 = " SELECT COUNT(oro_idx) AS cnt FROM {$g5['order_out_table']} WHERE ord_idx = '".$row['ord_idx']."' ";
         $row['oro'] = sql_fetch($sql2,1);
-
+        //print_r2($row['ord_date']);
         // 제품목록
         /*
         $sql1 = "SELECT bom.bom_idx, bom.bct_id, bom.bom_name, bom_part_no, bom_price, bom_status, ori.ori_idx, ori.ori_count
@@ -236,13 +241,23 @@ $('.date_blank').on('click',function(e){
 		
 		$oro_url = '';
         $oro_btn = '';
+        
+        //다음 레코드의 날짜 데이터를 호출
+        $next_sql = " SELECT ord_date FROM {$g5['order_table']} WHERE ord_idx = ( SELECT MIN(ord_idx) FROM {$g5['order_table']} WHERE ord_idx > {$row['ord_idx']} ) ";
+        //echo $next_sql;
+        $next = sql_fetch($next_sql);
+
+        //당일데 해당하는 레코드의 날짜 데이터에서 다음날짜를 변수에 저장
+        if($row['ord_date'] == G5_TIME_YMD) $next_date = $next['ord_date'];
+
         if($row['oro']['cnt']){
             $oro_url = './order_out_list.php?sfl=oro.ord_idx&stx='.$row['ord_idx'];
             $oro_btn = $row['oro']['cnt'].'건';
         }
         else {
-            if(true){ //(substr($row['ord_date'],0,10) == G5_TIME_YMD){
-                $oro_url = './order_out_create.php?w=&ord_idx='.$row['ord_idx'];
+            //if($row['ord_date'] == G5_TIME_YMD){
+            if($row['ord_date'] == G5_TIME_YMD || $row['ord_date'] == $next_date){
+                $oro_url = './order_out_create.php?w=&ord_idx='.$row['ord_idx'].'&ord_date='.$row['ord_date'];
                 $oro_btn = '<spn style="color:orange;">출하생성</span>';
             }else{
                 $oro_url = '';
@@ -263,7 +278,7 @@ $('.date_blank').on('click',function(e){
 
         //$s_item = '<a href="./order_item.php?'.$qstr.'&amp;ord_idx='.$row['ord_idx'].'" class="btn btn_03">상품</a>';
         $s_mod = '<a href="./order_form.php?'.$qstr.'&amp;w=u&amp;ord_idx='.$row['ord_idx'].'" class="btn btn_03">수정</a>';
-		
+		//print_r2($next_date);
         $bg = 'bg'.($i%2);
     ?>
 
@@ -286,7 +301,13 @@ $('.date_blank').on('click',function(e){
         <!--td class="td_practice_cnt">
             
         </td-->
-        <td class="td_ord_reg_dt"><?=substr($row['ord_date'],0,10)?></td><!-- 수주일 -->
+        <td class="td_ord_reg_dt">
+            <?php if($row['ord_date'] == G5_TIME_YMD){ ?>
+                <strong style="color:skyblue;"><?=$row['ord_date']?></strong>
+            <?php }else { ?>
+                <?=$row['ord_date']?>
+            <?php } ?>
+        </td><!-- 수주일 -->
         <td class="td_ord_status"><?=$g5['set_ord_status_value'][$row['ord_status']]?></td><!-- 수주상태 -->
         <td class="td_mng">
 			<?=$s_mod?>

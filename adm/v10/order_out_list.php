@@ -88,6 +88,8 @@ $result = sql_query($sql,1);
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
 $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 넘겨야 할 변수들
 //print_r2($g5['line_name']);exit;
+
+//print_r2($g5['customer']);
 ?>
 <style>
 /*.container_wr{min-width:1672px;overflow-x:auto;}*/
@@ -125,6 +127,9 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 .slt_label{position:relative;}
 .slt_label span{position:absolute;top:-23px;left:0px;z-index:2;}
 .slt_label .data_blank{position:absolute;top:3px;right:-18px;z-index:2;font-size:1.1em;cursor:pointer;}
+
+.loading{display:inline-block;}
+.loading_hide{display:none;}
 </style>
 
 <div class="local_ov01 local_ov">
@@ -470,6 +475,10 @@ $('.data_blank').on('click',function(e){
         <tr>
             <td style="padding:15px 5px;">
                 <button type="button" id="orp_submit" onclick="form02_submit(document.getElementById('form02'));" class="btn btn_01">확인</button>
+                <p class="loading loading_hide" style="padding-left:10px;">
+                    <img src="<?=G5_USER_ADMIN_IMG_URL?>/loading_small.gif">
+                    <b style="color:yellow;padding-left:10px;">실행중...</b>
+                </p>
             </td>
         </tr>
         </tbody>
@@ -832,6 +841,13 @@ function form02_submit(f) {
         return false;
     }
     */
+
+    if(!confirm("대량데이터처리이므로 시간이 1분이상 소요될수 있습니다.\n실행하는 동안 창을 닫거나, 다른버튼을 클릭해서는 안됩니다.\n작업을 진행하시겠습니까?")){
+        return false;
+    }
+    $('.loading').removeClass('loading_hide');
+
+
     //alert('ok');
     var tkn_obj = $('#form01').find('input[name="token"]');
     $('<input type="hidden" name="orp_order_no" value="'+orp_order_no+'">').insertBefore(tkn_obj);

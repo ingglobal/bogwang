@@ -133,7 +133,7 @@ function update_itm_delivery($arr) {
                 , itm_update_dt = '".G5_TIME_YMDHIS."'
             WHERE itm_idx = '".$arr['itm_idx']."'
     ";
-    // echo $sql.'<br>';
+    echo $sql.'<br>';
     sql_query($sql,1);
 
     // 연결된 자재의 모든 상태값을 변경

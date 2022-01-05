@@ -34,9 +34,23 @@ if ($stx != "") {
     }
 }
 
-if($shift) $where[] = " itm_shift = '".$shift."' ";
-if($itm_static_date) $where[] = " itm_date = '".$itm_static_date."' ";
-if($itm2_status) $where[] = " itm_status = '".$itm2_status."' ";
+if($shift){
+    $where[] = " itm_shift = '".$shift."' ";
+    $qstr .= $qstr.'&itm_shift='.$shift;
+}
+if($itm_static_date){
+    $where[] = " itm_date = '".$itm_static_date."' ";
+    $qstr .= $qstr.'&itm_date='.$itm_static_date;
+}
+if($itm2_status){
+    $where[] = " itm_status = '".$itm2_status."' ";
+    $qstr .= $qstr.'&itm_status='.$itms_status;
+}
+if($itm_delivery){
+    $where[] = " itm_delivery = '".$itm_delivery."' ";
+    $qstr .= $qstr.'&itm_delivery='.$itm_delivery;
+}
+
 // 최종 WHERE 생성
 if ($where)
     $sql_search = ' WHERE '.implode(' AND ', $where);
@@ -111,6 +125,11 @@ label[for="itm_static_date"] i{position:absolute;top:-10px;right:0px;z-index:2;c
 <select name="itm2_status" id="itm2_status">
     <option value="">-상태선택-</option>
     <?=$g5['set_itm_status_value_options']?>
+</select>
+<select name="itm_delivery" id="itm_delivery">
+    <option value="">-출하여부-</option>
+    <option value="1">출하상태</option>
+    <option value="0">재고상태</option>
 </select>
 <?php
 $itm_static_date = ($itm_static_date) ? $itm_static_date : G5_TIME_YMD;
@@ -194,8 +213,8 @@ $('.data_blank').on('click',function(e){
         <th scope="col">바코드</th>
         <th scope="col">외부라벨</th>
         <th scope="col">PLT</th>
-        <!-- <th scope="col">히스토리</th> -->
         <th scope="col">등록일시</th>
+        <th scope="col">출하여부</th>
         <th scope="col">상태</th>
         <th scope="col">관리</th>
     </tr>
@@ -247,6 +266,11 @@ $('.data_blank').on('click',function(e){
         <td class="td_itm_plt"><?=$row['itm_plt']?></td><!-- PLT -->
         <!-- <td class="td_itm_history"><?php ;//implode("<br>",$row['itm_history_array'])?></td> -->
         <td class="td_itm_reg_dt"><?=substr($row['itm_reg_dt'],0,19)?></td><!-- 등록일시 -->
+        <td class="td_itm_delivery">
+            <?php
+                echo ($row['itm_delivery']) ? '<span style="color:skyblue;">출하</span>' : '';
+            ?>
+        </td>
         <td class="td_itm_status td_itm_status_<?=$row['itm_idx']?>">
             <input type="hidden" name="itm_status[<?php echo $row['itm_idx'] ?>]" class="itm_status_<?php echo $row['itm_idx'] ?>" value="<?php echo $row['itm_status']?>">
             <input type="text" value="<?php echo $g5['set_itm_status'][$row['itm_status']]?>" readonly class="tbl_input readonly itm_status_name_<?php echo $row['itm_idx'] ?>" style="width:170px;text-align:center;">

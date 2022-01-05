@@ -133,7 +133,10 @@ else {
         //삭제,취소 등의 상태값이 아닌 생산실행 레코드가 있으면 중복 레코드를 생성하면 안된다.
         $chk_sql = " SELECT COUNT(*) AS cnt FROM {$g5['order_out_practice_table']} AS oop
                         LEFT JOIN {$g5['order_practice_table']} AS orp ON oop.orp_idx = orp.orp_idx
-                            WHERE oop.bom_idx = '{$bom_idx_arr[$oro_idx_v1]}' AND oop.oop_status NOT IN('trash','del','delete','cancel') ";
+                            WHERE oop.bom_idx = '{$bom_idx_arr[$oro_idx_v1]}'
+                            AND orp.orp_order_no = '{$orp_order_no}'
+                            AND oop.oop_status NOT IN('trash','del','delete','cancel')
+        ";
         $chk_result = sql_fetch($chk_sql);
 
         $bom = sql_fetch(" SELECT bom_name,bom_part_no FROM {$g5['bom_table']} WHERE bom_idx = '{$bom_idx_arr[$oro_idx_v1]}' ");

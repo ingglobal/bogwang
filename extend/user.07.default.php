@@ -447,7 +447,7 @@ if($_SESSION['ss_com_idx']) {
         @unlink($customer_cache_file);
         
         $g5['customer'] = array();
-        $sql = " SELECT com_idx, com_name, com_names, com_status FROM {$g5['company_table']} WHERE com_level = 2 AND com_idx_par = '".$_SESSION['ss_com_idx']."' ";
+        $sql = " SELECT com_idx, com_name, com_names, com_status FROM {$g5['company_table']} WHERE (com_level = 2 AND com_idx_par = '{$_SESSION['ss_com_idx']}') OR com_idx = '{$_SESSION['ss_com_idx']}' ";
         $result = sql_query($sql,1);
         for ($i=0; $row = sql_fetch_array($result); $i++) {
             $g5['customer'][$row['com_idx']] = $row;
