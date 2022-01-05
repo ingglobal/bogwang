@@ -68,6 +68,8 @@ else if($getData[0]['bom_part_no']) {
 
     // 공통요소
     $sql_common = " com_idx = '".$g5['setting']['set_com_idx']."'
+                    , imp_idx = '".$arr['imp_idx']."'
+                    , mms_idx = '".$arr['mms_idx']."'
                     , bom_idx = '".$oop['bom_idx']."'
                     , oop_idx = '".$oop['oop_idx']."'
                     , bom_part_no = '".$arr['bom_part_no']."'
