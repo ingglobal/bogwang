@@ -642,3 +642,42 @@ WHERE orp_done_date != '0000-00-00'
 GROUP BY bom_idx, trm_idx_line, orp_done_date, oop_count, oop_1, oop_2, oop_3, oop_4, oop_5, oop_6, oop_7, oop_8, oop_9, oop_10
 ORDER BY bom_idx, trm_idx_line, orp_done_date
 
+
+// item statics by some amount of time unit.
+SELECT dta_dt, FROM_UNIXTIME(dta_dt,'%Y-%m-%d %H:%i:%s') AS dta_ymdhis
+        , dta_shf_no, dta_mmi_no
+        , SUM(dta_value) AS dta_value
+        , (dta_dt DIV 3600) AS dta_divided
+        , (dta_dt DIV 3600)*3600 AS dta_made_timestamp
+        , FROM_UNIXTIME((dta_dt DIV 3600)*3600,'%Y-%m-%d %H:%i:%s') AS dta_made_dt
+FROM g5_1_data_output_4
+WHERE FROM_UNIXTIME(dta_dt,'%Y-%m-%d') = '2021-02-17'
+GROUP BY dta_dt DIV 3600
+ORDER BY dta_dt ASC
+
+SELECT UNIX_TIMESTAMP(itm_reg_dt) AS dta_dt, itm_reg_dt
+--        , COUNT( itm_idx ) AS itm_sum
+--        , SUM( CASE WHEN itm_status IN ('ing','finish') THEN 1 ELSE 0 END ) AS itm_ok
+--        , SUM( CASE WHEN itm_status IN ('error_stitch') THEN 1 ELSE 0 END ) AS itm_ng
+        , (UNIX_TIMESTAMP(itm_reg_dt) DIV 3600) AS dta_divided
+        , (UNIX_TIMESTAMP(itm_reg_dt) DIV 3600)*3600 AS dta_made_timestamp
+        , FROM_UNIXTIME((UNIX_TIMESTAMP(itm_reg_dt) DIV 3600)*3600,'%Y-%m-%d %H:%i:%s') AS dta_made_dt
+FROM g5_1_item
+WHERE itm_reg_dt >= '2021-12-01 00:00:00' AND itm_reg_dt <= '2021-12-03 23:59:59'
+-- GROUP BY UNIX_TIMESTAMP(itm_reg_dt) DIV 3600
+ORDER BY UNIX_TIMESTAMP(itm_reg_dt) ASC
+
+
+SELECT UNIX_TIMESTAMP(itm_reg_dt) AS dta_dt, itm_reg_dt
+  , COUNT( itm_idx ) AS itm_sum
+  , SUM( CASE WHEN itm_status IN ('ing','finish') THEN 1 ELSE 0 END ) AS itm_ok
+  , SUM( CASE WHEN itm_status IN ('error_stitch') THEN 1 ELSE 0 END ) AS itm_ng
+  , (UNIX_TIMESTAMP(itm_reg_dt) DIV 3600) AS dta_divided
+  , (UNIX_TIMESTAMP(itm_reg_dt) DIV 3600)*3600 AS dta_made_timestamp
+  , FROM_UNIXTIME((UNIX_TIMESTAMP(itm_reg_dt) DIV 3600)*3600,'%Y-%m-%d %H:%i:%s') AS dta_made_dt
+FROM g5_1_item
+WHERE itm_reg_dt >= '2021-12-01 00:00:00' AND itm_reg_dt <= '2021-12-03 23:59:59'
+GROUP BY UNIX_TIMESTAMP(itm_reg_dt) DIV 3600
+ORDER BY UNIX_TIMESTAMP(itm_reg_dt) ASC
+
+
