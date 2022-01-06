@@ -214,6 +214,7 @@ $('.data_blank').on('click',function(e){
         <th scope="col">외부라벨</th>
         <th scope="col">PLT</th>
         <th scope="col">등록일시</th>
+        <th scope="col">갱신일시</th>
         <th scope="col">출하여부</th>
         <th scope="col">상태</th>
         <th scope="col">관리</th>
@@ -266,6 +267,7 @@ $('.data_blank').on('click',function(e){
         <td class="td_itm_plt"><?=$row['itm_plt']?></td><!-- PLT -->
         <!-- <td class="td_itm_history"><?php ;//implode("<br>",$row['itm_history_array'])?></td> -->
         <td class="td_itm_reg_dt"><?=substr($row['itm_reg_dt'],0,19)?></td><!-- 등록일시 -->
+        <td class="td_itm_update_dt"><?=substr($row['itm_update_dt'],0,19)?></td><!-- 등록일시 -->
         <td class="td_itm_delivery">
             <?php
                 echo ($row['itm_delivery']) ? '<span style="color:skyblue;">출하</span>' : '';
