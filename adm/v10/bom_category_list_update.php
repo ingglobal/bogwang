@@ -7,7 +7,8 @@ check_demo();
 auth_check_menu($auth, $sub_menu, "w");
 
 check_admin_token();
-if ($_POST['act_button'] == "일괄수정") {
+
+if ($_POST['act_button2'] == "일괄수정") {
     $post_bct_id_count = (isset($_POST['bct_id']) && is_array($_POST['bct_id'])) ? count($_POST['bct_id']) : 0;
 
     for ($i=0; $i<$post_bct_id_count; $i++)
@@ -21,7 +22,7 @@ if ($_POST['act_button'] == "일괄수정") {
         sql_query($sql,1);
     }
 }
-else if ($_POST['act_button'] == "분류환경변수설정반영") {
+if ($_POST['act_button'] == "분류환경변수설정반영") {
     $ids = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
     $idarr = array();
     for($i=0;$i<count($ids);$i++){

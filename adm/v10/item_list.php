@@ -46,6 +46,10 @@ if($itm2_status){
     $where[] = " itm_status = '".$itm2_status."' ";
     $qstr .= $qstr.'&itm_status='.$itms_status;
 }
+if($trm_idx_location){
+    $where[] = " trm_idx_location = '".$trm_idx_location."' ";
+    $qstr .= $qstr.'&trm_idx_location='.$trm_idx_location;
+}
 if($itm_delivery){
     $where[] = " itm_delivery = '".$itm_delivery."' ";
     $qstr .= $qstr.'&itm_delivery='.$itm_delivery;
@@ -122,12 +126,19 @@ label[for="itm_static_date"] i{position:absolute;top:-10px;right:0px;z-index:2;c
     <option value="">::작업구간::</option>
     <?=$g5['set_itm_shift2_value_options']?>
 </select>
+<select name="trm_idx_location" id="trm_idx_location">
+    <option value="">::라인선택::</option>
+    <option value="1">1라인</option>
+    <option value="2">2라인</option>
+    <option value="3">3라인</option>
+    <option value="4">4라인</option>
+</select>
 <select name="itm2_status" id="itm2_status">
-    <option value="">-상태선택-</option>
+    <option value="">::상태선택::</option>
     <?=$g5['set_itm_status_value_options']?>
 </select>
 <select name="itm_delivery" id="itm_delivery">
-    <option value="">-출하여부-</option>
+    <option value="">::출하여부::</option>
     <option value="1">출하상태</option>
     <option value="0">재고상태</option>
 </select>

@@ -171,7 +171,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     <?php if($member['mb_level'] >= 10){ ?>
     <input type="submit" name="act_button" value="분류환경변수설정반영" onclick="document.pressed=this.value" class="btn_02 btn">
     <?php } ?>
-    <input type="submit" value="일괄수정" class="btn_02 btn">
+    <input type="submit" name="act_button2" value="일괄수정" class="btn_02 btn">
 
     <?php if ($is_admin == 'super') {?>
     <a href="./bom_category_form.php" id="cate_add" class="btn btn_01">추가하기</a>

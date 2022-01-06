@@ -98,7 +98,7 @@ include_once('./_head.sub.php');
         </select>
         <script>$('select[name=sch_field]').val('<?php echo $sch_field?>').attr('selected','selected')</script>
         <input type="text" name="sch_word" id="sch_word" value="<?php echo get_text($sch_word); ?>" class="frm_input required" required size="20">
-        <input type="submit" value="검색" class="btn_frmline">
+        <input type="submit" value="검색" class="btn_frmline" style="height:26px;">
         <a href="<?php echo $_SERVER['SCRIPT_NAME']?>?<?php echo $qstr?>" class="btn btn_b10">검색취소</a>
     </div>
     

@@ -4,6 +4,7 @@
 
 html {
     background: #f3f3f3;
+    height:100%;
 }
 select{background:#1e2531;}
 #container {margin-top:50px;}
@@ -53,6 +54,9 @@ a.btn_b02, .btn_b02{background:#0891D1;color:#fff !important;}
 #bo_v_file h2{background:#43535C;}
 
 /*게시판 쓰기*/
+#bo_w {}
+#bo_w input[type="text"],#bo_w input[type="password"],#bo_w input[type="url"],#bo_w select{height:40px;line-height:40px;}
+#bo_w .btn_cancel{height:30px;line-height:27px;}
 #bo_w #btn_mms{height:40px;line-height:40x;}
 #bo_w .write_div{background:#060D1B;}
 .towhom_wrapper{border:1px solid #142546;}
