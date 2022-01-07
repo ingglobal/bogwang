@@ -30,6 +30,9 @@ if($stx != ''){
     }
 }
 
+if($gst_date) {
+    $where[] = " gst_date = '{$gst_date}' ";
+}
 
 //최종 WHERE 생성
 if($where) {
@@ -37,17 +40,22 @@ if($where) {
 }
 
 if (!$sst) {
-    $sst = "gst_idx";
+    $sst = "gst_date";
     $sod = "desc";
 }
 
-$sql_order = " ORDER BY {$sst} {$sod} ";
+if (!$sst2) {
+    $sst2 = ", bom_sort";
+    $sod2 = "";
+}
+
+$sql_order = " ORDER BY {$sst} {$sod} {$sst2} {$sod2} ";
 
 $sql = " SELECT COUNT(*) AS cnt {$sql_common} {$sql_search} ";
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
-$rows = 100;//$config['cf_page_rows'];
+$rows = 30;//$config['cf_page_rows'];
 $total_page = ceil($total_count / $rows); //전체페이지 계산
 if($page < 1) $page = 1; //페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; //시작 열을 구함
@@ -106,10 +114,12 @@ label[for="gst_date"] i{position:absolute;top:-10px;right:0px;z-index:2;cursor:p
         <input type="submit" class="btn_submit" value="검색">
     </form>
 
-    <form name="finput" id="finput" action="./guest_item_input_update.php" onsubmit="return input_form(this);" method="post">
+    <form name="finput" id="finput" action="./guest_item_list_update.php" onsubmit="return input_form(this);" method="post">
+        <input type="hidden" name="item_add" value="1">
         <label for="bom_name">
+            <input type="hidden" name="com_idx_customer" value="">
             <input type="hidden" name="bom_idx" value="">
-            <input type="text" id="bom_name" name="bom_name" link="./bom_select3.php" readonly class="frm_input readonly" placeholder="고객처재고상품선택(클릭!)" value="" style="width:200px;">
+            <input type="text" id="bom_name" name="bom_name" link="./bom_select3.php?file_name=<?=$g5['file_name']?>" readonly class="frm_input readonly" placeholder="고객처재고상품선택(클릭!)" value="" style="width:300px;">
         </label>
         <label for="gst_date">
             <input type="text" name="gst_date" id="mtr_input_date" readonly required class="frm_input readonly required" value="<?=G5_TIME_YMD?>" style="width:80px;">
@@ -124,23 +134,6 @@ label[for="gst_date"] i{position:absolute;top:-10px;right:0px;z-index:2;cursor:p
     <p>고객처 상품재고량을 관리하는 페이지입니다.</p>
 </div>
 
-<div class="select_input">
-    <h3>선택목록 데이터일괄 입력</h3>
-    <p style="padding:30px 0 20px">
-        <label for="" class="slt_label">
-            <span>갯수<i class="fa fa-times data_blank" aria-hidden="true"></i></span>
-            <input type="text" name="o_count" id="o_count" value="" onclick="javascript:chk_Number(this)" style="text-align:right;width:100px;">
-        </label>
-        <label for="" class="slt_label">
-            <span>상태<i class="fa fa-times data_blank" aria-hidden="true"></i></span>
-            <select name="o_status" id="o_status">
-                <option value="">-선택-</option>
-                <?=$g5['set_gst_status_options']?>
-            </select>
-        </label>
-        <input type="button" id="slt_input" onclick="slet_input(document.getElementById('form01'));" value="선택항목 일괄입력" class="btn btn_02">
-    </p>
-</div>
 <script>
 $('.data_blank').on('click',function(e){
     e.preventDefault();
@@ -162,6 +155,8 @@ $('.data_blank').on('click',function(e){
 <form name="form01" id="form01" action="./guest_item_list_update.php" onsubmit="return form01_submit(this);" method="post">
 <input type="hidden" name="sst" value="<?php echo $sst ?>">
 <input type="hidden" name="sod" value="<?php echo $sod ?>">
+<input type="hidden" name="sst2" value="<?php echo $sst2 ?>">
+<input type="hidden" name="sod2" value="<?php echo $sod2 ?>">
 <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
 <input type="hidden" name="stx" value="<?php echo $stx ?>">
 <input type="hidden" name="page" value="<?php echo $page ?>">
@@ -177,13 +172,11 @@ $('.data_blank').on('click',function(e){
             <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
         </th>
         <th scope="col">ID</th>
+        <th scope="col">분류</th>
         <th scope="col"><?php echo subject_sort_link('bom_name') ?>품명</a></th>
         <th scope="col">파트넘버</th>
-        <th scope="col">고객처</th>
         <th scope="col">재고확인날짜</th>
         <th scope="col">갯수</th>
-        <th scope="col">상태</th>
-        <th scope="col">관리</th>
     </tr>
     <tr>
     </tr>
@@ -191,49 +184,40 @@ $('.data_blank').on('click',function(e){
     <tbody>
     <?php
     for ($i=0; $row=sql_fetch_array($result); $i++) {
+        $bom = sql_fetch(" SELECT bct_id FROM {$g5['bom_table']} WHERE bom_idx = '{$row['bom_idx']}' ");
+        if($bom['bct_id']){
+            $cat_tree = category_tree_array($bom['bct_id']);
+            $row['bct_name_tree'] = '';
+            for($k=0;$k<count($cat_tree);$k++){
+                $cat_str = sql_fetch(" SELECT bct_name FROM {$g5['bom_category_table']} WHERE bct_id = '{$cat_tree[$k]}' ");
+                $row['bct_name_tree'] .= ($k == 0) ? $cat_str['bct_name'] : ' > '.$cat_str['bct_name'];
+            }
+        }
+
         //print_r2($row);
         $s_mod = '<a href="./guest_item_form.php?'.$qstr.'&amp;w=u&amp;mtr_idx='.$row['gst_idx'].'" class="btn btn_03">수정</a>';
 
         $bg = 'bg'.($i%2);
     ?>
-<!--
-`gst_idx` bigint(20) NOT NULL COMMENT '고객재고idx',
-`com_idx` bigint(20) NOT NULL DEFAULT '0' COMMENT '업체번호',
-`com_idx_customer` bigint(20) NOT NULL DEFAULT '0' COMMENT '거래처번호',
-`bom_idx` bigint(20) NOT NULL DEFAULT '0' COMMENT 'BOMidx',
-`gst_count` int(11) NOT NULL DEFAULT '0' COMMENT '고객처재고수량',
-`gst_date` date DEFAULT '0000-00-00' COMMENT '확인날짜',
-`gst_status` varchar(20) DEFAULT 'pending' COMMENT '상태',
-`gst_reg_dt` datetime DEFAULT '0000-00-00 00:00:00' COMMENT '등록일시',
-`gst_update_dt` datetime DEFAULT '0000-00-00 00:00:00' COMMENT '수정일시'
--->
     <tr class="<?php echo $bg; ?>" tr_id="<?php echo $row['gst_idx'] ?>">
         <td class="td_chk">
-            <input type="hidden" name="gst_idx[<?php echo $row['gst_idx'] ?>]" value="<?php echo $row['gst_idx'] ?>" id="gst_idx_<?php echo $i ?>">
+            <input type="hidden" name="gst_idx[<?php echo $row['gst_idx'] ?>]" value="<?php echo $row['gst_idx'] ?>" class="gst_idx_<?php echo $i ?>">
             <label for="chk_<?php echo $i; ?>" class="sound_only"><?php echo get_text($row['bom_name']); ?> <?php echo get_text($row['mb_nick']); ?>님</label>
             <input type="checkbox" name="chk[]" value="<?php echo $row['gst_idx'] ?>" id="chk_<?php echo $i ?>">
-            <div class="chkdiv_btn" chk_no="<?=$i?>"></div>
         </td>
         <td class="td_gst_name"><?=$row['gst_idx']?></td><!-- ID -->
-        <td class="td_gst_name"><?=$row['bom_name']?></td><!-- 품명 -->
+        <td class="td_gst_category" style="text-align:left;"><?=$row['bct_name_tree']?></td><!-- 카테고리 -->
+        <td class="td_gst_name" style="text-align:left;"><?=$row['bom_name']?></td><!-- 품명 -->
         <td class="td_gst_part_no"><?=$row['bom_part_no']?></td><!-- 파트넘버 -->
-        <td class="td_gst_provider"><?=$row['com_name']?></td><!-- 고객처명 -->
         <td class="td_gst_date"><?=$row['gst_date']?></td><!-- 재고확인날짜 -->
         <td class="td_gst_count td_gst_count_<?=$row['gst_idx']?>">
-            <input type="text" name="gst_count[<?=$row['gst_idx']?>]" value="<?=$row['gst_count']?>" class="tbl_input gst_count_<?=$row['gst_idx']?>" style="width:100px;text-align:right;">
+            <input type="text" name="gst_count[<?=$row['gst_idx']?>]" value="<?=$row['gst_count']?>" class="tbl_input gst_count_<?=$row['gst_idx']?>" style="width:60px;text-align:right;" onClick="javascript:chk_Number(this)">
         </td><!-- 갯수 -->
-        <td class="td_gst_status td_gst_status_<?=$row['gst_idx']?>" style="width:180px;">
-            <input type="hidden" name="gst_status[<?php echo $row['gst_idx'] ?>]" class="gst_status_<?php echo $row['gst_idx'] ?>" value="<?php echo $row['gst_status']?>">
-            <input type="text" value="<?php echo $g5['set_gst_status'][$row['gst_status']]?>" readonly class="tbl_input readonly gst_status_name_<?php echo $row['gst_idx'] ?>" style="width:170px;text-align:center;">
-        </td><!-- 상태 -->
-        <td class="td_mng">
-			<?=$s_mod?>
-		</td>
     </tr>
     <?php
     }
     if ($i == 0)
-        echo "<tr><td colspan='9' class=\"empty_table\">자료가 없습니다.</td></tr>";
+        echo "<tr><td colspan='7' class=\"empty_table\">자료가 없습니다.</td></tr>";
     ?>
     </tbody>
     </table>
@@ -290,87 +274,6 @@ function chk_Number(object){
     $(object).keyup(function(){
         $(this).val($(this).val().replace(/[^0-9|-]/g,""));
     });
-}
-
-var first_no = '';
-var second_no = '';
-$('.chkdiv_btn').on('click',function(e){
-    //시프트키 또는 알트키와 클릭을 같이 눌렀을 경우
-    if(e.shiftKey || e.altKey){
-        //first_no정보가 없으면 0번부터 shift+click한 체크까지 선택을 한다.
-        if(first_no == ''){
-            first_no = 0;
-        }
-        //first_no정보가 있으면 first_no부터 second_no까지 체크를 선택한다.
-        else{
-            ;
-        }
-        second_no = Number($(this).attr('chk_no'));
-        var key_type = (e.shiftKey) ? 'shift' : 'alt';
-        //multi_chk(first_no,second_no,key_type);
-        (function(first_no,second_no,key_type){
-            //console.log(first_no+','+second_no+','+key_type+':func');return;
-            var start_no = (first_no < second_no) ? first_no : second_no;
-            var end_no = (first_no < second_no) ? second_no : first_no;
-            //console.log(start_no+','+end_no);return;
-            for(var i=start_no;i<=end_no;i++){
-                if(key_type == 'shift')
-                    $('.chkdiv_btn[chk_no="'+i+'"]').siblings('input[type="checkbox"]').attr('checked',true);
-                else
-                    $('.chkdiv_btn[chk_no="'+i+'"]').siblings('input[type="checkbox"]').attr('checked',false);
-            }
-
-            first_no = '';
-            second_no = '';
-        })(first_no,second_no,key_type);
-    }
-    //클릭만했을 경우
-    else{
-        //이미 체크되어 있었던 경우 체크를 해제하고 first_no,second_no를 초기화해라
-        if($(this).siblings('input[type="checkbox"]').is(":checked")){
-            first_no = '';
-            second_no = '';
-            $(this).siblings('input[type="checkbox"]').attr('checked',false);
-        }
-        //체크가 안되어 있는 경우 체크를 넣고 first_no에 해당 체크번호를 대입하고, second_no를 초기화한다.
-        else{
-            $(this).siblings('input[type="checkbox"]').attr('checked',true);
-            first_no = $(this).attr('chk_no');
-            second_no = '';
-        }
-    }
-});
-
-function slet_input(f){
-    var chk_count = 0;
-    var chk_idx = [];
-    //var dt_pattern = new RegExp("^(\d{4}-\d{2}-\d{2})$");
-    var dt_pattern = /^(\d{4}-\d{2}-\d{2})$/;
-    for(var i=0; i<f.length; i++){
-        if(f.elements[i].name == "chk[]" && f.elements[i].checked){
-            chk_idx.push(f.elements[i].value);
-            chk_count++;
-        }
-    }
-    if (!chk_count) {
-        alert("일괄입력할 고객처재고목록을 하나 이상 선택하세요.");
-        return false;
-    }
-
-    var o_status = document.getElementById('o_status').value;
-    var o_status_name = $('#o_status').find('option[value="'+o_status+'"]').text();
-    var o_count = document.getElementById('o_count').value;
-
-    for(var idx in chk_idx){
-        //console.log(idx);continue;
-        if(o_status){
-            $('.td_gst_status_'+chk_idx[idx]).find('input[type="hidden"]').val(o_status);
-            $('.td_gst_status_'+chk_idx[idx]).find('input[type="text"]').val(o_status_name);
-        }
-        if(o_count){
-            $('.td_gst_count_'+chk_idx[idx]).find('input[type="text"]').val(o_count);
-        }
-    }
 }
 
 function form01_submit(f)

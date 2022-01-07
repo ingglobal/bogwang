@@ -343,6 +343,10 @@ $(function() {
 //	$('.td_del a').live('click',function(e) {
 	$(document).on('click','.td_del a',function(e) {
 		e.preventDefault();
+		if(!g5_is_admin){
+			alert('삭제할 권한이 없습니다.');
+			return false;
+		}
 		
 		//-- 추가된 항목은 바로 삭제, 기 등록된 조직은 관련 작업 진행
 		if(confirm('하위 카테고리 전체 및 소속 항목들이 전부 삭제됩니다. \n\n후회할 수도 있을 텐데~~ 정말 삭제하시겠습니까?')) {
@@ -460,22 +464,11 @@ function trm_delete(this_trm_idx, fn_delte) {
 		url:'./ajax/term_delete.php',
 		type:'get',
 		data:{"taxonomy":"<?=$taxonomy?>", "trm_idx":this_trm_idx,"delete":fn_delte},
-		dataType:'json',
+		dataType:'text',
 		timeout:3000, 
 		beforeSend:function(){},
-		success:function(data){
-			//alert(data.sql);
-	//-- 디버깅 Ajax --//
-
-	//$.getJSON('../ajax/term_delete.php',{"taxonomy":"<?=$taxonomy?>", "trm_idx":this_trm_idx,"delete":fn_delte},function(data){
-			//alert(data.sql);
-
-			//-- 페이지 새로고침 --//
-//			setTimeout(function(e){
+		success:function(res){
 				self.location.reload();
-//			},3000);
-
-	//-- 디버깅 Ajax --//
 		},
 		error:function(xmlRequest) {
 			alert('Status: ' + xmlRequest.status + ' \n\rstatusText: ' + xmlRequest.statusText 

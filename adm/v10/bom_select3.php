@@ -134,6 +134,7 @@ include_once('./_head.sub.php');
                     ori_idx="<?=$row['ori_idx']?>"
                     ori_count="<?=$row['ori_count']?>"
                     bom_idx="<?=$row['bom_idx']?>"
+                    com_idx_customer="<?=$row['com_idx_customer']?>"
                     bom_name="<?=$row['bom_name']?>"
                     bom_part_no="<?=$row['bom_part_no']?>"
                     com_name="<?=$row['com_name']?>"
@@ -165,6 +166,7 @@ $('.btn_select').click(function(e){
     var bom_idx = $(this).attr('bom_idx');
     var bom_name = $(this).attr('bom_name');  // 
     var bom_part_no = $(this).attr('bom_part_no');
+    var com_idx_customer = $(this).attr('com_idx_customer');
     var com_name = $(this).attr('com_name');
     var bom_price = $(this).attr('bom_price');    // 
     var bom_price2 = $(this).attr('bom_price2');    // 
@@ -180,9 +182,12 @@ $('.btn_select').click(function(e){
         $("input[name=bom_part_no]", opener.document).val( bom_part_no );
         $("input[name=itm_com_barcode]", opener.document).val( trm_com_barcode );
     <?php
-    }
+    } else if($file_name=='guest_item_list') {
     ?>
-
+        $("input[name=com_idx_customer]", opener.document).val( com_idx_customer );
+        $("input[name=bom_idx]", opener.document).val( bom_idx );
+        $("input[name=bom_name]", opener.document).val( bom_name );
+    <?php } ?>
     window.close();
 });
 </script>

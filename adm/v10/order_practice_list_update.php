@@ -15,44 +15,20 @@ auth_check($auth[$sub_menu], 'w');
 check_admin_token();
 
 if ($_POST['act_button'] == "선택수정") {
-
-    for ($i=0; $i<count($_POST['chk']); $i++)
-    {
+    //for ($i=0; $i<count($_POST['chk']); $i++){
+    foreach($_POST['chk'] as $orp_idx_v){
         // 실제 번호를 넘김
         $k = $_POST['chk'][$i];
 
-        // 천단위 제거
-        $_POST['orp_count'][$k] = preg_replace("/,/","",$_POST['orp_count'][$k]);
-        /*
+        
         $sql = "UPDATE {$g5['order_practice_table']} SET
-                    orp_count = '".sql_real_escape_string($_POST['orp_count'][$k])."',
+                    orp_done_date = '".$_POST['orp_done_date'][$orp_idx_v]."',
                     orp_update_dt = '".G5_TIME_YMDHIS."'
-                WHERE orp_idx = '".$_POST['orp_idx'][$k]."'
-        ";
-        */
-        $sql = "UPDATE {$g5['order_practice_table']} SET
-                    orp_update_dt = '".G5_TIME_YMDHIS."'
-                WHERE orp_idx = '".$_POST['orp_idx'][$k]."'
+                WHERE orp_idx = '".$orp_idx_v."'
         ";
         // echo $sql.'<br>';
         sql_query($sql,1);
     
-    }
-
-} else if ($_POST['act_button'] == "선택삭제") {
-
-    for ($i=0; $i<count($_POST['chk']); $i++)
-    {
-        // 실제 번호를 넘김
-        $k = $_POST['chk'][$i];
-
-        // 
-        $sql = "UPDATE {$g5['order_practice_table']} SET
-                    orp_status = 'trash'
-                    , orp_history = CONCAT(orp_history,'\n삭제 by ".$member['mb_name'].", ".G5_TIME_YMDHIS."')
-                WHERE orp_idx = '".$mb['orp_idx']."'
-        ";
-        sql_query($sql,1);
     }
 
 }
@@ -63,5 +39,5 @@ if ($msg)
 
 // exit;
 $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 넘겨야 할 변수들
-goto_url('./order_out_list.php?'.$qstr);
+goto_url('./order_practice_list.php?'.$qstr);
 ?>

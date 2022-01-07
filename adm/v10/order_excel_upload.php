@@ -78,13 +78,13 @@ try {
 				&& 	preg_match('/[A-Z\-0-9]+/',$rowData[0][5])
 				&& 	preg_match('/[가-힣ㄱ-ㅎㅏ-ㅣ\/\_A-Z]+/',$rowData[0][6])
 			){ //품번에 특정 규칙값이 있으면 이하 실행
-                
-                
+
+
                 //고객처 재고 데이터가 있으면 따로 배열에 저장해라
                 if($rowData[0][7]){
                     $gstArr[$rowData[0][5]] = $rowData[0][7];
                 }
-                
+
                 foreach($dateArr as $id => $date){
                     if($rowData[0][$id]){
                         $ordArr[$date][$rowData[0][5]] = $rowData[0][$id];
@@ -125,8 +125,8 @@ exit;
 if(count($gstArr)){
     foreach($gstArr as $gk => $gv){
         $gbom = sql_fetch(" SELECT com_idx_customer,bom_idx FROM {$g5['bom_table']} WHERE bom_status NOT IN('delete','del','trash') AND bom_part_no = '{$gk}' ");
-        $gst = sql_fetch(" SELECT gst_idx FROM {$g5['guest_stock_table']} 
-                            WHERE gst_date = '{$todate}' 
+        $gst = sql_fetch(" SELECT gst_idx FROM {$g5['guest_stock_table']}
+                            WHERE gst_date = '{$todate}'
                                 AND gst_status NOT IN('delete','del','trash')
                                 AND bom_idx = '{$gbom['bom_idx']}'
         ");
@@ -154,10 +154,14 @@ if(count($gstArr)){
         //echo $gsql."<br>";
         sql_query($gsql,1);
     }
+
+	//만약 고객체 테이블에 gst_count = 0 인것은 전부 삭제한다.
+	$gst_del = " DELETE FROM {$g5['guest_stock_table']} WHERE gst_count = '0' ";
+	sql_query($gst_del,1);
 }
 //exit;
 foreach($ordArr as $ok => $ov){
-    
+
     if(count($ov)){
         $ord_sql = " SELECT ord_idx FROM {$g5['order_table']} WHERE ord_status NOT IN('delete','del','trash','cancel') AND ord_date = '{$ok}' ";
         //echo $ord_sql."<br>";
