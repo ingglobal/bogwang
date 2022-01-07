@@ -213,9 +213,17 @@ $('.data_blank').on('click',function(e){
             <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i ?>">
         </td>
         <td class="td_orp_id"><?=$row['orp_idx']?></td>
-        <td class="td_orp_order_no"><?=$row['orp_order_no']?></td><!-- 지시번호 -->
-        <td class="td_orp_operation_line"><?=$g5['line_name'][$row['trm_idx_line']]?></td><!-- 공정/라인 -->
-        <td class="td_orp_start_date"><?=$row['orp_start_date']?></td><!-- 시작일 -->
+        <td class="td_orp_order_no">
+            <input type="text" name="orp_order_no[<?=$row['orp_idx']?>]" value="<?=$row['orp_order_no']?>" readonly class="tbl_input orp_order_no_<?=$row['orp_idx']?> readonly" style="width:150px;">
+        </td><!-- 지시번호 -->
+        <td class="td_orp_operation_line"><!-- 공정/라인 -->
+            <input type="hidden" name="trm_idx_line[<?=$row['orp_idx']?>]" value="<?=$row['trm_idx_line']?>" class="trm_idx_line_<?=$row['orp_idx']?>">
+            <input type="text" value="<?=$g5['line_name'][$row['trm_idx_line']]?>" readonly class="tbl_input orp_operation_line_<?=$row['orp_idx']?>" style="width:60px;">
+        </td>
+        <td class="td_orp_start_date"><!-- 시작일 -->
+            <?php $row['orp_start_date'] = ($row['orp_start_date']=='0000-00-00'||!$row['orp_start_date'])?'':$row['orp_start_date']; ?>
+            <input type="text" name="orp_start_date[<?=$row['orp_idx']?>]" value="<?=$row['orp_start_date']?>" readonly class="tbl_input orp_start_date_<?=$row['orp_idx']?>" style="width:80px;">
+        </td>
         <td class="td_orp_done_date"><!-- 완료일 -->
             <?php $row['orp_done_date'] = ($row['orp_done_date']=='0000-00-00'||!$row['orp_done_date'])?'':$row['orp_done_date']; ?>
             <input type="text" name="orp_done_date[<?=$row['orp_idx']?>]" value="<?=$row['orp_done_date']?>" readonly class="tbl_input orp_done_date_<?=$row['orp_idx']?>" style="width:80px;">
@@ -223,6 +231,12 @@ $('.data_blank').on('click',function(e){
         <td class="td_orp_count"><!-- 지시수량 -->
         <?=number_format($oop['cnt'])?>&nbsp;&nbsp;개
         </td>
+        <!--td class="td_orp_output"><?php //$row['orp_output']?></td--><!-- 실시간생산 -->
+        <!--td class="td_ord_idx">
+            <a href="?sfl=oro.ord_idx&stx=<?php //$row['ord_idx']?>"><?php //$row['ord_idx']?></a>
+            -
+            <a href="?sfl=orp.oro_idx&stx=<?php //$row['oro_idx']?>"><?php //$row['oro_idx']?></a>
+        </td--><!-- 수주/출하번호 -->
         <td class="td_orp_status"><?=$g5['set_orp_status_value'][$row['orp_status']]?></td><!-- 상태 -->
         <td class="td_mng">
 			<?=$s_mod?>

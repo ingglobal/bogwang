@@ -12,10 +12,20 @@ if(!$ord_idx)
 $sql = " SELECT * FROM {$g5['order_table']} WHERE ord_idx = '{$ord_idx}' ";
 $ord = sql_fetch($sql);
 */
+//$ord_idx로 이미 등록된 출하계획 데이터가 존재하는 확인하고 있으면 튕겨낸다.
+$oro_sql = " SELECT COUNT(oro_idx) AS cnt FROM {$g5['order_out_table']} WHERE oro_status NOT IN('delete','del','trash') AND ord_idx = '{$ord_idx}' ";
+$oro_cnt = sql_fetch($oro_sql);
+if($oro_cnt['cnt']){
+	alert('선택하신 수주ID에 해당하는 출하계획 데이터가 이미 존재합니다.');
+}
+
+
 $sql_it = " SELECT * FROM {$g5['order_item_table']} WHERE ord_idx = '{$ord_idx}' AND ori_status NOT IN('trash','delete','del','cancel') ORDER BY ori_idx,ori_reg_dt DESC ";
 $result = sql_query($sql_it,1);
 //$total_count = sql_num_rows($result);
-
+// echo $sql_it."<br>";
+// print_r2($result);
+// exit;
 for($i=0;$row=sql_fetch_array($result);$i++){
     $sql_ot = " INSERT into {$g5['order_out_table']} SET
 					com_idx = '{$row['com_idx']}',
