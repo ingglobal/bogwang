@@ -418,7 +418,7 @@ if($i>0) {
 </div>
 
 <div class="btn_fixed_top">
-    <a href="./dashboard_graph_multi.php" com_idx="<?=$_SESSION['ss_com_idx']?>" class="btn btn_02"><i class="fa fa-bar-chart"></i> 겹쳐보기</a>
+    <a href="./dashboard_graph_multi.php" com_idx="<?=$_SESSION['ss_com_idx']?>" class="btn btn_02" style="diaplay:none;"><i class="fa fa-bar-chart"></i> 겹쳐보기</a>
     <a href="./dashboard_mms_group.php" com_idx="<?=$_SESSION['ss_com_idx']?>" class="btn btn_02 btn_mms_group"><i class="fa fa-th"></i> 배치도</a>
     <a href="./dashboard_setting.php?file_name=<?=$g5['file_name']?>" id="btn_add" class="btn btn_02" style="display:none;"><i class="fa fa-gear"></i> 설정</a>
 </div>
