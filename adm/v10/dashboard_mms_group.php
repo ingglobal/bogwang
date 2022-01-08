@@ -133,7 +133,6 @@ else {
 
 $g5['title'] = $com['com_name'].' 배치도';
 include_once('./_head.sub.php');
-
 add_javascript('<script src="'.G5_ADMIN_URL.'/admin.js"></script>', 10);
 ?>
 <style>
@@ -141,7 +140,7 @@ add_javascript('<script src="'.G5_ADMIN_URL.'/admin.js"></script>', 10);
 </style>
 <script src="<?php echo G5_URL?>/lib/highcharts/Highcharts/code/highcharts.src.js"></script>
 <script src="<?php echo G5_URL?>/lib/highcharts/Highcharts/code/modules/networkgraph.js"></script>
-
+<script src="<?php echo G5_URL?>/lib/highcharts/Highstock/code/themes/high-contrast-dark.js"></script>
 <div id="sch_target_frm" class="new_win scp_new_win">
     <h1 id="g5_title"><?php echo $g5['title'];?></h1>
 

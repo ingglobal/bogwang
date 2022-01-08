@@ -37,7 +37,7 @@ min-width:1160px;
 .mms_container.x12 {width:8.5%;}
 .mms_container.x15 {width:6.0%;}
 .mms_container.on td {background:#242F4B;color:#efefef;}
-.mms_container.plus {background:#e2e2e2;text-align:center;color:#bbb;font-size:5em;height:145px;padding-top:20px;cursor:pointer;}
+.mms_container.plus {background:#444242;text-align:center;color:#bbb;font-size:5em;height:145px;padding-top:20px;cursor:pointer;}
 .list_mms_table td {padding:0 4px;word-break:keep-all;color:#efefef;}
 .list_mms_table td:first-child {width:58px;}
 .list_mms_table .tr_title {cursor: grab;}

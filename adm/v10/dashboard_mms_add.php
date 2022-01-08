@@ -98,7 +98,7 @@ add_javascript('<script src="'.G5_ADMIN_URL.'/admin.js"></script>', 10);
             </select>
             <script>$('select[name=sch_field]').val('<?php echo $sch_field?>').attr('selected','selected')</script>
             <input type="text" name="sch_word" id="sch_word" value="<?php echo get_text($sch_word); ?>" class="frm_input required" required style="width:130px;">
-            <input type="submit" value="검색" class="btn_frmline">
+            <input type="submit" value="검색" class="btn_frmline" style="height:26px;">
             <a href="<?php echo $_SERVER['SCRIPT_NAME']?>?<?=$qstr0?>" class="btn btn_b10">검색취소</a>
             <?php if($member['mb_manager_yn']) { ?>
                 <a href="./company_select.popup.php?file_name=<?=$g5['file_name']?>" id="btn_company" class="btn btn_b10">업체검색</a>
