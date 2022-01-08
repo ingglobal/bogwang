@@ -124,7 +124,7 @@ function reSize() {
 	<table>
 	<tbody>
         <tr>
-            <td style="width:50%;vertical-align:top;">
+            <td style="width:100%;vertical-align:top;">
 
                 <table class="table03">
                 <tbody>
@@ -163,51 +163,6 @@ function reSize() {
                 </tbody>
                 </table>
             
-            </td>
-            <td style="width:50%;vertical-align:top;">
-                
-                <table class="table03">
-                <tbody>
-                <tr class="tr_title03">
-                    <td colspan="3">
-                        <a href="./maintain_list.php?mms_idx=<?=$mms_idx?>" class="btn_more">더보기</a>
-                        정비관리
-                    </td>
-                </tr>
-                <tr class="item_title03">
-                    <td>정비일</td>
-                    <td>제목</td>
-                    <td>정비시간</td>
-                </tr>
-                <?php
-                $sql = "SELECT * FROM {$g5['maintain_table']}
-                        WHERE mms_idx = '".$mms_idx."'
-                            AND mnt_status NOT IN ('trash','delete')
-                        ORDER BY mnt_idx DESC
-                        LIMIT 5
-                        ";
-                $rs = sql_query($sql,1);
-                for($i=0;$row=sql_fetch_array($rs);$i++) {
-//                    print_r2($row);
-                    ?>
-                    <tr>
-                        <td><?=$row['mnt_date']?></td>
-                        <td><?=$row['mnt_subject']?></td>
-                        <td><?=$row['mnt_hours']?></td>
-                    </tr>
-                    <?php
-                }
-//                if($i<5) {
-//                    for($i=$i;$i<5;$i++) {
-//                        echo '<tr><td>&nbsp;</td><td></td><td></td></tr>';
-//                    }
-//                }
-                if($i<=0)
-                    echo '<tr><td colspan="5" class="empty_table">자료가 없습니다.</td></tr>';
-                ?>
-                </tbody>
-                </table>
-
             </td>
         </tr>
 	</tbody>
