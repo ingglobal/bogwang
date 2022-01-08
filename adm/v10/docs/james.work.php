@@ -680,4 +680,17 @@ WHERE itm_reg_dt >= '2021-12-01 00:00:00' AND itm_reg_dt <= '2021-12-03 23:59:59
 GROUP BY UNIX_TIMESTAMP(itm_reg_dt) DIV 3600
 ORDER BY UNIX_TIMESTAMP(itm_reg_dt) ASC
 
+// mms_idx value update from 46~49
+SELECT ROUND((45.5 + RAND() * 4)) 
+UPDATE `g5_1_item` SET mms_idx = ROUND((45.5 + RAND() * 4)) 
 
+// statistics 
+SELECT itm.com_idx, itm.imp_idx, itm.mms_idx, itm_date, itm_shift, trm_idx_line, oop.bom_idx, bom_part_no, itm_price, itm_status
+, COUNT(itm_idx) AS itm_count
+FROM g5_1_item AS itm
+    LEFT JOIN g5_1_order_out_practice AS oop ON oop.oop_idx = itm.oop_idx
+    LEFT JOIN g5_1_order_practice AS orp ON orp.orp_idx = oop.orp_idx
+WHERE itm_status NOT IN ('trash','delete')
+    AND itm_date != '0000-00-00'
+GROUP BY itm_date, trm_idx_line, itm_shift, bom_idx, itm_status
+ORDER BY itm_date ASC, trm_idx_line, itm_shift, bom_idx, itm_status

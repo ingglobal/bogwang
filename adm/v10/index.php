@@ -267,9 +267,9 @@ if($i>0) {
             <ul class="span_mms_setting">
                 <li><a href="javascript:" class="set_mms_view">설비이력카드</a></li>
                 <!-- <li><a href="javascript:" class="set_mms_parts">부속품관리</a></li> -->
-                <li><a href="javascript:" class="set_mms_maintain">정비관리</a></li>
+                <li style="display:none;"><a href="javascript:" class="set_mms_maintain">정비관리</a></li>
                 <!-- <li><a href="javascript:" class="set_mms_checks">점검기준관리</a></li> -->
-                <li><a href="javascript:" class="set_mms_item">기종설정</a></li>
+                <li style="display:none;"><a href="javascript:" class="set_mms_item">기종설정</a></li>
                 <!-- <li><a href="javascript:" class="set_mms_shift">교대및목표설정</a></li> -->
                 <li><a href="javascript:" class="set_mms_graph_setting">그래프설정</a></li>
                 <li><a href="javascript:" class="set_mms_setting">설비설정</a></li>
