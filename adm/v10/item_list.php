@@ -122,10 +122,10 @@ label[for="itm_static_date"] i{position:absolute;top:-10px;right:0px;z-index:2;c
 </select>
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
-<select name="shift" id="shift">
+<!--select name="shift" id="shift">
     <option value="">::작업구간::</option>
-    <?=$g5['set_itm_shift2_value_options']?>
-</select>
+    <?php ;//$g5['set_itm_shift2_value_options']?>
+</select-->
 <select name="trm_idx_location" id="trm_idx_location">
     <option value="">::라인선택::</option>
     <option value="1">1라인</option>

@@ -97,7 +97,7 @@ include_once ('./_head.php');
         </td>
         <th>상품바코드</th>
         <td>
-            <input type="text" name="itm_barcode" value="<?=${$pre}['itm_barcode']?>" class="frm_input" style="width:350px;">
+            <input type="text" name="itm_barcode" value="<?=${$pre}['itm_barcode']?>" required readonly class="frm_input required readonly" style="width:350px;">
         </td>
     </tr>
     <tr>
@@ -107,7 +107,7 @@ include_once ('./_head.php');
         </td>
         <th>PLT번호</th>
         <td>
-            <input type="text" name="plt_idx" value="<?=${$pre}['plt_idx']?>" class="frm_input" style="width:200px;" onclick="javascript:chk_Number(this);">
+            <input type="text" name="plt_idx" value="<?=${$pre}['plt_idx']?>" readonly class="frm_input readonly" style="width:100px;" onclick="javascript:chk_Number(this);">
         </td>
     </tr>
     <tr>

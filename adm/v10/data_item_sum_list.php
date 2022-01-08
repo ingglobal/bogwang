@@ -283,13 +283,13 @@ function sch_submit(f){
 </div>
 
 <div class="btn_fixed_top">
-    <?php if(!auth_check($auth[$sub_menu],"d",1)) { ?>
+    <?php if($is_admin){ //(!auth_check($auth[$sub_menu],"d",1)) { ?>
     <input type="submit" name="act_button" value="일괄입력" onclick="document.pressed=this.value" class="btn_02 btn">
     <input type="submit" name="act_button" value="테스트입력" onclick="document.pressed=this.value" class="btn_03 btn">
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn_02 btn" style="display:none;">
     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn_02 btn">
     <?php } ?>
-    <?php if(!auth_check($auth[$sub_menu],"w",1)) { ?>
+    <?php if($is_admin){ //(!auth_check($auth[$sub_menu],"w",1)) { ?>
     <a href="./<?=$fname?>_form.php" id="btn_add" class="btn btn_01">추가하기</a>
     <?php } ?>
 </div>

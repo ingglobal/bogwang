@@ -172,7 +172,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
 <input type="submit" class="btn_submit" value="검색">
 
 <div class="float_right" style="display:inline-block;">
-    <a href="./<?=$fname?>_sum_list.php" class="btn btn_02">일간합계목록</a>
+    <a href="./<?=$fname?>_sum_list.php" class="btn btn_02">일간생산합계</a>
 </div>
 </form>
 

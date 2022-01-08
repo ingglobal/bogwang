@@ -227,7 +227,9 @@ function sch_submit(f){
             }
         }
         ?>
-		<th scope="col" id="mb_list_mng" style="display:<?=$manager_display?>;">설정</th>
+        <!--
+        <th scope="col" id="mb_list_mng" style="display:<?php ;//$manager_display?>;">설정</th>
+        -->
 	</tr>
 	</thead>
 	<tbody>
@@ -307,11 +309,11 @@ function sch_submit(f){
                 echo '<td class="td_'.$k1.'" '.$row['colspan'].' '.$row['rowspan'].'>'.$list[$k1].'</td>';
             }
         }
-        echo '<td class="td_mngsmall" style="display:'.$manager_display.'">'.$s_set.'</td>'.PHP_EOL;
+        //echo '<td class="td_mngsmall" style="display:'.$manager_display.'">'.$s_set.'</td>'.PHP_EOL;
         echo '</tr>'.PHP_EOL;
 	}
 	if ($i == 0)
-		echo '<tr><td colspan="20" class="empty_table">자료가 없습니다.</td></tr>';
+		echo '<tr><td colspan="6" class="empty_table">자료가 없습니다.</td></tr>';
 	?>
 	</tbody>
 	</table>
