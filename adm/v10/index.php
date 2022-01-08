@@ -280,10 +280,70 @@ if($i>0) {
         <div class="mms_tabs" style="margin-top:10px;">
             <div id="tabs1">
                 <ul>
-                    <li><a href="#tabs-1">주요현황</a></li>
-                    <li><a href="#tabs-2">설비정보</a></li>
+                    <li><a href="#tabs-1">설비정보</a></li>
+                    <li><a href="#tabs-2">주요현황</a></li>
                 </ul>
                 <div id="tabs-1">
+                    <table class="data_mms_table">
+                    <tr>
+                        <td>계획정비</td>
+                        <td>
+                            <?php
+                            $sql = "SELECT COUNT(wr_id) AS cnt FROM g5_write_plan WHERE wr_is_comment = 0 AND wr_1 = '".$_SESSION['ss_com_idx']."' ";
+                            // echo $sql.'<br>';
+                            $board_plan = sql_fetch($sql,1);
+                            echo '<a href="'.G5_BBS_URL.'/board.php?bo_table=plan">'.$board_plan['cnt'].'</a>';
+                            ?> 건
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>정비이력</td>
+                        <td>
+                            <?php
+                            $sql = "SELECT COUNT(wr_id) AS cnt FROM g5_write_maintain WHERE wr_is_comment = 0 AND wr_1 = '".$_SESSION['ss_com_idx']."' ";
+                            // echo $sql.'<br>';
+                            $maintain_plan = sql_fetch($sql,1);
+                            echo '<a href="'.G5_BBS_URL.'/board.php?bo_table=maintain">'.$maintain_plan['cnt'].'</a>';
+                            ?> 건
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>매뉴얼</td>
+                        <td>
+                            <?php
+                            $sql = "SELECT COUNT(wr_id) AS cnt FROM g5_write_manual WHERE wr_is_comment = 0 AND wr_1 = '".$_SESSION['ss_com_idx']."' ";
+                            // echo $sql.'<br>';
+                            $manual_plan = sql_fetch($sql,1);
+                            echo '<a href="'.G5_BBS_URL.'/board.php?bo_table=manual">'.$manual_plan['cnt'].'</a>';
+                            ?> 건
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>설비사양서</td>
+                        <td>
+                            <?php
+                            $sql = "SELECT COUNT(wr_id) AS cnt FROM g5_write_drawing WHERE wr_is_comment = 0 AND wr_1 = '".$_SESSION['ss_com_idx']."' ";
+                            // echo $sql.'<br>';
+                            $drawing_plan = sql_fetch($sql,1);
+                            echo '<a href="'.G5_BBS_URL.'/board.php?bo_table=drawing">'.$drawing_plan['cnt'].'</a>';
+                            ?> 건
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>A/S연락처</td>
+                        <td>
+                            <?php
+                            $sql = "SELECT COUNT(wr_id) AS cnt FROM g5_write_contact WHERE wr_is_comment = 0 AND wr_1 = '".$_SESSION['ss_com_idx']."' ";
+                            // echo $sql.'<br>';
+                            $contact_plan = sql_fetch($sql,1);
+                            echo '<a href="'.G5_BBS_URL.'/board.php?bo_table=contact">'.$contact_plan['cnt'].'</a>';
+                            ?> 건
+                        </td>
+                    </tr>
+                    </table>
+                </div>
+                <!-- 설비정보 -->
+                <div id="tabs-2">
                     <table class="data_mms_table">
                     <tr>
                         <td>생산기종</td>
@@ -316,35 +376,6 @@ if($i>0) {
                     <tr>
                         <td>불량</td>
                         <td class="daily_output_defect">0</td>
-                    </tr>
-                    </table>
-                </div>
-                <!-- 설비정보 -->
-                <div id="tabs-2">
-                    <table class="data_mms_table">
-                    <tr>
-                        <td>예방정비</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>정비이력</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>부품재고</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>매뉴얼</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>설비도면</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>A/S연락처</td>
-                        <td>0</td>
                     </tr>
                     </table>
                 </div>
