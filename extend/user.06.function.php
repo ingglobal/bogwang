@@ -89,7 +89,7 @@ function update_item_sum($arr) {
                     itm_count = '".$sum['itm_count']."'
                 WHERE {$sql_where}
         ";
-        // sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='update', mta_value = '".addslashes($sql)."' ");
+        sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='update', mta_value = '".addslashes($sql)."' ");
         sql_query($sql,1);
     }
     else {
@@ -112,7 +112,7 @@ function update_item_sum($arr) {
                     , itm_status = '".$arr['itm_status']."'
                     , itm_date = '".$arr['itm_date']."'
         ";
-        // sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='insert', mta_value = '".addslashes($sql)."' ");
+        sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='insert', mta_value = '".addslashes($sql)."' ");
         sql_query($sql,1);
         $row['itm_idx'] = sql_insert_id();
     }
@@ -130,7 +130,7 @@ function update_itm_delivery($arr) {
 
     // 버튼상태값: 출력(print)/출하처리(out)/출하취소(cancel)
     $delivery_flag = ($arr['itm_status'] == 'delivery') ? 1 : 0;
-    
+
     $sql = "UPDATE {$g5['item_table']} SET
                 itm_delivery = '{$delivery_flag}'
                 , plt_idx = '".$arr['plt_idx']."'
