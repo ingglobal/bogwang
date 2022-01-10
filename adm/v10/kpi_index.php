@@ -1,5 +1,5 @@
 <?php
-$sub_menu = "955400";
+$sub_menu = "955500";
 include_once('./_common.php');
 
 $g5['title'] = 'KPI 보고서';

@@ -8,6 +8,7 @@ if($member['mb_manager_yn']) {
 }
 
 ${'active_'.$g5['file_name']} = ' btn_top_menu_active';
+//print_r3(${'active_'.$g5['file_name']});
 $g5['container_sub_title'] = '
 <h2 id="container_sub_title">
 	<a href="./kpi_output.php" class="btn_top_menu '.$active_kpi_output.'">생산보고서</a>

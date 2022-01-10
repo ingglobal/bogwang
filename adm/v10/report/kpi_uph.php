@@ -1,5 +1,5 @@
 <?php
-$sub_menu = "955450";
+$sub_menu = "955400";
 include_once('./_common.php');
 
 auth_check($auth[$sub_menu],"r");
@@ -203,6 +203,11 @@ $sql = " SELECT SQL_CALC_FOUND_ROWS mms_idx, dta_mmi_no, dta_date
 ";
 // echo $sql;
 $result = sql_query($sql,1);
+
+add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/css/kpi.css">', 0);
+add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/css/kpi1.css">', 1);
+
+add_javascript('<script src="'.G5_USER_ADMIN_URL.'/js/function.date.js"></script>', 0);
 
 add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker/jquery.timepicker.css">', 0);
 ?>

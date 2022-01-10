@@ -501,6 +501,13 @@ yearly,1,10 = 연도별,1년단위,10년치,sum(합계)'); ?>
 			</td>
 		</tr>
 		<tr>
+			<th scope="row">파렛트상태</th>
+			<td colspan="3">
+				<?php echo help('pending=대기,finish=생산완료,delivery=출하,trash=삭제'); ?>
+				<input type="text" name="set_plt_status" value="<?php echo $g5['setting']['set_plt_status']; ?>" class="frm_input" style="width:70%;">
+			</td>
+		</tr>
+		<tr>
 			<th scope="row">출하상태</th>
 			<td colspan="3">
 				<?php echo help('pending=대기,ok=출하완료,trash=삭제'); ?>
