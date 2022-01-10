@@ -44,6 +44,7 @@ else if($getData[0]['itm_barcode']) {
         $sql = "UPDATE {$table_name} SET
                     itm_history = CONCAT(itm_history,'\n".$arr['itm_status']."|".$ingArr['workday']."|".$ingArr['shift']."|".G5_TIME_YMDHIS."')
                     , itm_shift = '".$ingArr['shift']."'
+                    , itm_rework = '0'
                     , itm_date = '".$ingArr['workday']."'
                     , itm_status = '".$arr['itm_status']."'
                     , itm_update_dt = '".G5_TIME_YMDHIS."'

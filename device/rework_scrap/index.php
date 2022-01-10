@@ -20,24 +20,22 @@ else if($getData[0]['itm_barcode']) {
 
     $arr = $getData[0];
 
-    $arr['itm_status'] = $arr['itm_status_code'];
+    $arr['itm_status'] = $arr['itm_error_code'];
     $arr['itm_timestamp'] = strtotime(preg_replace('/\./','-',$arr['itm_date'])." ".$arr['itm_time']); // 1639579897
     $arr['itm_dt'] = date("Y-m-d H:i:s",$arr['itm_timestamp']);   // 2021-10-10 10:11:11
     // $table_name = 'g5_1_item_'.$arr['mms_idx'];  // 향후 테이블 분리가 필요하면..
     $table_name = 'g5_1_item';
+
+
 
     $sql = " SELECT * FROM {$g5['item_table']} WHERE itm_barcode = '".$arr['itm_barcode']."' ";
     $itm = sql_fetch($sql);
     if(!$itm['itm_idx']) {
         $result_arr = array("code"=>490,"message"=>"item not exists.");
     }
-    else if($itm['itm_com_barcode']!=$arr['itm_com_barcode']) {
-        $result_arr = array("code"=>480,"message"=>"item barcode not matched.");
-    }
     else {
         // 히스토리
         // $arr['itm_history'] = $itm['itm_history'].'\n'.$arr['itm_status'].'|'.G5_TIME_YMDHIS;
-        $arr['itm_status'] = 'finish';
 
         //구간재설정
         $ingArr = item_shif_date_return($arr['itm_dt']);
@@ -46,7 +44,7 @@ else if($getData[0]['itm_barcode']) {
         $sql = "UPDATE {$table_name} SET
                     itm_history = CONCAT(itm_history,'\n".$arr['itm_status']."|".$ingArr['workday']."|".$ingArr['shift']."|".G5_TIME_YMDHIS."')
                     , itm_shift = '".$ingArr['shift']."'
-                    , itm_rework = '0'
+                    , itm_rework = '1'
                     , itm_date = '".$ingArr['workday']."'
                     , itm_status = '".$arr['itm_status']."'
                     , itm_update_dt = '".G5_TIME_YMDHIS."'
@@ -71,9 +69,10 @@ else if($getData[0]['itm_barcode']) {
         // echo $sql.'<br>';
         sql_query($sql,1);
 
+
         // update statistics for two days which are the changed day as well as the pervious statistics day.
         update_item_sum_by_status($itm['itm_idx']);
-
+        
     }
 }
 else {

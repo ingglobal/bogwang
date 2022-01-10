@@ -80,6 +80,7 @@ else if($getData[0]['bom_part_no']) {
                     , itm_price = '".$bom['bom_price']."'
                     , trm_idx_location = '".$arr['trm_idx_location']."'
                     , itm_shift = '".$ingArr['shift']."'
+                    , itm_rework = '0'
                     , itm_date = '".$ingArr['workday']."'
                     , itm_history = '".$arr['itm_history']."'
                     , itm_status = '".$arr['itm_status']."'
