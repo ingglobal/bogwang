@@ -30,6 +30,7 @@ function update_item_sum_by_status($itm_idx) {
         // print_r2($itm['itm_history_items']);
         // 통계 처리
         $ar['itm_date'] = $itm['itm_history_items'][1];
+        $ar['mms_idx'] = $itm['mms_idx'];
         $ar['trm_idx_line'] = $orp['trm_idx_line'];
         $ar['itm_shift'] = $itm['itm_history_items'][2];
         $ar['bom_idx'] = $itm['bom_idx'];
@@ -53,7 +54,7 @@ function update_item_sum($arr) {
     }
 
     $sql_where = "itm_shift = '".$arr['itm_shift']."'
-                AND trm_idx_operation = '".$arr['trm_idx_operation']."'
+                AND mms_idx = '".$arr['mms_idx']."'
                 AND trm_idx_line = '".$arr['trm_idx_line']."'
                 AND itm_status = '".$arr['itm_status']."'
                 AND itm_date = '".$arr['itm_date']."'
@@ -127,18 +128,21 @@ if(!function_exists('update_itm_delivery')){
 function update_itm_delivery($arr) {
     global $g5;
 
+    // 버튼상태값: 출력(print)/출하처리(out)/출하취소(cancel)
+    $delivery_flag = ($arr['itm_status'] == 'delivery') ? 1 : 0;
+    
     $sql = "UPDATE {$g5['item_table']} SET
-                itm_delivery = '1'
+                itm_delivery = '{$delivery_flag}'
                 , plt_idx = '".$arr['plt_idx']."'
                 , itm_update_dt = '".G5_TIME_YMDHIS."'
             WHERE itm_idx = '".$arr['itm_idx']."'
     ";
-    echo $sql.'<br>';
+    // echo $sql.'<br>';
     sql_query($sql,1);
 
     // 연결된 자재의 모든 상태값을 변경
     $sql = "UPDATE {$g5['material_table']} SET
-                mtr_delivery = '1'
+                mtr_delivery = '{$delivery_flag}'
                 , mtr_update_dt = '".G5_TIME_YMDHIS."'
             WHERE itm_idx = '".$arr['itm_idx']."'
     ";

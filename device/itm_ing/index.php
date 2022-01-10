@@ -160,6 +160,7 @@ else if($getData[0]['bom_part_no']) {
     unset($ar);
     $ar['com_idx'] = $bom['com_idx'];
     $ar['itm_date'] = $ingArr['workday'];
+    $ar['mms_idx'] = $orp['mms_idx'];
     $ar['trm_idx_line'] = $orp['trm_idx_line'];
     $ar['itm_shift'] = $ingArr['shift'];
     $ar['bom_idx'] = $oop['bom_idx'];
