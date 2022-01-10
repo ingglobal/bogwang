@@ -20,7 +20,7 @@ $bar_prefix = $bar_date.'_'.$bar_no;
 
 // $com_idx_array = array(9999,67,66,65,64,10000);
 $barcode_array = array($bar_prefix.'_'.$bom['bom_part_no'].'_19204DERH00011530',$bar_prefix.'_'.$bom['bom_part_no']);
-$mms_idx_array = array(7,8,9,10);
+$mms_idx_array = array(46,47,48,49);
 
 // print_r2(item_shif_date_return("2021-12-15 23:51:37"));
 ?>
@@ -60,7 +60,6 @@ $mms_idx_array = array(7,8,9,10);
 	<tr><td>MMS idx</td><td><input type="text" name="mms_idx" value="<?=$mms_idx_array[rand(0,sizeof($mms_idx_array)-1)]?>"></td></tr>
 	<tr><td>실행계획고유번호</td><td><input type="text" name="oop_idx" value="<?=$oop['oop_idx']?>"></td></tr>
 	<tr><td>LOT</td><td><input type="text" name="itm_lot" value="<?=rand(1,4)?>"></td></tr>
-	<tr><td>작업구간</td><td><input type="text" name="itm_shift" value="<?=rand(1,8)?>"></td></tr>
 	<tr><td>파트넘버</td><td><input type="text" name="bom_part_no" value="<?=$bom['bom_part_no']?>"></td></tr>
 	<tr><td>바코드</td><td><input type="text" name="itm_barcode" value="<?=$barcode_array[rand(0,sizeof($barcode_array)-1)]?>" style="width:370px;"></td></tr>
 	<tr><td>위치</td><td><input type="text" name="trm_idx_location" value="<?=rand(1,4)?>"></td></tr>
@@ -82,5 +81,3 @@ $mms_idx_array = array(7,8,9,10);
 <hr>
 <button type="submit">확인</button>
 </form>
-
-

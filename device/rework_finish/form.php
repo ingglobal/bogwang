@@ -29,8 +29,8 @@ $defect_type_array = array('error_stitch','error_wrinkle','error_fabric','error_
     button {background:#37a7ff;padding:10px 110px;font-size:1.5em;border:none;border-radius:4px;cursor:pointer;}
 </style>
 
+<h1>리워크 완료 API</h1>
 <form id="form01" action="./form2.php">
-<h1>완제품코드매칭 API</h1>
 <section>
 	<ul>
 		<li>완제품 상태값과 함께 외부바코드를 입력하는 API입니다.</li>
@@ -55,5 +55,3 @@ $defect_type_array = array('error_stitch','error_wrinkle','error_fabric','error_
 <hr>
 <button type="submit">확인</button>
 </form>
-
-

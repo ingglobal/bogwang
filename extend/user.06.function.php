@@ -35,6 +35,7 @@ function update_item_sum_by_status($itm_idx) {
         $ar['itm_shift'] = $itm['itm_history_items'][2];
         $ar['bom_idx'] = $itm['bom_idx'];
         $ar['itm_status'] = $itm['itm_history_items'][0];
+        $ar['com_idx'] = $itm['com_idx'];
         // print_r2($ar);
         update_item_sum($ar);
         unset($ar);
@@ -82,6 +83,7 @@ function update_item_sum($arr) {
                 AND bom_idx	= '".$arr['bom_idx']."'
     ";
     // echo $sql.'<br>';
+	// sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='insert', mta_value = '".addslashes($sql)."' ");
     $row = sql_fetch($sql,1);
     // 정보 업데이트
     if($row['itm_idx']) {
@@ -89,7 +91,7 @@ function update_item_sum($arr) {
                     itm_count = '".$sum['itm_count']."'
                 WHERE {$sql_where}
         ";
-        sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='update', mta_value = '".addslashes($sql)."' ");
+        // sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='update', mta_value = '".addslashes($sql)."' ");
         sql_query($sql,1);
     }
     else {
@@ -112,7 +114,7 @@ function update_item_sum($arr) {
                     , itm_status = '".$arr['itm_status']."'
                     , itm_date = '".$arr['itm_date']."'
         ";
-        sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='insert', mta_value = '".addslashes($sql)."' ");
+        // sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='insert', mta_value = '".addslashes($sql)."' ");
         sql_query($sql,1);
         $row['itm_idx'] = sql_insert_id();
     }
@@ -130,6 +132,8 @@ function update_itm_delivery($arr) {
 
     // 버튼상태값: 출력(print)/출하처리(out)/출하취소(cancel)
     $delivery_flag = ($arr['itm_status'] == 'delivery') ? 1 : 0;
+	// sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='insert', mta_value = '".$arr['itm_status']."' ");
+
 
     $sql = "UPDATE {$g5['item_table']} SET
                 itm_delivery = '{$delivery_flag}'
@@ -137,6 +141,7 @@ function update_itm_delivery($arr) {
                 , itm_update_dt = '".G5_TIME_YMDHIS."'
             WHERE itm_idx = '".$arr['itm_idx']."'
     ";
+	// sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='insert', mta_value = '".addslashes($sql)."' ");
     // echo $sql.'<br>';
     sql_query($sql,1);
 

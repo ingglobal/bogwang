@@ -96,6 +96,7 @@ else if($getData[0]['bom_part_no']) {
     if($itm['itm_idx']) {
         $sql = "UPDATE {$table_name} SET
                     {$sql_common}
+					, itm_history = CONCAT(itm_history,'\n".$arr['itm_status']."|".$ingArr['workday']."|".$ingArr['shift']."|".G5_TIME_YMDHIS."')
                     , itm_update_dt = '".G5_TIME_YMDHIS."'
                 WHERE itm_idx = '".$itm['itm_idx']."'
         ";
@@ -160,7 +161,7 @@ else if($getData[0]['bom_part_no']) {
     unset($ar);
     $ar['com_idx'] = $bom['com_idx'];
     $ar['itm_date'] = $ingArr['workday'];
-    $ar['mms_idx'] = $orp['mms_idx'];
+    $ar['mms_idx'] = $arr['mms_idx'];
     $ar['trm_idx_line'] = $orp['trm_idx_line'];
     $ar['itm_shift'] = $ingArr['shift'];
     $ar['bom_idx'] = $oop['bom_idx'];

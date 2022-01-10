@@ -20,7 +20,7 @@ $defect_type_array = array('error_stitch','error_wrinkle','error_fabric','error_
 </style>
 
 <form id="form01" action="./form2.php">
-<h1>검수(불량체크) API</h1>
+<h1>리워크(폐기) API</h1>
 <section>
 	<ul>
 		<li>오븐기 통과 후 불량 제품 전달 API입니다.</li>
@@ -43,5 +43,3 @@ $defect_type_array = array('error_stitch','error_wrinkle','error_fabric','error_
 <hr>
 <button type="submit">확인</button>
 </form>
-
-
