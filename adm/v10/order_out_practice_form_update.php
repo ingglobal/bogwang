@@ -16,7 +16,7 @@ $history = 'mb_id='.$member['mb_id'].',orp_idx='.$orp_idx.',oop_count='.$oop_cou
 
 
 
-//신규등록시
+//완전 신규등록시
 if($first_flag){
     //동일한 생산시작일에 같은 설비라인으로 등록하려는지 체크한다.
     $ord_chk_sql = sql_fetch(" SELECT COUNT(*) AS cnt FROM {$g5['order_practice_table']} WHERE orp_start_date = '{$orp_start_date}' AND trm_idx_line = '{$trm_idx_line}' AND orp_status NOT IN('delete','del','trash') ");
@@ -97,6 +97,7 @@ else if(!$first_flag && !$oop_idx && $orp_idx && $bom_idx){
             oop_9 = '".$oop_9."',
             oop_10 = '".$oop_10."'
         ";
+        //echo $sql3;exit;
         sql_query($sql3,1);
     }
 }

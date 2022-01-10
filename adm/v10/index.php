@@ -59,7 +59,7 @@ add_javascript('<script src="'.G5_USER_URL.'/js/slick-1.8.1/slick/slick.min.js">
         $row['com'] = get_table_meta('company','com_idx',$row['com_idx']);
         $row['mmg'] = get_table_meta('mms_group','mmg_idx',$row['mmg_idx']);
         $row['img'] = get_mms_image(array("mms_idx"=>$row['mms_idx'],"img_width"=>227,"img_height"=>180));
-        // print_r2($row['img']);
+        //print_r2($row['img']);
         // echo $row['img']['img'];
         // print_r2($row['mmg']);
         // 기종 추출 (해당 설비 맨 마지막 1개)
@@ -477,6 +477,7 @@ $(document).on('click','.list_mms_table',function(e){
     $('.data_left').attr('mms_idx',my_mms_idx);
 
     // 이미지 변경
+    
     this_img = $('<img src="'+this_li.attr('mms_img_src')+'">');
     $('.data_left').find('.mms_image').empty().append( this_img );
     

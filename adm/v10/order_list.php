@@ -250,30 +250,40 @@ $('.date_blank').on('click',function(e){
         //당일데 해당하는 레코드의 날짜 데이터에서 다음날짜를 변수에 저장
         if($row['ord_date'] == G5_TIME_YMD) $next_date = $next['ord_date'];
 
-        if($row['oro']['cnt']){
-            $oro_url = './order_out_list.php?sfl=oro.ord_idx&stx='.$row['ord_idx'];
-            $oro_btn = $row['oro']['cnt'].'건';
-        }
-        else {
-            //if($row['ord_date'] == G5_TIME_YMD){
-            if($row['ord_date'] == G5_TIME_YMD || $row['ord_date'] == $next_date){
+        if($row['ord_date'] == G5_TIME_YMD || $row['ord_date'] == $next_date){
+            if($row['oro']['cnt']){
+                $oro_url = './order_out_list.php?sfl=oro.ord_idx&stx='.$row['ord_idx'];
+                $oro_btn = $row['oro']['cnt'].'건';
+                
+                //또 엑셀을 업데이트해서 새롭게 등록된 제품이 있을 수 있으므로 확인하여 추가 등록 가능하도록 하자
+                $addSql = " SELECT COUNT(*) AS cnt ,(
+                                SELECT COUNT(*) FROM {$g5['order_out_table']} WHERE ord_idx = '{$row['ord_idx']}'
+                                    AND oro_status NOT IN('delete','del','trash')
+                            ) AS cnt2 FROM {$g5['order_item_table']} AS ori
+                            LEFT JOIN {$g5['order_out_table']} AS oro ON ori.ori_idx = oro.ori_idx
+                        WHERE ori.ord_idx = '{$row['ord_idx']}' 
+                            AND oro.oro_idx IS NULL 
+                            AND ori.ori_status NOT IN('delete','del','trash')
+                ";
+                //echo $addSql."<br>";
+                $addCnt = sql_fetch($addSql);
+                if($addCnt['cnt'] && $addCnt['cnt2']){
+                    $oro_add_url = './order_out_create.php?w=&ord_idx='.$row['ord_idx'].'&ord_date='.$row['ord_date'].'&add=1';
+                    $oro_add_btn = '<spn style="color:orange;">추가출하생성</span>';
+                }
+            }
+            else {
                 $oro_url = './order_out_create.php?w=&ord_idx='.$row['ord_idx'].'&ord_date='.$row['ord_date'];
                 $oro_btn = '<spn style="color:orange;">출하생성</span>';
-            }else{
-                $oro_url = '';
-                $oro_btn = '<span>-</span>';
+                $oro_add_url = '';
+                $oro_add_btn = '';
             }
-            
-            /*
-            if($out_flag){
-                $oro_url = './order_out_create.php?w=&ord_idx='.$row['ord_idx'];
-                $oro_btn = '<spn style="color:orange;">출하생성</span>';
-            }
-            else{
-                $oro_url = 'javascript:';
-                $oro_btn = '<spn style="color:red;">일괄출하<br>불가</span>';
-            }
-            */
+        }
+        else{
+            $oro_url = '';
+            $oro_btn = '<span>-</span>';
+            $oro_add_url = '';
+            $oro_add_btn = '';
         }
 
         //$s_item = '<a href="./order_item.php?'.$qstr.'&amp;ord_idx='.$row['ord_idx'].'" class="btn btn_03">상품</a>';
@@ -297,7 +307,12 @@ $('.date_blank').on('click',function(e){
         <td class="td_com_name"><!-- 제품 -->
             <?=implode(" ",$row['item_list'])?>
         </td>
-        <td class="td_ord_ship_date"><a href="<?=$oro_url?>"><?=$oro_btn?></a></td><!-- 출하 -->
+        <td class="td_ord_ship_date">
+            <a href="<?=$oro_url?>"><?=$oro_btn?></a>
+            <?php if($oro_add_url){ ?>
+            <br><a href="<?=$oro_add_url?>"><?=$oro_add_btn?></a>
+            <?php } ?>
+        </td><!-- 출하 -->
         <!--td class="td_practice_cnt">
             
         </td-->
