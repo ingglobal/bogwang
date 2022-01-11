@@ -1,5 +1,5 @@
 <?php
-$sub_menu = "950130";
+$sub_menu = "915165";
 include_once('./_common.php');
 
 auth_check($auth[$sub_menu],'w');
@@ -61,9 +61,9 @@ include_once ('./_head.php');
 
 // 각 항목명 및 항목 설정값 정의, 형식: 항목명, required, 폭, 단위(개, 개월, 시, 분..), 설명, tr숨김, 한줄두항목여부
 $items1 = array(
-    "com_idx"=>array("업체번호","required",60,0,'','none',2)
+    "com_idx"=>array("업체번호","required",60,0,'','',2)
     ,"mms_idx"=>array("설비번호","required",60,0,'','',0)
-    ,"off_name"=>array("비가동명칭","",250,'','','',0)
+    ,"off_name"=>array("공제시간명칭","",250,'','','',0)
     ,"off_period_type"=>array("적용기간","required",75,0,'전체기간을 선택하면 해당 설비에 대하여 전체 기간 동안 적용됩니다. 기간을 선택하고 입력하면 전체 기간 상관없이 우선 적용됩니다.','',0)
     ,"off_start_time"=>array("시작시간","required",70,0,'시작시간은 17:00:00와 같이 입력하세요.','',2)
     ,"off_end_time"=>array("종료시간","",70,0,'종료시간은 23:59:59와 같이 끝단위까지 모두 입력하세요.','',0)

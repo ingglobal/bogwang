@@ -5,7 +5,6 @@ include_once('./_common.php');
 auth_check($auth[$sub_menu],"r");
 
 // 변수 설정, 필드 구조 및 prefix 추출
-$pre = 'dta';
 $qstr .= '&ser_mms_idx='.$ser_mms_idx.'&st_date='.$st_date.'&en_date='.$en_date.'&st_time='.$st_time.'&en_time='.$en_time; // 추가로 확장해서 넘겨야 할 변수들
 
 // st_date, en_date
@@ -22,7 +21,7 @@ include_once('./_top_menu_kpi.php');
 include_once('./_head.php');
 echo $g5['container_sub_title'];
 
-// Get all the mms_idx values to make them optionf for selection.
+// Get all the mms_idx values to make them options for selection.
 $sql2 = "   SELECT mms_idx, mms_name
             FROM {$g5['mms_table']}
             WHERE com_idx = '".$_SESSION['ss_com_idx']."'
@@ -159,10 +158,10 @@ $where[] = " mms_idx = '".$ser_mms_idx."' ";
 
 if ($stx && $sfl) {
     switch ($sfl) {
-		case ( $sfl == $pre.'_id' || $sfl == $pre.'_idx' || $sfl == 'mms_idx' || $sfl == 'dta_mmi_no' ) :
+		case ( $sfl == 'dta_id' || $sfl == 'dta_idx' || $sfl == 'mms_idx' || $sfl == 'dta_mmi_no' ) :
             $where[] = " ({$sfl} = '{$stx}') ";
             break;
-		case ($sfl == $pre.'_hp') :
+		case ($sfl == 'dta_hp') :
             $where[] = " REGEXP_REPLACE(mb_hp,'-','') LIKE '".preg_replace("/-/","",$stx)."' ";
             break;
 		case ($sfl == 'dta_more') :
@@ -552,11 +551,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
                 }
             }
             // echo $row['downtime'][$i].'<br>';
-
-
         }
-
-
 
         $row['downtimemin'] = round($row['downtime'][$i]/60,1);    // 비가동시간(분)
         $row['downtimehour'] = round($row['downtime'][$i]/3600,2); // 비가동시간(시)

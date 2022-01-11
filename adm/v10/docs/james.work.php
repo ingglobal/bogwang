@@ -694,3 +694,13 @@ WHERE itm_status NOT IN ('trash','delete')
     AND itm_date != '0000-00-00'
 GROUP BY itm_date, trm_idx_line, itm_shift, bom_idx, itm_status
 ORDER BY itm_date ASC, trm_idx_line, itm_shift, bom_idx, itm_status
+
+
+
+// UPH basic query
+SELECT SQL_CALC_FOUND_ROWS mms_idx, dta_mmi_no, dta_date
+  , SUM(dta_value) AS output_sum
+FROM g5_1_data_output_sum
+WHERE mms_idx = '34' AND dta_date >= '2022-01-01' AND dta_date <= '2022-01-11'
+GROUP BY dta_mmi_no, dta_date 
+ORDER BY dta_mmi_no, dta_date

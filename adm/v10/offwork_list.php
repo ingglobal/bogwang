@@ -1,5 +1,5 @@
 <?php
-$sub_menu = "950130";
+$sub_menu = "915165";
 include_once('./_common.php');
 
 auth_check($auth[$sub_menu],"r");
@@ -14,9 +14,9 @@ $qstr .= '&ser_mms_idx='.$ser_mms_idx; // 추가로 확장해서 넘겨야 할 �
 
 
 $g5['title'] = '공제시간설정';
-include_once('./_top_menu_shift.php');
+// include_once('./_top_menu_shift.php');
 include_once('./_head.php');
-echo $g5['container_sub_title'];
+// echo $g5['container_sub_title'];
 
 
 $sql_common = " FROM {$g5_table_name} AS ".$pre." "; 
@@ -146,8 +146,8 @@ $items1 = array(
 </form>
 
 <div class="local_desc01 local_desc" style="display:no ne;">
-    <p>전체 설비 비가동 시간 및 개별 설비 비가동 시간을 따로 설정할 수 있습니다.</p>
-    <p>개별 설비에 적용되는 비가동 시간이 우선 적용됩니다.</p>
+    <p>가동하지 않는 시간에 대한 공제시간을 설정합니다.</p>
+    <p>설비별로 비가동(장비점검, 오류 등) 설정과는 다른 설정입니다.</p>
 </div>
 
 <form name="form01" id="form01" action="./<?=$g5['file_name']?>_update.php" onsubmit="return form01_submit(this);" method="post">
@@ -252,10 +252,6 @@ $items1 = array(
 
 <div class="btn_fixed_top">
     <?php if(!auth_check($auth[$sub_menu],"w",1)) { ?>
-    <?php if($member['mb_manager_yn']) { ?>
-    <input type="submit" name="act_button" value="테스트동기화" onclick="document.pressed=this.value" class="btn_03 btn">
-    <input type="submit" name="act_button" value="테스트입력" onclick="document.pressed=this.value" class="btn_03 btn">
-    <?php } ?>
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn_02 btn">
     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn_02 btn">
     <?php } ?>

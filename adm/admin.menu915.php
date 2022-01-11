@@ -10,5 +10,7 @@ $menu["menu915"] = array (
     ,array('915145', '생산라인 정보', ''.G5_USER_ADMIN_URL.'/term_line_list.php', 'term_line_list')
     //,array('915150', '창고위치 정보', ''.G5_USER_ADMIN_URL.'/term_location_list.php', 'term_location_list')
     //,array('915160', '작업구간설정', ''.G5_USER_ADMIN_URL.'/shift_list.php', 'shift_list')
+    ,array('915165', '공제시간설정', ''.G5_USER_ADMIN_URL.'/offwork_list.php', 'offwork_list')
+    ,array('915170', '비가동데이터', ''.G5_USER_ADMIN_URL.'/data_downtime_list.php', 'data_downtime_list')
     ,array('915190', '내정보', ''.G5_USER_ADMIN_URL.'/my_info.php', 'my_info')
 );
