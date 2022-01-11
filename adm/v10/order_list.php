@@ -427,8 +427,8 @@ $('.oroButton').on('click',function(){
         return false;
     }
 
-    //$(location).attr('href',$(this).attr('link'));
-    $(location).attr('href','https://google.com');
+    $(location).attr('href',$(this).attr('link'));
+    //$(location).attr('href','https://google.com');
 });
 
 
