@@ -78,7 +78,7 @@ $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
-$sql = "SELECT oro.*, ori.bom_idx, ori.ori_count, bom.bom_name, bom.bom_part_no, bom.bct_id, ord.ord_date, ord.ord_reg_dt
+$sql = "SELECT oro.*, oop.orp_idx, ori.bom_idx, ori.ori_count, bom.bom_name, bom.bom_part_no, bom.bct_id, ord.ord_date, ord.ord_reg_dt
         {$sql_common} {$sql_search} {$sql_order}
         LIMIT {$from_record}, {$rows}
 ";
@@ -100,6 +100,7 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 .sp_cat{color:orange;font-size:0.85em;}
 .sp_pno{color:skyblue;}
 .td_orp_idx{position:relative;}
+.td_orp_idx span{color:skyblue;font-size:1em;}
 .td_orp_idx span a{color:orange;font-size:1em;}
 .td_oro_part_no, .td_com_name, .td_oro_maker
 ,.td_oro_items, .td_oro_items_title {text-align:left !important;}
@@ -251,7 +252,7 @@ $('.data_blank').on('click',function(e){
         <th scope="col">D+1<br>07:00</th>
         <th scope="col">D+1<br>08:00</th>
         <th scope="col">D+1<br>09:00</th>
-        <th scope="col">생산계획건수<br><span style="color:orange;">생산계획ID</span></th>
+        <th scope="col">설비라인<br><span style="color:orange;">생산계획ID</span><br>생산일</th>
         <th scope="col">수주일</th>
         <th scope="col">출하예정일</th>
         <th scope="col">출하일</th>
@@ -280,7 +281,11 @@ $('.data_blank').on('click',function(e){
         $orp_exist = sql_fetch($sql2,1);
         $row['orp_cnt'] = $orp_exist['cnt'];
         if($row['orp_cnt']) {
-            $row['orp_count'] = $row['orp_cnt'];
+            //$g5['line_name'][$row['trm_idx_line']]
+            //$row['orp_count'] = $row['orp_cnt'];
+
+            $ordq = sql_fetch(" SELECT trm_idx_line, orp_start_date FROM {$g5['order_practice_table']} WHERE orp_idx = '{$row['orp_idx']}' ");
+            $row['orp_count'] = $g5['line_name'][$ordq['trm_idx_line']];
 
             $sql3 = " SELECT GROUP_CONCAT(orp_idx) AS orp_grp FROM {$g5['order_out_practice_table']} WHERE oro_idx = '".$row['oro_idx']."' ";
             $orp_res = sql_fetch($sql3);
@@ -294,6 +299,7 @@ $('.data_blank').on('click',function(e){
                 $pcnt++;
             }
             $row['orp_count'] .= '<br><span>'.$orp_str.'</span>';
+            $row['orp_count'] .= '<br><span class="dt">'.substr($ordq['orp_start_date'],5).'</span>';
         }
         else {
             //$row['orp_count'] = '<a href="./order_practice_form.php?w=&oro_idx='.$row['oro_idx'].'" target="_blank">생성하기</a>';

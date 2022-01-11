@@ -250,6 +250,7 @@ $('.date_blank').on('click',function(e){
         //당일데 해당하는 레코드의 날짜 데이터에서 다음날짜를 변수에 저장
         if($row['ord_date'] == G5_TIME_YMD) $next_date = $next['ord_date'];
 
+        $creat = 0;
         if($row['ord_date'] == G5_TIME_YMD || $row['ord_date'] == $next_date){
             if($row['oro']['cnt']){
                 $oro_url = './order_out_list.php?sfl=oro.ord_idx&stx='.$row['ord_idx'];
@@ -267,12 +268,19 @@ $('.date_blank').on('click',function(e){
                 ";
                 //echo $addSql."<br>";
                 $addCnt = sql_fetch($addSql);
-                if($addCnt['cnt'] && $addCnt['cnt2']){
+                if ( $addCnt['cnt'] && $addCnt['cnt2'] ){
+                    $create = 1;
                     $oro_add_url = './order_out_create.php?w=&ord_idx='.$row['ord_idx'].'&ord_date='.$row['ord_date'].'&add=1';
                     $oro_add_btn = '<spn style="color:orange;">추가출하생성</span>';
                 }
+                else{
+                    $create = 0;
+                    $oro_add_url = '';
+                    $oro_add_btn = '';
+                }
             }
             else {
+                $create = 1;
                 $oro_url = './order_out_create.php?w=&ord_idx='.$row['ord_idx'].'&ord_date='.$row['ord_date'];
                 $oro_btn = '<spn style="color:orange;">출하생성</span>';
                 $oro_add_url = '';
@@ -280,6 +288,7 @@ $('.date_blank').on('click',function(e){
             }
         }
         else{
+            $create = 0;
             $oro_url = '';
             $oro_btn = '<span>-</span>';
             $oro_add_url = '';
@@ -308,9 +317,9 @@ $('.date_blank').on('click',function(e){
             <?=implode(" ",$row['item_list'])?>
         </td>
         <td class="td_ord_ship_date">
-            <a href="<?=$oro_url?>"><?=$oro_btn?></a>
+            <a href="<?=(($create)?'javascript:':$oro_url)?>" class="<?=(($create)?'oroButton':'')?>" link="<?=$oro_url?>"><?=$oro_btn?></a>
             <?php if($oro_add_url){ ?>
-            <br><a href="<?=$oro_add_url?>"><?=$oro_add_btn?></a>
+            <br><a href="javascript:" link="<?=$oro_add_url?>" class="oroButton"><?=$oro_add_btn?></a>
             <?php } ?>
         </td><!-- 출하 -->
         <!--td class="td_practice_cnt">
@@ -412,6 +421,16 @@ $("#btn_customer").click(function(e) {
     winCustomerSelect = window.open(href, "winCustomerSelect", "left=300,top=150,width=550,height=600,scrollbars=1");
     winCustomerSelect.focus();
 });
+
+$('.oroButton').on('click',function(){
+    if(!confirm('데이터량에 따라 다소 시간이 걸릴수 있으니\n잠시만 기다려 주십시오.')){
+        return false;
+    }
+
+    //$(location).attr('href',$(this).attr('link'));
+    $(location).attr('href','https://google.com');
+});
+
 
 // 마우스 hover 설정
 $(".tbl_head01 tbody tr").on({
