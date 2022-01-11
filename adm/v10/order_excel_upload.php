@@ -18,9 +18,9 @@ PHPExcel_Settings::setZipClass(PHPExcel_Settings::PCLZIP);
 //전체 엑셀 데이터를 담을 배열을 선언한다.
 $pnoArr = array(); //bom에 등록되지 않은 pno배열(등록해야함을 유도)
 $gstkArr = array(); //guest_stock_array(고객처 재고 배열)
+$gidxArr = array();
 $dateArr = array(9 => '',10 => '',11 => '',12 => '',13 => '',14 => '',15 => '',16 => '',17 => '',18 => '',19 => '',20 => '',21 => '');
 $ordArr = array();
-$oriArr = array();
 // 파일의 저장형식이 utf-8일 경우 한글파일 이름은 깨지므로 euc-kr로 변환해준다.
 $filename = iconv("UTF-8", "EUC-KR", $filename);
 $todate = G5_TIME_YMD;
@@ -57,7 +57,7 @@ try {
 			$rowData[0][6] = trim($rowData[0][6]); //품명
 			$rowData[0][25] = trim($rowData[0][25]); //외부라벨코드
 
-            if($rowData[0][6] == '품명'){
+            if( $rowData[0][6] == '품명' ) {
                 foreach($dateArr as $idx => $idv){
                     $rowData[0][$idx] = PHPExcel_Style_NumberFormat :: toFormattedString ($rowData[0][$idx], PHPExcel_Style_NumberFormat :: FORMAT_DATE_YYYYMMDD2);
                     $dateArr[$idx] = $rowData[0][$idx];
@@ -66,7 +66,7 @@ try {
                     }
                     $ordArr[$rowData[0][$idx]] = array();
                 }
-                if(preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$dateArr[9])){
+                if( preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$dateArr[9]) ){
                     $todate = $dateArr[9];
                 }
             }
@@ -81,12 +81,12 @@ try {
 
 
                 //고객처 재고 데이터가 있으면 따로 배열에 저장해라
-                if($rowData[0][7]){
+                if( $rowData[0][7] ) {
                     $gstArr[$rowData[0][5]] = $rowData[0][7];
                 }
 
-                foreach($dateArr as $id => $date){
-                    if($rowData[0][$id]){
+                foreach($dateArr as $id => $date) {
+                    if( $rowData[0][$id] ) {
                         $ordArr[$date][$rowData[0][5]] = $rowData[0][$id];
                     }
                 }
@@ -102,7 +102,7 @@ try {
 			}
         }
 	}
-} catch(exception $e) {
+} catch( exception $e ) {
 	echo $e;
     exit;
 }
@@ -121,119 +121,201 @@ echo 'ordArr<br>';
 print_r2($ordArr);
 exit;
 */
-
-if(count($gstArr)){
+//print_r2($gstArr);
+if( @count($gstArr) ){
     foreach($gstArr as $gk => $gv){
-        $gbom = sql_fetch(" SELECT com_idx_customer,bom_idx FROM {$g5['bom_table']} WHERE bom_status NOT IN('delete','del','trash') AND bom_part_no = '{$gk}' ");
-        $gst = sql_fetch(" SELECT gst_idx FROM {$g5['guest_stock_table']}
-                            WHERE gst_date = '{$todate}'
-                                AND gst_status NOT IN('delete','del','trash')
-                                AND bom_idx = '{$gbom['bom_idx']}'
-        ");
-        if($gst['gst_idx']){
-            $gsql = " UPDATE {$g5['guest_stock_table']} SET
-                            gst_count = '{$gv}'
+        //고객처 갯수가 0/null 이 아닌 값이 있는 것만 등록/수정을 한다.
+        if($gv){
+            //해당 bom_part_no의 고객처, bom_idx를 조회한다.
+            $gbom = sql_fetch(" SELECT com_idx_customer,bom_idx FROM {$g5['bom_table']} WHERE bom_status NOT IN('delete','del','trash') AND bom_part_no = '{$gk}' ");
+            //오늘날짜의 해당 bom_idx값의 레코드가 존재하는 확인
+            $gst = sql_fetch(" SELECT gst_idx FROM {$g5['guest_stock_table']}
+                                WHERE gst_date = '{$todate}'
+                                    AND gst_status NOT IN('delete','del','trash')
+                                    AND bom_idx = '{$gbom['bom_idx']}'
+            ");
+            //이미 오늘날짜의 고객처재고로 등록된 해당 bom_idx의 레코드가 존재하면 수정
+            if($gst['gst_idx']){
+                $gsql = " UPDATE {$g5['guest_stock_table']} SET
+                                gst_count = '{$gv}'
+                                ,gst_date = '{$todate}'
+                                ,gst_update_dt = '".G5_TIME_YMDHIS."'
+                            WHERE gst_idx = '{$gst['gst_idx']}'
+                ";
+                sql_query($gsql,1);
+                $gst_idx = $gst['gst_idx'];
+            }
+            //이미 오늘날짜의 고객처재고로 등록된 해당 bom_idx의 레코드가 없으면 등록
+            else {
+                $gsql = " INSERT INTO {$g5['guest_stock_table']} SET
+                            com_idx = '{$_SESSION['ss_com_idx']}'
+                            ,com_idx_customer = '{$gbom['com_idx_customer']}'
+                            ,bom_idx = '{$gbom['bom_idx']}'
+                            ,gst_count = '{$gv}'
                             ,gst_date = '{$todate}'
+                            ,gst_status = 'ok'
+                            ,gst_reg_dt = '".G5_TIME_YMDHIS."'
                             ,gst_update_dt = '".G5_TIME_YMDHIS."'
-                        WHERE gst_idx = '{$gst['gst_idx']}'
-            ";
-        }
-        else{
-            $gsql = " INSERT INTO {$g5['guest_stock_table']} SET
-                        com_idx = '{$_SESSION['ss_com_idx']}'
-                        ,com_idx_customer = '{$gbom['com_idx_customer']}'
-                        ,bom_idx = '{$gbom['bom_idx']}'
-                        ,gst_count = '{$gv}'
-                        ,gst_date = '{$todate}'
-                        ,gst_status = 'ok'
-                        ,gst_reg_dt = '".G5_TIME_YMDHIS."'
-                        ,gst_update_dt = '".G5_TIME_YMDHIS."'
-            ";
-        }
+                ";
+                sql_query($gsql,1);
+                $gst_idx = sql_insert_id();
+            }
 
-        //echo $gsql."<br>";
-        sql_query($gsql,1);
+            array_push($gidxArr,$gst_idx);
+            // echo $gsql."<br>";
+        }
     }
 
-	//만약 고객체 테이블에 gst_count = 0 인것은 전부 삭제한다.
-	$gst_del = " DELETE FROM {$g5['guest_stock_table']} WHERE gst_count = '0' ";
-	sql_query($gst_del,1);
+    //위에 당일 날짜로 새로 등록되거나 업데이트 되지 않은 gst_idx값들은 전부 삭제 한다.
+    $gdsql = " DELETE FROM {$g5['guest_stock_table']} WHERE gst_date = '{$todate}' AND gst_idx NOT IN(".implode(',',$gidxArr).")
+    ";
+    sql_query($gdsql,1);
+    // echo "<br><br>";
+    // echo $gdsql."<br>";
 }
-//exit;
-foreach($ordArr as $ok => $ov){
+//만약 엑셀상에서 오늘날짜의 해당하는 수량값이 한 개도 없는경우
+else {
+    //당일날짜로 등록된 레코드들이 혹시라도 있으면 전부 삭제한다.
+    $gdsql = " DELETE FROM {$g5['guest_stock_table']} WHERE gst_date = '{$todate}'
+    ";
+    sql_query($gdsql,1);
+}
 
-    if(count($ov)){
-        $ord_sql = " SELECT ord_idx FROM {$g5['order_table']} WHERE ord_status NOT IN('delete','del','trash','cancel') AND ord_date = '{$ok}' ";
-        //echo $ord_sql."<br>";
-        $ord = sql_fetch($ord_sql);
-        if(!$ord['ord_idx']){
-            $osql = " INSERT INTO {$g5['order_table']} (`com_idx`,`ord_price`,`ord_ship_date`,`ord_status`,`ord_date`,`ord_reg_dt`,`ord_update_dt`) VALUES (
-                '{$_SESSION['ss_com_idx']}'
-                ,''
-                ,''
-                ,'ok'
-                ,'{$ok}'
-                ,'".G5_TIME_YMDHIS."'
-                ,'".G5_TIME_YMDHIS."'
-            )
+
+//수주데이터 작업
+foreach($ordArr as $ok => $ov){
+    //echo "<br><br>".$ok.'-count:'.count($ov).'<br>';
+    //해당날짜로 등록된 수주레코드가 있는지 확인
+    $ord_sql = " SELECT ord_idx FROM {$g5['order_table']} WHERE com_idx = '{$_SESSION['ss_com_idx']}' AND ord_status NOT IN('delete','del','trash','cancel') AND ord_date = '{$ok}' ";
+    //echo $ord_sql."<br>";
+    $ord = sql_fetch($ord_sql);
+
+    //엑셀로부터의 해당 날짜에 속하는 제품이 1개로 들어있으면 실행
+    if( @count($ov) ){
+        //$ocnt = 1;
+        //해당 ord_idx가 없으면 수주레코드부터 등록하고, ord_idx를 추출한다.
+        if( !$ord['ord_idx'] ){
+            $osql = " INSERT INTO {$g5['order_table']} SET 
+                com_idx = '{$_SESSION['ss_com_idx']}'
+                , ord_price = ''
+                , ord_ship_date = ''
+                , ord_status = 'ok'
+                , ord_date = '{$ok}'
+                , ord_reg_dt = '".G5_TIME_YMDHIS."'
+                , ord_update_dt = '".G5_TIME_YMDHIS."'
             ";
             sql_query($osql,1);
             $ord_idx = sql_insert_id();
         }
-        else{
+        //해당 ord_idx가 있으면 ord_idx변수에만 대입한다.
+        else {
             $ord_idx = $ord['ord_idx'];
         }
 
+        //해당날짜의 수주데이터별 존재하는 수주상품 ori_idx를 담을 배열 정의
+        $oriArr = array();
+        //하나의 수주레코드에서 제품별 단가를 모두 합산해서 담을 배열 정의
         $ord_price = 0;
-        foreach($ov as $ik => $iv){
-            $bom = sql_fetch(" SELECT bom_idx,com_idx_customer,bom_price FROM {$g5['bom_table']} WHERE bom_part_no = '{$ik}' AND bom_status NOT IN('delete','del','cancel','trash') ");
-            if(!$bom['bom_idx']){
-                alert('['.$ik.'] 품번의 상품이 BOM데이터에 등록되지 않았습니다.');
-                break;
-            }
-            //수주별 가격 누적계산
-            $ord_price += ($bom['bom_price'] * $iv);
+        foreach($ov as $ik => $iv){ //ik : 품번 , ik : 갯수
+            //echo '( '.$ocnt.' )[ '.$ik.' ] cnt:'.$iv."<br>";
+            //해당 수주상품에 대한 oro_idx가 존재하는지 확인
+            $oro = sql_fetch(" SELECT oro_idx, ori.ori_idx,bom_price FROM {$g5['order_out_table']} AS oro
+                            LEFT JOIN {$g5['order_item_table']} AS ori ON oro.ori_idx = ori.ori_idx
+                            LEFT JOIN {$g5['bom_table']} AS bom ON ori.bom_idx = bom.bom_idx
+                WHERE oro.ord_idx = '{$ord_idx}'
+                    AND bom.bom_part_no = '{$ik}'
+            ");
 
-            $ori = sql_fetch(" SELECT ori_idx FROM {$g5['order_item_table']} WHERE ord_idx = '{$ord_idx}' AND bom_idx = '{$bom['bom_idx']}' AND ori_status NOT IN('delete','del','trash') ");
-
-            if(!$ori['ori_idx']){
-                $isql = " INSERT INTO {$g5['order_item_table']} SET
-                            com_idx = '{$_SESSION['ss_com_idx']}'
-                            ,com_idx_customer = '{$bom['com_idx_customer']}'
-                            ,ord_idx = '{$ord_idx}'
-                            ,bom_idx = '{$bom['bom_idx']}'
-                            ,ori_count = '{$iv}'
-                            ,ori_price = '{$bom['bom_price']}'
-                            ,ori_status = 'ok'
-                            ,ori_reg_dt = '".G5_TIME_YMDHIS."'
-                            ,ori_update_dt = '".G5_TIME_YMDHIS."'
-                ";
-                // echo $isql."<br>";
-                sql_query($isql,1);
-                $ori_idx = sql_insert_id();
-            }else{
-                $isql = " UPDATE {$g5['order_item_table']} SET
-                            ori_count = '{$iv}'
-                            ,ori_price = '{$bom['bom_price']}'
-                            ,ori_update_dt = '".G5_TIME_YMDHIS."'
-                        WHERE ori_idx = '{$ori['ori_idx']}'
-                        AND ord_idx = '{$ord_idx}'
-                        ";
-                // echo $isql."<br>";
-                sql_query($isql,1);
-                $ori_idx = $ori['ori_idx'];
+            //이미 해당 수주상품(ori_idx -> bom_idx -> bom_part_no) 에 대한 출하상품(oro_idx)가 존재하면 업데이트 할 수 없다.
+            if( $oro['oro_idx'] ) {
+                $ori_idx = $oro['ori_idx'];
+                $ord_price += $oro['bom_price'];
+                array_push($oriArr,$ori_idx);
+                continue;//다음루프로 넘어가라
             }
-            $oriArr[$ok][] = $ori_idx;
+            // 해당 수주상품(ori_idx -> bom_part_no)에 대한 출하상품(oro_idx)이 없으면 추가하거나, 업데이트 한다.
+            else {
+                //해당 날짜에 해당 ori_idx가 존재하는지 확인한다.
+                $ori = sql_fetch(" SELECT ori_idx, bom_price FROM {$g5['order_item_table']} AS ori
+                                        LEFT JOIN {$g5['bom_table']} AS bom ON ori.bom_idx = bom.bom_idx
+                                    WHERE ord_idx = '{$ord_idx}' 
+                                        AND bom_part_no = '{$ik}'
+                                        AND ori_status NOT IN('delete','del','trash')
+                ");
+
+                //해당 ori_idx가 존재하면 업데이트
+                if( $ori['ori_idx'] ) {
+                    $orisql = " UPDATE {$g5['order_item_table']} SET
+                                    ori_count = '{$iv}'
+                                    , ori_price = '{$ori['bom_price']}'
+                                    , ori_status = 'ok'
+                                    , ori_update_dt = '".G5_TIME_YMDHIS."'
+                                WHERE ori_idx = '{$ori['ori_idx']}'
+                    ";
+                    sql_query($orisql,1);
+                    $ord_price += $ori['bom_price'];
+                    $ori_idx = $ori['ori_idx'];
+                }
+                //해당 ori_idx가 없으면 추가
+                else {
+                    $bom = sql_fetch(" SELECT bom_idx, com_idx_customer FROM {$g5['bom_table']} WHERE bom_part_no = '{$ik}' AND bom_status NOT IN('delete','del','trash') ");
+                    $orisql = " INSERT INTO {$g5['order_item_table']} SET
+                                    com_idx = '{$_SESSION['ss_com_idx']}'
+                                    , com_idx_customer = '{$bom['com_idx_customer']}'
+                                    , ord_idx = '{$ord_idx}'
+                                    , bom_idx = '{$bom['bom_idx']}'
+                                    , ori_count = '{$iv}'
+                                    , ori_price = '{$bom['bom_price']}'
+                                    , ori_status = 'ok'
+                                    , ori_reg_dt = '".G5_TIME_YMDHIS."'
+                                    , ori_update_dt = '".G5_TIME_YMDHIS."'
+                    ";
+                    sql_query($orisql,1);
+                    $ori_idx = sql_insert_id();
+                    
+                    $ord_price += $bom['bom_price'];
+                }
+
+            }
+
+            array_push($oriArr,$ori_idx);
+            //$ocnt++;
         }
         //누적 총합계 수주금액 업데이트
         sql_query(" UPDATE {$g5['order_table']} SET ord_price = '{$ord_price}' WHERE ord_idx = '{$ord_idx}' ");
 
-        /*
-        $del_where = (@sizeof($oriArr[$ok]))? " AND ori_idx NOT IN (".implode(",",$oriArr[$ok]).") ":"";
-        $sql = "DELETE FROM {$g5['order_item_table']}  WHERE ord_idx='".$ord_idx."' {$del_where} ";
-        //echo $sql."<br>";
-        sql_query($sql,1);
-        */
+        //위에 당일 날짜로 새로 등록되거나 업데이트 되지 않은 ori_idx값들은 전부 삭제 한다.
+        if( @count($oriArr) ){
+            $oridsql = " DELETE FROM {$g5['order_item_table']} WHERE ord_idx = '{$ord_idx}' AND ori_idx NOT IN(".implode(',',$oriArr).") ";
+            sql_query($oridsql,1);
+        }
+    }
+    //엑셀로부터 해당 날짜에 속하는 수주제품이 하나도 없을때
+    else {
+        //수주상품 데이터는 없는데 수주 ord_idx는 존재할때
+        if( $ord['ord_idx'] ) {
+            //해당 수주 데이터의 출하데이터가 존재하는지 확인해라
+            $oro_res = sql_fetch(" SELECT COUNT(*) AS cnt FROM {$g5['order_out_table']} WHERE ord_idx = '{$ord['ord_idx']}' AND oro_status NOT IN('delete','del','trash')
+            ");
+            //해당 출하레코드가 하나도 없으면 해당 ord_idx로 등록된 수주상품과 수주데이터를 삭제해라
+            if(!$oro_res['cnt']){
+                //수주상품 데이터를 삭제해라
+                $oridel = " DELETE FROM {$g5['order_item_table']} WHERE ord_idx = '{$ord['ord_idx']}' ";
+                sql_query($oridel,1);
+
+                //수주데이터를 삭제해라.
+                $orddel = " DELETE FROM {$g5['order_table']} WHERE ord_idx = '{$ord['ord_idx']}' ";
+                sql_query($orddel,1);
+            }
+            // 출하레코드가 존재하면
+            else {
+                continue; 
+            }
+        }
+        //수주상품 데이터도 없고, 수주 ord_idx도 없을때
+        else {
+            continue;
+        }
     }
 }
 

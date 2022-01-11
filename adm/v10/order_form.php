@@ -18,8 +18,13 @@ else if ($w == 'u') {
     $csql = sql_fetch(" SELECT com_name FROM {$g5['company_table']} WHERE com_idx = '{$ord['com_idx_customer']}' ");
     $ord['com_name_customer'] = $csql['com_name'];
 
-    $sql_it = " SELECT * FROM {$g5['order_item_table']} AS ori
-                LEFT JOIN {$g5['bom_table']} AS bom ON ori.bom_idx = bom.bom_idx WHERE ord_idx = '{$ord_idx}' AND ori_status NOT IN('trash','delete','del','cancel') ORDER BY bom_sort ";
+    $sql_it = " SELECT *
+                        ,( SELECT bct_name FROM {$g5['bom_category_table']} WHERE bct_id = LEFT(bom.bct_id,2) ) AS cat1
+                        ,( SELECT bct_name FROM {$g5['bom_category_table']} WHERE bct_id = LEFT(bom.bct_id,4) ) AS cat2
+                FROM {$g5['order_item_table']} AS ori
+                    LEFT JOIN {$g5['bom_table']} AS bom ON ori.bom_idx = bom.bom_idx 
+                    LEFT JOIN {$g5['bom_category_table']} AS bct ON bom.bct_id = bct.bct_id 
+                WHERE ord_idx = '{$ord_idx}' AND ori_status NOT IN('trash','delete','del','cancel') ORDER BY bom_sort ";
     $result = sql_query($sql_it,1);
     $total_count = sql_num_rows($result);
 }
@@ -145,7 +150,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_CSS_URL.'/nestable.
             <li class="dd-item dd3-item" data-id="'.$row['idx'].'">
                 <div class="dd-handle dd3-handle">Drag</div>
                 <div class="dd3-content" bom_idx_child="'.$row['bom_idx'].'">
-                    <span class="bom_name">'.cut_str($row['bom_name'],20).'('.$row['ori_idx'].')</span>
+                    <span class="bom_name">[<span style="color:orange;">'.$row['cat1'].' > '.$row['cat2'].'</span>]'.cut_str($row['bom_name'],20).'('.$row['ori_idx'].')</span>
                     <div class="add_items">
                         <span class="bom_part_no">'.$row['bom_part_no'].'</span>
                         <span class="bom_price" price="'.$row['ori_price'].'"><b>'.number_format($row['ori_price']).'</b>원</span>
