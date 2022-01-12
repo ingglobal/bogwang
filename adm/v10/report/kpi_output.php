@@ -36,8 +36,8 @@ include_once('./_top.kpi.php');
         <div class="div_left">
 
             <!-- ========================================================================================= -->
-            <div class="div_title_02f"><i class="fa fa-check" aria-hidden="true"> 라인별 생산</i></div>
-            <div class="div_info_body">
+            <div class="div_title_02f" style="display:none;"><i class="fa fa-check" aria-hidden="true"> 라인별 생산</i></div>
+            <div class="div_info_body" style="display:none;">
 
                 <table class="table01">
                     <thead class="tbl_head">
@@ -210,7 +210,7 @@ include_once('./_top.kpi.php');
             </div><!-- .div_info_body -->
 
             <!-- ========================================================================================= -->
-            <div class="div_title_02"><i class="fa fa-check" aria-hidden="true">설비별 생산</i></div>
+            <div class="div_title_02f"><i class="fa fa-check" aria-hidden="true">설비별 생산</i></div>
             <div id="chart_facility"></div>
             <div class="div_info_body">
                 <table class="table01">
@@ -235,11 +235,11 @@ include_once('./_top.kpi.php');
                             (
                                 SELECT 
                                     mms_idx
-                                    , SUM(dta_value) AS output_total
-                                    , SUM( CASE WHEN dta_defect = 0 THEN dta_value ELSE 0 END ) AS output_good
-                                    , SUM( CASE WHEN dta_defect = 1 THEN dta_value ELSE 0 END ) AS output_defect
-                                FROM {$g5['data_output_sum_table']}
-                                WHERE dta_date >= '".$st_date."' AND dta_date <= '".$en_date."'
+                                    , SUM(itm_count) AS output_total
+                                    , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ok_array'])."') THEN itm_count ELSE 0 END ) AS output_good
+                                    , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ng_array'])."') THEN itm_count ELSE 0 END ) AS output_defect
+                                FROM {$g5['item_sum_table']}
+                                WHERE itm_date >= '".$st_date."' AND itm_date <= '".$en_date."'
                                     AND com_idx='".$com_idx."'
                                     {$sql_mmses}
                                 GROUP BY mms_idx
@@ -395,9 +395,9 @@ include_once('./_top.kpi.php');
                     </thead>
                     <tbody class="tbl_body">
                     <?php
-                    $sql = "SELECT (CASE WHEN n='1' THEN CONCAT(mms_idx,'-',dta_shf_no) ELSE 'total' END) AS item_name
+                    $sql = "SELECT (CASE WHEN n='1' THEN CONCAT(mms_idx,'-',itm_shift) ELSE 'total' END) AS item_name
                                 , mms_idx
-                                , dta_shf_no
+                                , itm_shift
                                 , SUM(output_total) AS output_total
                                 , MAX(output_total) AS output_max
                                 , SUM(output_good) AS output_good
@@ -406,20 +406,20 @@ include_once('./_top.kpi.php');
                             (
                                 SELECT
                                     mms_idx
-                                    , dta_shf_no
-                                    , SUM(dta_value) AS output_total
-                                    , SUM( CASE WHEN dta_defect = 0 THEN dta_value ELSE 0 END ) AS output_good
-                                    , SUM( CASE WHEN dta_defect = 1 THEN dta_value ELSE 0 END ) AS output_defect
-                                FROM {$g5['data_output_sum_table']}
-                                WHERE dta_date >= '".$st_date."' AND dta_date <= '".$en_date."'
+                                    , itm_shift
+                                    , SUM(itm_count) AS output_total
+                                    , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ok_array'])."') THEN itm_count ELSE 0 END ) AS output_good
+                                    , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ng_array'])."') THEN itm_count ELSE 0 END ) AS output_defect
+                                FROM {$g5['item_sum_table']}
+                                WHERE itm_date >= '".$st_date."' AND itm_date <= '".$en_date."'
                                     AND com_idx='".$com_idx."'
                                     {$sql_mmses}
-                                GROUP BY mms_idx, dta_shf_no
-                                ORDER BY mms_idx, dta_shf_no
+                                GROUP BY mms_idx, itm_shift
+                                ORDER BY mms_idx, itm_shift
                             ) AS db2, g5_5_tally AS db_no
                             WHERE n <= 2
                             GROUP BY item_name
-                            ORDER BY n DESC, convert(item_name, decimal), dta_shf_no
+                            ORDER BY n DESC, convert(item_name, decimal), itm_shift
                     ";
                     // echo $sql;
                     $result = sql_query($sql,1);
@@ -502,7 +502,7 @@ include_once('./_top.kpi.php');
                         }
                         else {
                             $row['tr_class'] = 'tr_stat_normal';
-                            $row['target'] = $target['mms_shift'][$row['mms_idx']][$row['dta_shf_no']];
+                            $row['target'] = $target['mms_shift'][$row['mms_idx']][$row['itm_shift']];
                         }
                         // echo $amount_max.'<br>';
 
@@ -539,7 +539,7 @@ include_once('./_top.kpi.php');
                         $row['arr_str'] = preg_split("//u", $g5['mms'][$row['mms_idx']]['mms_name'], -1, PREG_SPLIT_NO_EMPTY);
                         $row['str_len'] = count($row['arr_str']);
                         // $row['mms_title'] = ($row['str_len'] >= $cur_len) ? ' title="'.$g5['mms'][$row['mms_idx']]['mms_name'].'"' : "";
-                        $row['shf_name'] = ($row['dta_shf_no']) ? ' '.$row['dta_shf_no'].'교대': '';
+                        $row['shf_name'] = ($row['itm_shift']) ? ' '.$row['itm_shift'].'교대': '';
 
                         // First line total skip, start from second line.
                         if($i>0) {
@@ -588,26 +588,9 @@ include_once('./_top.kpi.php');
                     </thead>
                     <tbody class="tbl_body">
                     <?php
-                    // Get the mmi_nos for each mms
-                    $sql = "SELECT mms_idx, mmi_no, mmi_name
-                            FROM g5_1_mms_item
-                            WHERE mmi_status = 'ok'
-                            GROUP BY mms_idx, mmi_no
-                            ORDER BY mms_idx, mmi_no
-                    ";
-                    // echo $sql.'<br>';
-                    $rs = sql_query($sql,1);
-                    for($i=0;$row=sql_fetch_array($rs);$i++) {
-                        // print_r3('설비: '.$row['mms_idx'].' - '.$row['mmi_no'].'--------------------------');
-                        $mms_mmi[$row['mms_idx']][] = $row['mmi_no'];
-                        $mmi_name[$row['mms_idx']][$row['mmi_no']] = $row['mmi_name'];
-                    }
-                    // print_r3($mms_mmi);
-                    // print_r2($mmi_name);
-                    
-                    $sql = "SELECT (CASE WHEN n='1' THEN CONCAT(mms_idx,'-',dta_mmi_no) ELSE 'total' END) AS item_name
+                    $sql = "SELECT (CASE WHEN n='1' THEN CONCAT(mms_idx,'-',bom_part_no) ELSE 'total' END) AS item_name
                                 , mms_idx
-                                , dta_mmi_no
+                                , bom_part_no
                                 , SUM(output_total) AS output_total
                                 , MAX(output_total) AS output_max
                                 , SUM(output_good) AS output_good
@@ -616,20 +599,20 @@ include_once('./_top.kpi.php');
                             (
                                 SELECT
                                     mms_idx
-                                    , dta_mmi_no
-                                    , SUM(dta_value) AS output_total
-                                    , SUM( CASE WHEN dta_defect = 0 THEN dta_value ELSE 0 END ) AS output_good
-                                    , SUM( CASE WHEN dta_defect = 1 THEN dta_value ELSE 0 END ) AS output_defect
-                                FROM {$g5['data_output_sum_table']}
-                                WHERE dta_date >= '".$st_date."' AND dta_date <= '".$en_date."'
+                                    , bom_part_no
+                                    , SUM(itm_count) AS output_total
+                                    , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ok_array'])."') THEN itm_count ELSE 0 END ) AS output_good
+                                    , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ng_array'])."') THEN itm_count ELSE 0 END ) AS output_defect
+                                FROM {$g5['item_sum_table']}
+                                WHERE itm_date >= '".$st_date."' AND itm_date <= '".$en_date."'
                                     AND com_idx='".$com_idx."'
                                     {$sql_mmses}
-                                GROUP BY mms_idx, dta_mmi_no
-                                ORDER BY mms_idx, dta_mmi_no
+                                GROUP BY mms_idx, bom_part_no
+                                ORDER BY mms_idx, bom_part_no
                             ) AS db2, g5_5_tally AS db_no
                             WHERE n <= 2
                             GROUP BY item_name
-                            ORDER BY n DESC, convert(item_name, decimal), dta_mmi_no
+                            ORDER BY n DESC, convert(item_name, decimal), bom_part_no
                     ";
                     // echo $sql;
                     $result = sql_query($sql,1);
@@ -680,7 +663,7 @@ include_once('./_top.kpi.php');
                         }
                         else {
                             $row['tr_class'] = 'tr_stat_normal';
-                            $row['target'] = $target['mms_mmi'][$row['mms_idx']][$row['dta_mmi_no']];
+                            $row['target'] = $target['mms_mmi'][$row['mms_idx']][$row['bom_part_no']];
                         }
                         // echo $amount_max.'<br>';
 
@@ -717,8 +700,8 @@ include_once('./_top.kpi.php');
                         $row['arr_str'] = preg_split("//u", $g5['mms'][$row['mms_idx']]['mms_name'], -1, PREG_SPLIT_NO_EMPTY);
                         $row['str_len'] = count($row['arr_str']);
                         // $row['mms_title'] = ($row['str_len'] >= $cur_len) ? ' title="'.$g5['mms'][$row['mms_idx']]['mms_name'].'"' : "";
-                        $row['mmi_no'] = ($row['dta_mmi_no']) ? ' <span style="color:#3ab4d2;">'.$row['dta_mmi_no'].'</span>': '';
-                        $row['mmi_name'] = ($row['dta_mmi_no']) ? ' <div style="color:#818181;font-size:0.7em;margin-top:-7px;">'.$mmi_name[$row['mms_idx']][$row['dta_mmi_no']].'</div>': '';
+                        $row['mmi_no'] = ($row['bom_part_no']) ? ' <span style="color:#3ab4d2;">'.$row['bom_part_no'].'</span>': '';
+                        $row['mmi_name'] = ($row['bom_part_no']) ? ' <div style="color:#818181;font-size:0.7em;margin-top:-7px;">'.$mmi_name[$row['mms_idx']][$row['bom_part_no']].'</div>': '';
 
                         // First line total skip, start from second line.
                         if($i>0) {
@@ -726,7 +709,7 @@ include_once('./_top.kpi.php');
                             <tr class="'.$row['tr_class'].'">
                                 <td class="text_left" '.$row['mms_title'].'>'.$row['mms_name'].$row['mmi_no'].$row['mmi_name'].'</td><!-- cache/mms-setting.php -->
                                 <td class="text_right pr_5">'.number_format($row['target']).'</td><!-- 목표 -->
-                                <td class="text_right pr_5">'.number_format($row['output_total']).'</td><!-- 생산 -->
+                                <td class="text_right pr_5">'.number_format($row['output_total']).'</td><!-- 생산 -->
                                 <td class="text_right pr_5">'.number_format($row['output_good']).'</td><!-- 양호 -->
                                 <td class="text_right pr_5">'.number_format($row['output_defect']).'</td><!-- 불량 -->
                                 <td class="td_graph text_left pl_0">'.$row['graph_good'].$row['graph_defect'].$row['graph_target'].'</td>
@@ -796,12 +779,12 @@ include_once('./_top.kpi.php');
                                     UNION ALL
                                     (
                                     SELECT 
-                                        dta_date AS ymd_date
-                                        , SUM(dta_value) AS output_total
-                                        , SUM( CASE WHEN dta_defect = 0 THEN dta_value ELSE 0 END ) AS output_good
-                                        , SUM( CASE WHEN dta_defect = 1 THEN dta_value ELSE 0 END ) AS output_defect
-                                    FROM {$g5['data_output_sum_table']}
-                                    WHERE dta_date >= '".$st_date."' AND dta_date <= '".$en_date."'
+                                        itm_date AS ymd_date
+                                        , SUM(itm_count) AS output_total
+                                        , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ok_array'])."') THEN itm_count ELSE 0 END ) AS output_good
+                                        , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ng_array'])."') THEN itm_count ELSE 0 END ) AS output_defect
+                                        FROM {$g5['item_sum_table']}
+                                    WHERE itm_date >= '".$st_date."' AND itm_date <= '".$en_date."'
                                         AND com_idx='".$com_idx."'
                                         {$sql_mmses}
                                     GROUP BY ymd_date
@@ -965,12 +948,12 @@ include_once('./_top.kpi.php');
                                     UNION ALL
                                     (
                                     SELECT 
-                                        YEARWEEK(dta_date,4) AS ymd_week
-                                        , SUM(dta_value) AS output_total
-                                        , SUM( CASE WHEN dta_defect = 0 THEN dta_value ELSE 0 END ) AS output_good
-                                        , SUM( CASE WHEN dta_defect = 1 THEN dta_value ELSE 0 END ) AS output_defect
-                                    FROM {$g5['data_output_sum_table']}
-                                    WHERE dta_date >= '".$st_date."' AND dta_date <= '".$en_date."'
+                                        YEARWEEK(itm_date,4) AS ymd_week
+                                        , SUM(itm_count) AS output_total
+                                        , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ok_array'])."') THEN itm_count ELSE 0 END ) AS output_good
+                                        , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ng_array'])."') THEN itm_count ELSE 0 END ) AS output_defect
+                                    FROM {$g5['item_sum_table']}
+                                    WHERE itm_date >= '".$st_date."' AND itm_date <= '".$en_date."'
                                         AND com_idx='".$com_idx."'
                                         {$sql_mmses}
                                     GROUP BY ymd_week
@@ -1144,12 +1127,12 @@ include_once('./_top.kpi.php');
                                     UNION ALL
                                     (
                                     SELECT 
-                                        substring( CAST(dta_date AS CHAR),1,7) AS ymd_month
-                                        , SUM(dta_value) AS output_total
-                                        , SUM( CASE WHEN dta_defect = 0 THEN dta_value ELSE 0 END ) AS output_good
-                                        , SUM( CASE WHEN dta_defect = 1 THEN dta_value ELSE 0 END ) AS output_defect
-                                    FROM {$g5['data_output_sum_table']}
-                                    WHERE dta_date >= '".$st_date."' AND dta_date <= '".$en_date."'
+                                        substring( CAST(itm_date AS CHAR),1,7) AS ymd_month
+                                        , SUM(itm_count) AS output_total
+                                        , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ok_array'])."') THEN itm_count ELSE 0 END ) AS output_good
+                                        , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ng_array'])."') THEN itm_count ELSE 0 END ) AS output_defect
+                                    FROM {$g5['item_sum_table']}
+                                    WHERE itm_date >= '".$st_date."' AND itm_date <= '".$en_date."'
                                         AND com_idx='".$com_idx."'
                                         {$sql_mmses}
                                     GROUP BY ymd_month
@@ -1301,12 +1284,12 @@ include_once('./_top.kpi.php');
                                     UNION ALL
                                     (
                                     SELECT 
-                                        substring( CAST(dta_date AS CHAR),1,4) AS ymd_year
-                                        , SUM(dta_value) AS output_total
-                                        , SUM( CASE WHEN dta_defect = 0 THEN dta_value ELSE 0 END ) AS output_good
-                                        , SUM( CASE WHEN dta_defect = 1 THEN dta_value ELSE 0 END ) AS output_defect
-                                    FROM {$g5['data_output_sum_table']}
-                                    WHERE dta_date >= '".$st_date."' AND dta_date <= '".$en_date."'
+                                        substring( CAST(itm_date AS CHAR),1,4) AS ymd_year
+                                        , SUM(itm_count) AS output_total
+                                        , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ok_array'])."') THEN itm_count ELSE 0 END ) AS output_good
+                                        , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ng_array'])."') THEN itm_count ELSE 0 END ) AS output_defect
+                                    FROM {$g5['item_sum_table']}
+                                    WHERE itm_date >= '".$st_date."' AND itm_date <= '".$en_date."'
                                         AND com_idx='".$com_idx."'
                                         {$sql_mmses}
                                     GROUP BY ymd_year

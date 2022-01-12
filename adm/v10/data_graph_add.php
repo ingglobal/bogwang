@@ -228,7 +228,7 @@ include_once('./_head.sub.php');
                     <span class="spsn_mms_group"><b>위치</b><?php echo $row['group']['mmg_name']; ?></span>
                 </div>
                 <div class="div_product">
-                    <span class="btn_product" mms_idx="<?=$row['mms_idx']?>" mms_name="<?=$row['mms_name']?>" mms_data_url="<?=$row['mms_data_url']?>">
+                    <span class="btn_product" mms_idx="<?=$row['mms_idx']?>" mms_name="<?=$row['mms_name']?>" mms_data_url="<?=$row['mms_data_url']?>" style="display:none;">
                         <b>생산</b> <?=$row['products']?>
                     </span>
                 </div>

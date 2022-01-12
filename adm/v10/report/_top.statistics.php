@@ -105,9 +105,9 @@ $sum_plan = number_format($plan['plan_cnt']);
 	<div class="div_stat">
 		<ul>
 			<li>
-			   <span class="title">목표달성율</span>
-               <span class="content" id="sum_target"><?=$sum_target?></span>
-				<span class="unit">%</span>
+			   <span class="title">생산량</span>
+               <span class="content" id="sum_target"><?=number_format($output1['output_sum'])?></span>
+				<span class="unit">개</span>
 			</li>
 			<li>
 			   <span class="title">불량율</span>
