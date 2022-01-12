@@ -166,10 +166,12 @@ $('.date_blank').on('click',function(e){
     <caption><?php echo $g5['title']; ?> 목록</caption>
     <thead>
     <tr>
+        <!--
         <th scope="col" id="bom_list_chk">
             <label for="chkall" class="sound_only">전체</label>
             <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
         </th>
+        -->
         <th scope="col"><?php echo subject_sort_link('ord_idx') ?>번호</a></th>
         <th scope="col">수주금액</th>
         <th scope="col">제품</th>
@@ -207,7 +209,7 @@ $('.date_blank').on('click',function(e){
                 FROM {$g5['order_item_table']} AS ori
                     LEFT JOIN {$g5['bom_table']} AS bom ON bom.bom_idx = ori.bom_idx
                 WHERE ori.ord_idx = '".$row['ord_idx']."' AND ori.ori_status NOT IN('trash','delete','del','cancel')
-                ORDER BY bom.bom_sort LIMIT 0,10
+                ORDER BY bom.bom_sort LIMIT 0,5
         ";
         //print_r3($sql1);
         $rs1 = sql_query($sql1,1);
@@ -302,12 +304,14 @@ $('.date_blank').on('click',function(e){
     ?>
 
     <tr class="<?php echo $bg; ?>" tr_id="<?php echo $row['ord_idx'] ?>">
+        <!--
         <td class="td_chk">
-            <input type="hidden" name="ord_idx[<?php echo $row['ord_idx']; ?>]" value="<?php echo $row['ord_idx'] ?>" id="ord_idx_<?php echo $i ?>">
-            <label for="chk_<?php echo $i; ?>">
-            <input type="checkbox" name="chk[]" value="<?php echo $row['ord_idx'] ?>" id="chk_<?php echo $i ?>">
+            <input type="hidden" name="ord_idx[<?php ;//echo $row['ord_idx']; ?>]" value="<?php ;//echo $row['ord_idx'] ?>" id="ord_idx_<?php ;//echo $i ?>">
+            <label for="chk_<?php ;//echo $i; ?>">
+            <input type="checkbox" name="chk[]" value="<?php ;//echo $row['ord_idx'] ?>" id="chk_<?php ;//echo $i ?>">
             </label>
         </td>
+        -->
         <td class="td_num"><?php echo $row['ord_idx']; ?></td>
         <td class="td_ord_price" style="text-align:right;">
             <?=number_format($row['ord_price'])?> 원<br>
@@ -340,7 +344,7 @@ $('.date_blank').on('click',function(e){
     <?php
     }
     if ($i == 0)
-        echo "<tr><td colspan='9' class=\"empty_table\">자료가 없습니다.</td></tr>";
+        echo "<tr><td colspan='7' class=\"empty_table\">자료가 없습니다.</td></tr>";
     ?>
     </tbody>
     </table>
@@ -349,11 +353,11 @@ $('.date_blank').on('click',function(e){
 <div class="btn_fixed_top">
     <?php if (!auth_check($auth[$sub_menu],'d')) { ?>
        <a href="javascript:" id="btn_excel_upload" class="btn btn_02" style="margin-right:50px;">엑셀등록</a>
+       <a href="./order_form.php" id="member_add" class="btn btn_01">추가하기</a>
     <?php } ?>
-    <?php if (!auth_check($auth[$sub_menu],'w')) { ?>
+    <?php if ($is_admin){ //(!auth_check($auth[$sub_menu],'w')) { ?>
     <!--input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02"-->
     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
-    <a href="./order_form.php" id="member_add" class="btn btn_01">추가하기</a>
     <?php } ?>
 
 </div>
