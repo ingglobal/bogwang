@@ -109,7 +109,7 @@ min-width:1160px;
 
 /* max window */
 .max_wrapper {position:fixed;top:0;left:0;z-index:1100;width:100%;height:100%;background:rgba(0,0,0,0.7);padding:10px 10px 30px;display:none;}
-.max_container {border:solid 2px #000;border-radius:5px;height:100%;background:#fff;overflow-y:auto;}
+.max_container {border:solid 2px #000;border-radius:5px;height:100%;background:#333;overflow-y:auto;}
 .max_container iframe {width:100%;}
 .max_container .list_wrapper {height:99%;}
 
