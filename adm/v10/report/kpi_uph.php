@@ -200,7 +200,7 @@ $sql = " SELECT SQL_CALC_FOUND_ROWS mms_idx, bom_part_no, itm_date
 		{$sql_common}
 		{$sql_search}
         GROUP BY itm_date
-        ORDER BY itm_date
+        ORDER BY itm_date DESC
 ";
 // echo $sql;
 $result = sql_query($sql,1);
