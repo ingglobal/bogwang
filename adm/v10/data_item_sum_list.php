@@ -257,6 +257,9 @@ function sch_submit(f){
                 else if($k1=='trm_idx_line') {
                     $list[$k1] = $line_name[$row['trm_idx_line']];
                 }
+                else if($k1=='itm_status') {
+                    $list[$k1] = $g5['set_itm_status'][$row['itm_status']];
+                }
                 else if($k1=='itm_count') {
                     $list[$k1] = number_format($row[$k1]);
                 }

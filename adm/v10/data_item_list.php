@@ -237,6 +237,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
 //            print_r2($items1);
             foreach($items1 as $k1 => $v1) {
                 if(in_array($k1,$skips)) {continue;}
+                
                 $list[$k1] = $row[$k1];
 
                 if(preg_match("/_price$/",$k1)) {
@@ -249,6 +250,13 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
                 }
                 else if($k1=='trm_idx_line') {
                     $list[$k1] = $line_name[$row['orp']['trm_idx_line']];
+                }
+                else if($k1=='orp_idx') {
+                    $p = sql_fetch(" SELECT orp_idx FROM {$g5['order_out_practice_table']} WHERE oop_idx = '{$row['oop_idx']}' ");
+                    $list[$k1] = $p['orp_idx'];
+                }
+                else if($k1=='itm_status') {
+                    $list[$k1] = $g5['set_itm_status'][$row['itm_status']];
                 }
                 else if($k1=='bom_part_no') {
                     $list[$k1] = $row[$k1].'<br>'.preg_replace("/".$row[$k1]."/","...",$row['itm_barcode']);

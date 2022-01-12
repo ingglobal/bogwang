@@ -23,26 +23,39 @@ $where[] = " ori.ori_status NOT IN('trash','delete','del','cancel') AND oro.oro_
 // 검색어 설정
 if ($stx != "") {
     switch ($sfl) {
-		case ( $sfl == 'ori_idx' || $sfl == 'itm_idx' || $sfl == 'oro.oro_idx' || $sfl == 'oro.com_idx_customer' ) :
+		case ( $sfl == 'oro.ord_idx' ) :
 			$where[] = " {$sfl} = '".trim($stx)."' ";
             break;
-		case ( $sfl == 'bct_id' ) :
-			$where[] = " {$sfl} LIKE '".trim($stx)."%' ";
+    }
+}
+
+
+// 검색어 설정
+if ($stx2 != "") {
+    switch ($sfl2) {
+		case ( $sfl2 == 'bom.bom_part_no' ) :
+			$where[] = " {$sfl2} = '".trim($stx2)."' ";
+            break;
+		case ( $sfl2 == 'bom.bom_name' ) :
+			$where[] = " {$sfl2} LIKE '%".trim($stx2)."%' ";
             break;
         default :
-			$where[] = " $sfl LIKE '%".trim($stx)."%' ";
+			$where[] = " $sfl2 LIKE '%".trim($stx2)."%' ";
             break;
     }
 }
 
 if($ord_date){
     $where[] = " ord.ord_date = '".$ord_date."' ";
+    $qstr .= '&ord_date='.$ord_date;
 }
 if($oro_date_plan){
-    $where[] = " oro_date_plan = '".$oro_date_plan."' ";
+    $where[] = " oro.oro_date_plan = '".$oro_date_plan."' ";
+    $qstr .= '&oro_date_plan='.$oro_date_plan;
 }
 if($oro_date){
-    $where[] = " oro_date = '".$oro_date."' ";
+    $where[] = " oro.oro_date = '".$oro_date."' ";
+    $qstr .= '&oro_date='.$oro_date;
 }
 
 // 최종 WHERE 생성
@@ -82,7 +95,7 @@ $sql = "SELECT oro.*, oop.orp_idx, ori.bom_idx, ori.ori_count, bom.bom_name, bom
         {$sql_common} {$sql_search} {$sql_order}
         LIMIT {$from_record}, {$rows}
 ";
-//print_r3($sql);
+// print_r3($sql);
 $result = sql_query($sql,1);
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
@@ -141,28 +154,30 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 	<label for="sfl" class="sound_only">검색대상</label>
 	<select name="sfl" id="sfl">
 		<option value="oro.ord_idx"<?php echo get_selected($_GET['sfl'], "oro.ord_idx"); ?>>수주번호</option>
-		<option value="bom_name"<?php echo get_selected($_GET['sfl'], "bom_name"); ?>>품명</option>
-		<option value="bom_part_no"<?php echo get_selected($_GET['sfl'], "bom_part_no"); ?>>품번</option>
-		<option value="oro.oro_idx"<?php echo get_selected($_GET['sfl'], "oro.oro_idx"); ?>>출하번호</option>
-		<option value="oro.ori_idx"<?php echo get_selected($_GET['sfl'], "oro.ori_idx"); ?>>수주상품번호</option>
 	</select>
 	<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
-	<input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
-    <label for="schrows" class="sch_label">
+	<input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input" style="width:80px;margin-right:10px;">
+	<select name="sfl2" id="sfl2">
+		<option value="bom.bom_part_no"<?php echo get_selected($_GET['sfl2'], "bom_part_no"); ?>>품번</option>
+		<option value="bom.bom_name"<?php echo get_selected($_GET['sfl2'], "bom_name"); ?>>품명</option>
+	</select>
+	<label for="stx2" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
+	<input type="text" name="stx2" value="<?php echo $stx2 ?>" id="stx2" class="frm_input" style="margin-right:10px;">
+    <label for="schrows" class="sch_label" style="margin-right:10px;">
         <span>표시갯수<i class="fa fa-times data_blank" aria-hidden="true"></i></span>
         <input type="text" name="schrows" placeholder="표시할 갯수" value="<?php echo $schrows ?>" id="schrows" class="frm_input" style="width:100px;text-align:right;" onClick="javascript:chk_Number(this)">
     </label>
-	<label for="ord_date" class="sch_label">
+	<label for="ord_date" class="sch_label" style="margin-right:10px;">
 		<span>수주일<i class="fa fa-times data_blank" aria-hidden="true"></i></span>
 		<input type="text" name="ord_date" value="<?php echo $ord_date ?>" id="ord_date" readonly class="frm_input readonly" placeholder="수주일" style="width:100px;" autocomplete="off">
 	</label>
-	<label for="oro_date_plan" class="sch_label">
+	<label for="oro_date_plan" class="sch_label" style="margin-right:10px;">
 		<span>출하예정일<i class="fa fa-times data_blank" aria-hidden="true"></i></span>
 		<input type="text" name="oro_date_plan" value="<?php echo $oro_date_plan ?>" id="oro_date_plan" readonly class="frm_input readonly" placeholder="출하예정일" style="width:100px;" autocomplete="off">
 	</label>
 	<label for="oro_date" class="sch_label">
 		<span>실출하일<i class="fa fa-times data_blank" aria-hidden="true"></i></span>
-		<input type="text" name="oro_date_plan" value="<?php echo $oro_date ?>" id="oro_date" readonly class="frm_input readonly" placeholder="실출하일" style="width:100px;" autocomplete="off">
+		<input type="text" name="oro_date" value="<?php echo $oro_date ?>" id="oro_date" readonly class="frm_input readonly" placeholder="실출하일" style="width:100px;" autocomplete="off">
 	</label>
 	<input type="submit" class="btn_submit" value="검색">
 </form>
@@ -224,6 +239,8 @@ $('.data_blank').on('click',function(e){
 <input type="hidden" name="schrows" value="<?php echo $schrows ?>">
 <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
 <input type="hidden" name="stx" value="<?php echo $stx ?>">
+<input type="hidden" name="sfl2" value="<?php echo $sfl2 ?>">
+<input type="hidden" name="stx2" value="<?php echo $stx2 ?>">
 <input type="hidden" name="page" value="<?php echo $page ?>">
 <input type="hidden" name="com_idx" value="<?php echo $_SESSION['ss_com_idx'] ?>">
 <input type="hidden" name="token" value="">
@@ -876,7 +893,11 @@ function form03_submit(f) {
     var orp_no_old = f.orp_no_old.value;
     //var orp_status = f.orp_status.value;
 
-
+    if(!confirm("대량데이터처리이므로 시간이 1분이상 소요될수 있습니다.\n실행하는 동안 창을 닫거나, 다른버튼을 클릭해서는 안됩니다.\n작업을 진행하시겠습니까?")){
+        return false;
+    }
+    $('.loading').removeClass('loading_hide');
+    //return false;
     //alert('ok');
     var tkn_obj = $('#form01').find('input[name="token"]');
     $('<input type="hidden" name="orp_order_no" value="'+orp_order_no+'">').insertBefore(tkn_obj);

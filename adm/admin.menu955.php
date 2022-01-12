@@ -22,5 +22,5 @@ $menu["menu955"] = array (
     ,array('955450', 'UPH보고서', G5_USER_ADMIN_URL.'/report/kpi_uph.php', 'kpi_uph',1)
     ,array('955460', '생산원가보고서', G5_USER_ADMIN_URL.'/report/kpi_cost.php', 'kpi_cost',1)
     */
-    ,array('955500', 'M-ERP보고', G5_USER_ADMIN_URL.'/kpi_index.php?tab_idx=1', 'merp_index')
+    //,array('955500', 'M-ERP보고', G5_USER_ADMIN_URL.'/kpi_index.php?tab_idx=1', 'merp_index')
 );

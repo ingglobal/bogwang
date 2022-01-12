@@ -25,27 +25,45 @@ $where[] = " oop.oop_status NOT IN ('del','delete','trash') AND orp.com_idx = '"
 // 검색어 설정
 if ($stx != "") {
     switch ($sfl) {
-		case ( $sfl == 'oop.orp_idx' ) :
+		case ( $sfl == 'orp.orp_idx' ) :
 			$where[] = " {$sfl} = '".trim($stx)."' ";
             break;
-    }
 }
 
 // 검색어 설정
-if ($stx2 != "") {
-    switch ($sfl2) {
-		case ( $sfl2 == 'bom.bom_part_no' ) :
-			$where[] = " {$sfl2} = '".trim($stx2)."' ";
+if ($stx != "") {
+    switch ($sfl) {
+		case ( $sfl == 'orp.orp_start_date' || $sfl == 'oop.ori_idx' || $sfl == 'oop.ord_idx' || $sfl == 'oop.oro_idx' || $sfl == 'oro.com_idx_customer' ) :
+			$where[] = " {$sfl} = '".trim($stx)."' ";
             break;
-        case ( $sfl2 == 'bom.bom_name' ) :
-            $where[] = " {$sfl2} LIKE '%".trim($stx2)."%' ";
+		case ( $sfl == 'bct_id' ) :
+			$where[] = " {$sfl} LIKE '".trim($stx)."%' ";
             break;
-        case ( $sfl2 == 'trm_name' ) :
-            $trm_idx = $g5['line_reverse'][$stx2];
+        case ( $sfl == 'customer_name') :
+            //업체명에 관련된 모든 com_idx값들을 가져온다.
+            $csql = " SELECT GROUP_CONCAT(com_idx) AS com_idxs FROM {$g5['company_table']}
+                            WHERE com_name LIKE '%{$stx}%'
+                                AND com_level = 2
+                                AND com_status NOT IN('trash','delete','del')
+            ";
+            $cnstr = sql_fetch($csql);
+            $where[] = " oro.com_idx_shipto IN({$cnstr['com_idxs']}) ";
+            break;
+        case ( $sfl == 'bom_name' ) :
+            $bsql = " SELECT GROUP_CONCAT(bom_idx) AS bom_idxs FROM {$g5['bom_table']}
+                        WHERE com_idx = '{$_SESSION['ss_com_idx']}'
+                            AND bom_status NOT IN('trash','delete','del')
+                            AND bom_name LIKE '%{$stx}%'
+            ";
+            $bmstr = sql_fetch($bsql);
+            $where[] = " oop.bom_idx IN({$bmstr['bom_idxs']}) ";
+            break;
+        case ( $sfl == 'trm_name' ) :
+            $trm_idx = $g5['line_reverse'][$stx];
             $where[] = " orp.trm_idx_line = '{$trm_idx}' ";
             break;
         default :
-			$where[] = " $sfl2 LIKE '%".trim($stx2)."%' ";
+			$where[] = " $sfl LIKE '%".trim($stx)."%' ";
             break;
     }
 }
@@ -88,7 +106,7 @@ $sql = " SELECT *
         {$sql_common} {$sql_search} {$sql_group} {$sql_order}
         LIMIT {$from_record}, {$rows}
 ";
-// print_r3($sql);
+//print_r3($sql);//exit;
 $result = sql_query($sql,1);
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
@@ -134,22 +152,25 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 <form id="fsearch" name="fsearch" class="local_sch01 local_sch" method="get">
     <label for="sfl" class="sound_only">검색대상</label>
     <select name="sfl" id="sfl">
+        <!--option value="customer_name"<?php ;//echo get_selected($_GET['sfl'], "customer_name"); ?>>출하처</option-->
+        <option value="bom_name"<?php echo get_selected($_GET['sfl'], "bom_name"); ?>>품명</option>
+        <option value="bom_part_no"<?php echo get_selected($_GET['sfl'], "bom_part_no"); ?>>품번</option>
+        <!--option value="oro.com_idx_customer"<?php ;//echo get_selected($_GET['sfl'], "oro.com_idx_customer"); ?>>거래처ID</option-->
+        <option value="trm_name"<?php echo get_selected($_GET['sfl'], "trm_name"); ?>>라인설비명</option>
         <option value="oop.orp_idx"<?php echo get_selected($_GET['sfl'], "oop.orp_idx"); ?>>생산계획ID</option>
+        <option value="oop.oro_idx"<?php echo get_selected($_GET['sfl'], "oop.oro_idx"); ?>>출하ID</option>
+        <option value="oop.ord_idx"<?php echo get_selected($_GET['sfl'], "oop.ord_idx"); ?>>수주ID</option>
     </select>
     <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
-    <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input" style="width:80px;margin-right:10px;">
-    <label for="sfl2" class="sound_only">검색대상</label>
-    <select name="sfl2" id="sfl2">
-        <option value="bom.bom_part_no"<?php echo get_selected($_GET['sfl2'], "bom_part_no"); ?>>품번</option>
-        <option value="bom.bom_name"<?php echo get_selected($_GET['sfl2'], "bom_name"); ?>>품명</option>
-        <option value="trm_name"<?php echo get_selected($_GET['sfl2'], "trm_name"); ?>>라인설비명</option>
-    </select>
-    <label for="stx2" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
-    <input type="text" name="stx2" value="<?php echo $stx2 ?>" id="stx2" class="frm_input">
+    <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
     <label for="orp_start_date" class="sch_label">
         <span>생산일<i class="fa fa-times data_blank" aria-hidden="true"></i></span>
         <input type="text" name="orp_start_date" value="<?php echo $orp_start_date ?>" id="orp_start_date" readonly class="frm_input readonly" placeholder="시작(생산)일" style="width:100px;" autocomplete="off">
     </label>
+    <!--label for="orp_done_date" class="sch_label">
+        <span>완료일<i class="fa fa-times data_blank" aria-hidden="true"></i></span>
+        <input type="text" name="orp_done_date" value="<?php //echo $orp_done_date ?>" id="orp_done_date" readonly class="frm_input readonly" placeholder="완료일" style="width:100px;" autocomplete="off">
+    </!--label-->
     <input type="submit" class="btn_submit" value="검색">
 </form>
 
@@ -198,8 +219,6 @@ $('.data_blank').on('click',function(e){
 <input type="hidden" name="sod3" value="<?php echo $sod2 ?>">
 <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
 <input type="hidden" name="stx" value="<?php echo $stx ?>">
-<input type="hidden" name="sfl2" value="<?php echo $sfl2 ?>">
-<input type="hidden" name="stx2" value="<?php echo $stx2 ?>">
 <input type="hidden" name="page" value="<?php echo $page ?>">
 <input type="hidden" name="token" value="">
 <!--차종/품명/구분/전일재고/단가/납품/과부족/생산지시/시간1/시간2/시간3/시간4/시간5/시간6/시간7/시간8-->
@@ -332,7 +351,7 @@ $('.data_blank').on('click',function(e){
     <?php
     }
     if ($i == 0)
-        echo "<tr><td colspan='24' class=\"empty_table\">자료가 없습니다.</td></tr>";
+        echo "<tr><td colspan='19' class=\"empty_table\">자료가 없습니다.</td></tr>";
     ?>
     </tbody>
     </table>
