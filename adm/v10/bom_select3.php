@@ -7,8 +7,7 @@ if($member['mb_level']<4)
 	alert_close('접근할 수 없는 메뉴입니다.');
 
 
-$sql_common = " FROM {$g5['order_item_table']} AS ori
-                    LEFT JOIN {$g5['bom_table']} AS bom ON bom.bom_idx = ori.bom_idx
+$sql_common = " FROM {$g5['bom_table']} AS bom
                     LEFT JOIN {$g5['bom_category_table']} AS bct ON bct.bct_id = bom.bct_id
                         AND bct.com_idx = '".$_SESSION['ss_com_idx']."'
                     LEFT JOIN {$g5['company_table']} AS com ON com.com_idx = bom.com_idx_customer
@@ -27,9 +26,6 @@ if ($sca != "") {
 // 검색어 설정
 if ($stx != "") {
     switch ($sfl) {
-		case ( $sfl == 'bct_id' ) :
-			$where[] = " {$sfl} LIKE '".trim($stx)."%' ";
-            break;
 		case ( $sfl == 'bom_part_no' ) :
 			$where[] = " {$sfl} = '".trim($stx)."' ";
             break;
@@ -93,10 +89,8 @@ include_once('./_head.sub.php');
 
     <div id="div_search">
         <select name="sfl" id="sfl">
+            <option value="bom_part_no"<?php echo get_selected($_GET['sfl'], "bom_part_no"); ?>>품번</option>
             <option value="bom_name"<?php echo get_selected($_GET['sfl'], "bom_name"); ?>>품명</option>
-            <option value="com_idx_customer"<?php echo get_selected($_GET['sfl'], "com_idx_customer"); ?>>거래처번호</option>
-            <option value="bom_maker"<?php echo get_selected($_GET['sfl'], "bom_maker"); ?>>메이커</option>
-            <option value="bom_memo"<?php echo get_selected($_GET['sfl'], "bom_idx"); ?>>메모</option>
         </select>
         <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
         <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input" style="width:160px;">

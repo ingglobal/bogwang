@@ -282,6 +282,7 @@ $('.data_blank').on('click',function(e){
 
 <div id="modal01" title="엑셀 파일 업로드" style="display:none;">
     <form name="form02" id="form02" action="./material_excel_upload.php" onsubmit="return form02_submit(this);" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="file_name" value="<?=$g5['file_name']?>">
         <table>
         <tbody>
         <tr>

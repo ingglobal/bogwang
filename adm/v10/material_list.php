@@ -30,9 +30,11 @@ if ($stx != "") {
     }
 }
 
-if($times) $where[] = " mtr_times = '".$times."' ";
-if($mtr_input2_date) $where[] = " mtr_input_date = '".$mtr_input2_date."' ";
-if($mtr2_status) $where[] = " mtr_status = '".$mtr2_status."' ";
+if($mtr_input2_date){
+    $where[] = " mtr_input_date = '".$mtr_input2_date."' ";
+    $qstr .= $qstr.'&mtr_input_date='.$mtr_input2_date;
+}
+//if($mtr2_status) $where[] = " mtr_status = '".$mtr2_status."' ";
 // 최종 WHERE 생성
 if ($where)
     $sql_search = ' WHERE '.implode(' AND ', $where);
@@ -51,11 +53,12 @@ if (!$sst2) {
 
 $sql_order = " ORDER BY {$sst} {$sod} {$sst2} {$sod2} ";
 
-$sql = " select count(*) as cnt {$sql_common} {$sql_search} ";
+$sql = " select count(DISTINCT mtr.bom_idx) as cnt {$sql_common} {$sql_search} {$sql_order} ";
+// print_r3($sql);
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
-$rows = 100;//$config['cf_page_rows'];
+$rows = 15;//$config['cf_page_rows'];
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
@@ -64,7 +67,7 @@ $sql = "SELECT * ,COUNT(*) AS cnt
         {$sql_common} {$sql_search} {$sql_group} {$sql_order}
         LIMIT {$from_record}, {$rows}
 ";
-//print_r3($sql);
+// print_r3($sql);
 $result = sql_query($sql,1);
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
@@ -88,6 +91,8 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
     display: unset;
     margin: -8px 0 0 -8px;
 }
+.loading{display:inline-block;}
+.loading_hide{display:none;}
 label[for="mtr_input2_date"]{position:relative;}
 label[for="mtr_input2_date"] i{position:absolute;top:-10px;right:0px;z-index:2;cursor:pointer;}
 .slt_label{position:relative;}
@@ -151,9 +156,9 @@ echo $g5['container_sub_title'];
     </form>
 </div>
 <div class="local_desc01 local_desc" style="display:no ne;">
-    <p>새로운 자재를 등록하는 페이지입니다.</p>
-    <p><b style="color:skyblue;">엑셀파일</b>로 등록할때는 <b style="color:red;">최초에 한 번만 등록할 수 있으니</b> 신중하게 작성해서 등록해 주시기 바랍니다.</p>
-    <p>엑셀파일에 의한 최초 등록후 재고품목의 <b style="color:skyblue">추가등록</b> 및 <b style="color:red">삭제작업</b>은 [<b style="color:orange">자재재고관리</b>] 페이지상에서 진행해 주세요.</p>
+    <p>새로운 자재를 품목별로 재고갯수를 확인하는 페이지입니다. [등록/삭제]처리도 할 수 있습니다.</p>
+    <p>등록된 자재를 삭제할 경우 자재상품을 선택하시고, 삭제할 수량만 입력하신후 [자재삭제]를 클릭해 주세요.</p>
+    <p>자재삭제시 날짜와 차수는 상관없이 가장 먼전 등록된 순서로 삭제가 됩니다.</p>
 </div>
 
 <script>
@@ -225,10 +230,10 @@ $('.data_blank').on('click',function(e){
 </div>
 
 <div class="btn_fixed_top">
-    <?php if ($is_amdin){ //(!auth_check($auth[$sub_menu],'d')) { ?>
+    <?php if ($member['mb_level'] == 10){ //(!auth_check($auth[$sub_menu],'w')) { ?>
        <a href="javascript:" id="btn_excel_upload" class="btn btn_02" style="margin-right:50px;">엑셀등록</a>
     <?php } ?>
-    <?php if ($is_amdin){ //(!auth_check($auth[$sub_menu],'w')) { ?>
+    <?php if ($member['mb_level'] == 10){ //(!auth_check($auth[$sub_menu],'w')) { ?>
     <input type="submit" name="act_button2" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
     <input type="submit" name="act_button2" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
     <!--
@@ -245,6 +250,7 @@ $('.data_blank').on('click',function(e){
 
 <div id="modal01" title="엑셀 파일 업로드" style="display:none;">
     <form name="form02" id="form02" action="./material_excel_upload.php" onsubmit="return form02_submit(this);" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="file_name" value="<?=$g5['file_name']?>">
         <table>
         <tbody>
         <tr>
@@ -263,6 +269,10 @@ $('.data_blank').on('click',function(e){
         <tr>
             <td style="padding:15px 0;">
                 <button type="submit" class="btn btn_01">확인</button>
+                <p class="loading loading_hide" style="padding-left:10px;">
+                    <img src="<?=G5_USER_ADMIN_IMG_URL?>/loading_small.gif">
+                    <b style="color:yellow;padding-left:10px;">실행중...</b>
+                </p>
             </td>
         </tr>
         </tbody>
@@ -428,6 +438,10 @@ function form02_submit(f) {
         return false;
     }
 
+    if(!confirm("대량데이터처리이므로 시간이 1분이상 소요될수 있습니다.\n실행하는 동안 창을 닫거나, 다른버튼을 클릭해서는 안됩니다.\n작업을 진행하시겠습니까?")){
+        return false;
+    }
+    $('.loading').removeClass('loading_hide');
     return true;
 }
 

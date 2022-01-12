@@ -11,7 +11,6 @@ include_once('./_top_menu_itm.php');
 
 $sql_common = " FROM {$g5['item_table']} AS itm
                     LEFT JOIN {$g5['bom_table']} AS bom ON itm.bom_idx = bom.bom_idx
-                    LEFT JOIN {$g5['bom_category_table']} AS bct ON bom.bct_id = bct.bct_id
                     LEFT JOIN {$g5['order_out_practice_table']} AS oop ON itm.oop_idx = oop.oop_idx
                     LEFT JOIN {$g5['order_practice_table']} AS orp ON oop.orp_idx = orp.orp_idx
 ";
@@ -60,21 +59,14 @@ if($itm_delivery){
 if ($where)
     $sql_search = ' WHERE '.implode(' AND ', $where);
 
-$sql_group = " GROUP BY itm.bom_idx, itm_date ";
-
 if (!$sst) {
-    $sst = "itm_date";
+    $sst = "itm_reg_dt";
     $sod = "desc";
-}
-
-if (!$sst2) {
-    $sst2 = ", itm_reg_dt";
-    $sod2 = "desc";
 }
 
 $sql_order = " ORDER BY {$sst} {$sod} ";
 
-$sql = " SELECT COUNT(DISTINCT itm.bom_idx, itm_date) as cnt {$sql_common} {$sql_search} ";
+$sql = " select count(*) as cnt {$sql_common} {$sql_search} ";
 $row = sql_fetch($sql,1);
 $total_count = $row['cnt'];
 // echo $total_count.'<br>';
@@ -84,8 +76,8 @@ $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
-$sql = "SELECT *,COUNT(*) AS cnt
-        {$sql_common} {$sql_search} {$sql_group}  {$sql_order}
+$sql = "SELECT *
+        {$sql_common} {$sql_search} {$sql_order}
         LIMIT {$from_record}, {$rows}
 ";
 // print_r3($sql);
@@ -211,8 +203,6 @@ $('.data_blank').on('click',function(e){
 <form name="form01" id="form01" action="./item_list_update.php" onsubmit="return form01_submit(this);" method="post">
 <input type="hidden" name="sst" value="<?php echo $sst ?>">
 <input type="hidden" name="sod" value="<?php echo $sod ?>">
-<input type="hidden" name="sst2" value="<?php echo $sst2 ?>">
-<input type="hidden" name="sod2" value="<?php echo $sod2 ?>">
 <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
 <input type="hidden" name="stx" value="<?php echo $stx ?>">
 <input type="hidden" name="page" value="<?php echo $page ?>">
@@ -223,13 +213,24 @@ $('.data_blank').on('click',function(e){
     <caption><?php echo $g5['title']; ?> 목록</caption>
     <thead>
     <tr>
-        <th scope="col">통계일</th>
-        <th scope="col">카테고리</th>
+        <th scope="col" id="itm_list_chk">
+            <label for="chkall" class="sound_only">전체</label>
+            <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
+        </th>
+        <th scope="col">ID</th>
         <th scope="col"><?php echo subject_sort_link('itm_name') ?>품명</a></th>
         <th scope="col">파트넘버</th>
+        <th scope="col">통계일</th>
+        <th scope="col">설비라인</th>
+        <th scope="col">시간구간</th>
+        <th scope="col">바코드</th>
         <th scope="col">외부라벨</th>
+        <th scope="col">PLT</th>
+        <th scope="col">등록일시</th>
+        <th scope="col">갱신일시</th>
+        <th scope="col">출하여부</th>
         <th scope="col">상태</th>
-        <th scope="col">갯수</th>
+        <th scope="col">관리</th>
     </tr>
     <tr>
     </tr>
@@ -238,15 +239,6 @@ $('.data_blank').on('click',function(e){
     <?php
     for ($i=0; $row=sql_fetch_array($result); $i++) {
         // print_r2($row);
-        //print_r3($row);
-        if($row['bct_id']){
-            $cat_tree = category_tree_array($row['bct_id']);
-            $row['bct_name_tree'] = '';
-            for($k=0;$k<count($cat_tree);$k++){
-                $cat_str = sql_fetch(" SELECT bct_name FROM {$g5['bom_category_table']} WHERE bct_id = '{$cat_tree[$k]}' ");
-                $row['bct_name_tree'] .= ($k == 0) ? $cat_str['bct_name'] : ' > '.$cat_str['bct_name'];
-            }
-        }
 
         $s_mod = '<a href="./item_form.php?'.$qstr.'&amp;w=u&amp;itm_idx='.$row['itm_idx'].'" class="btn btn_03">수정</a>';
 
@@ -271,22 +263,42 @@ $('.data_blank').on('click',function(e){
     ?>
 
     <tr class="<?php echo $bg; ?>" tr_id="<?php echo $row['itm_idx'] ?>">
-        <td class="td_itm_date"><?=$row['itm_date']?></td><!-- 통계일 -->
-        <td class="td_itm_cat" style="text-align:left;color:orange;">
-            <?php if($row['bct_name_tree']){ ?>
-            <span class="sp_cat"><?=$row['bct_name_tree']?></span>
-            <?php } ?>    
-        </td><!-- 카테고리 -->
+        <td class="td_chk">
+            <input type="hidden" name="itm_idx[<?php echo $row['itm_idx'] ?>]" value="<?php echo $row['itm_idx'] ?>" id="itm_idx_<?php echo $row['itm_idx'] ?>">
+            <label for="chk_<?php echo $i; ?>" class="sound_only"><?php echo get_text($row['itm_name']); ?> <?php echo get_text($row['itm_nick']); ?>님</label>
+            <input type="checkbox" name="chk[]" value="<?php echo $row['itm_idx'] ?>" id="chk_<?php echo $i ?>">
+            <div class="chkdiv_btn" chk_no="<?=$i?>"></div>
+        </td>
+        <td class="td_itm_idx"><?=$row['itm_idx']?></td><!-- ID -->
         <td class="td_itm_name"><?=$row['itm_name']?></td><!-- 품명 -->
         <td class="td_itm_part_no"><?=$row['bom_part_no']?></td><!-- 파트넘버 -->
+        <td class="td_itm_date"><?=$row['itm_date']?></td><!-- 통계일 -->
+        <td class="td_itm_line"><?=$g5['line_name'][$row['trm_idx_line']]?></td><!-- 설비라인 -->
+        <td class="td_itm_shift"><?=$row['itm_shift']?></td><!-- 작업구간 -->
+        <td class="td_itm_barcode" style="text-align:left;"><?=$row['itm_barcode']?></td><!-- 바코드 -->
         <td class="td_itm_com_barcode"><?=$row['itm_com_barcode']?></td><!-- 외부라벨 -->
-        <td class="td_itm_status"><?php echo $g5['set_itm_status'][$row['itm_status']]?></td><!-- 상태 -->
-        <td class="td_count"><?=$row['cnt']?></td><!-- 갯수 -->
+        <td class="td_itm_plt"><?=$row['itm_plt']?></td><!-- PLT -->
+        <!-- <td class="td_itm_history"><?php ;//implode("<br>",$row['itm_history_array'])?></td> -->
+        <td class="td_itm_reg_dt"><?=substr($row['itm_reg_dt'],0,19)?></td><!-- 등록일시 -->
+        <td class="td_itm_update_dt"><?=substr($row['itm_update_dt'],0,19)?></td><!-- 등록일시 -->
+        <td class="td_itm_delivery">
+            <?php
+                echo ($row['itm_delivery']) ? '<span style="color:skyblue;">출하</span>' : '';
+            ?>
+        </td>
+        <td class="td_itm_status td_itm_status_<?=$row['itm_idx']?>">
+            <input type="hidden" name="itm_status[<?php echo $row['itm_idx'] ?>]" class="itm_status_<?php echo $row['itm_idx'] ?>" value="<?php echo $row['itm_status']?>">
+            <input type="text" value="<?php echo $g5['set_itm_status'][$row['itm_status']]?>" readonly class="tbl_input readonly itm_status_name_<?php echo $row['itm_idx'] ?>" style="width:170px;text-align:center;">
+        </td><!-- 상태 -->
+        <td class="td_mng">
+            <?=($row['itm_type']!='material')?$s_bom:''?><!-- 자재가 아닌 경우만 BOM 버튼 -->
+			<?=$s_mod?>
+		</td>
     </tr>
     <?php
     }
     if ($i == 0)
-        echo "<tr><td colspan='7' class=\"empty_table\">자료가 없습니다.</td></tr>";
+        echo "<tr><td colspan='10' class=\"empty_table\">자료가 없습니다.</td></tr>";
     ?>
     </tbody>
     </table>
