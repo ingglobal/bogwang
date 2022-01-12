@@ -66,11 +66,11 @@ include_once('./_top.kpi.php');
                                     , 'total' AS mmg_name
                                     , 0 AS depth
                                     , 0 AS mmg_left
-                                    , SUM( dta_value ) AS output_sum
-                                    , SUM( CASE WHEN dta_defect = 1 THEN dta_value ELSE 0 END ) AS output_defect
-                                FROM {$g5['data_output_sum_table']}
-                                WHERE dta_date >= '".$st_date."'
-                                    AND dta_date <= '".$en_date."'
+                                    , SUM( itm_count ) AS output_sum
+                                    , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ng_array'])."') THEN itm_count ELSE 0 END ) AS output_defect
+                                FROM {$g5['item_sum_table']}
+                                WHERE itm_date >= '".$st_date."'
+                                    AND itm_date <= '".$en_date."'
                                     AND com_idx='".$com_idx."'
                                     {$sql_mmses}
                             
@@ -116,11 +116,11 @@ include_once('./_top.kpi.php');
                                             (
                                             SELECT 
                                                 mmg_idx AS mmg_idx_group
-                                                , SUM( dta_value ) AS output_sum
-                                                , SUM( CASE WHEN dta_defect = 1 THEN dta_value ELSE 0 END ) AS output_defect
-                                            FROM {$g5['data_output_sum_table']}
-                                            WHERE dta_date >= '".$st_date."'
-                                                AND dta_date <= '".$en_date."'
+                                                , SUM( itm_count ) AS output_sum
+                                                , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ng_array'])."') THEN itm_count ELSE 0 END ) AS output_defect
+                                            FROM {$g5['item_sum_table']}
+                                            WHERE itm_date >= '".$st_date."'
+                                                AND itm_date <= '".$en_date."'
                                                 AND com_idx='".$com_idx."'
                                                 {$sql_mmses}
                                             GROUP BY mmg_idx

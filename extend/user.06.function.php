@@ -102,7 +102,7 @@ function update_item_sum($arr) {
                     com_idx = '".$arr['com_idx']."'
                     , imp_idx = '".$arr['imp_idx']."'
                     , mms_idx = '".$arr['mms_idx']."'
-                    , mmg_idx = '".$arr['mmg_idx']."'
+                    , mmg_idx = '14'
                     , shf_idx = '".$arr['shf_idx']."'
                     , itm_shift = '".$arr['itm_shift']."'
                     , trm_idx_operation = '".$arr['trm_idx_operation']."'
