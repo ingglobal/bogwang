@@ -27,19 +27,13 @@ if($act_button == '자재입고'){
     sql_query($sql,1);
 }
 else if($act_button == '자재삭제'){
-    $sql = "SELECT * FROM {$g5['material_table']}
-            WHERE com_idx = '{$_SESSION['ss_com_idx']}' AND bom_part_no = '{$bom_part_no}' AND mtr_input_date = '{$mtr_input_date}' AND mtr_type = '{$bom_type}' AND mtr_status = 'stock' ORDER BY mtr_idx LIMIT {$counts} ";
-    $rs = sql_query($sql,1);
-    print_r2($rs);
-    for($i=0; $row=sql_fetch_array($rs);$i++){
-        //자재들 상태 전체 변경
-        $ar['mtr_status'] = 'trash';
-        $ar['mtr_idx'] = $row['mtr_idx'];
-        print_r2($ar);
-        // update_mtr_status($ar);
-        // unset($ar);
-    }
+    $ar['com_idx'] = $_SESSION['ss_com_idx'];
+    $ar['bom_part_no'] = $bom_part_no;
+    $ar['mtr_status'] = 'trash';
+    $ar['count'] = $counts;
+    // print_r2($ar);
+    update_mtr_multi_status($ar);
 }
-exit;
+// exit;
 $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 넘겨야 할 변수들
 goto_url('./material_list.php?'.$qstr);

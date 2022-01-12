@@ -144,7 +144,7 @@ echo $g5['container_sub_title'];
             <?=$g5['set_mtr_times_value_options']?>
         </select>
         <label for="counts" id="counts">
-            <input type="text" name="counts" required class="frm_input required" placeholder="자재입고갯수" value="" style="text-align:right;width:100px;" onclick="javascript:chk_Number(this)">
+            <input type="text" name="counts" required class="frm_input required" placeholder="자재갯수" value="" style="text-align:right;width:100px;" onclick="javascript:chk_Number(this)">
         </label>
         <input type="submit" name="act_button" class="btn_input btn btn_01" onclick="document.pressed=this.value" value="자재입고">
         <input type="submit" name="act_button" class="btn_input btn btn_04" onclick="document.pressed=this.value" value="자재삭제">

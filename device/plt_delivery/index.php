@@ -1,5 +1,5 @@
 <?php
-// 크롬 요소검사 열고 확인하면 되겠습니다. 
+// 크롬 요소검사 열고 확인하면 되겠습니다.
 // print_r2 안 쓰고 print_r로 확인하는 게 좋습니다.
 header('Content-Type: application/json; charset=UTF-8');
 include_once('./_common.php');
@@ -87,9 +87,9 @@ else if($getData[0]['plt_barcode']) {
             $plt2 = sql_fetch($sql,1);
             // 정보 업데이트, if part_no is also same, All you need is just update.
             if($plt2['plt_idx']) {
-                $sql = "UPDATE {$table_name} SET 
+                $sql = "UPDATE {$table_name} SET
                             {$sql_common}
-                            , plt_history = CONCAT(\'plt_history,'\n".$arr['plt_status']."|".G5_TIME_YMDHIS."\')
+                            , plt_history = CONCAT(plt_history,{$arr['plt_status']}|".G5_TIME_YMDHIS.")
                         WHERE plt_idx = '".$plt2['plt_idx']."'
                 ";
                 sql_query($sql,1);
@@ -105,10 +105,10 @@ else if($getData[0]['plt_barcode']) {
             }
             // 정보 입력, same pallet, new part_no
             else {
-                // 부모 idx 
+                // 부모 idx
                 $arr['plt_idx_parent'] = $plt['plt_idx'];
 
-                $sql = "INSERT INTO {$table_name} SET 
+                $sql = "INSERT INTO {$table_name} SET
                         {$sql_common}
                         , plt_idx_parent = '".$arr['plt_idx_parent']."'
                         , plt_history = '".$arr['plt_status']."|".$arr['plt_dt']."'
@@ -117,7 +117,7 @@ else if($getData[0]['plt_barcode']) {
                 sql_query($sql,1);
                 $plt_idx = sql_insert_id();
                 $result_arr['code'] = 200;
-                $result_arr['message'] = "Inserted OK!";        
+                $result_arr['message'] = "Inserted OK!";
             }
             // echo $sql.'<br>';
             $result_arr['plt_idx'] = $plt_idx;   // 고유번호
@@ -126,8 +126,8 @@ else if($getData[0]['plt_barcode']) {
         }
         // 정보 입력 (new pallet, new part_no)
         else {
-            
-            $sql = "INSERT INTO {$table_name} SET 
+
+            $sql = "INSERT INTO {$table_name} SET
                         {$sql_common}
                         , plt_history = '".$arr['plt_status']."|".$arr['plt_dt']."'
                         , plt_reg_dt = '".$arr['plt_dt']."'
@@ -139,7 +139,7 @@ else if($getData[0]['plt_barcode']) {
             sql_query(" UPDATE {$table_name} SET plt_idx_parent = '".$plt_idx."' WHERE plt_idx = '".$plt_idx."' ");
 
             $result_arr['code'] = 200;
-            $result_arr['message'] = "Inserted OK!";        
+            $result_arr['message'] = "Inserted OK!";
         }
         // echo $sql.'<br>';
         $result_arr['plt_idx'] = $plt_idx;   // 고유번호
@@ -158,7 +158,7 @@ else if($getData[0]['plt_barcode']) {
             $ar['plt_idx'] = $plt_idx;
             update_itm_delivery($ar);
             unset($ar);
-            
+
         }
 
     }   // // 취소가 아닌 경우

@@ -98,7 +98,7 @@ else if($getData[0]['plt_barcode']) {
 
                 $sql = "UPDATE {$g5['pallet_table']} SET
                             {$sql_common}
-                            , plt_history = CONCAT(\'plt_history,'\n".$arr['plt_status']."|".G5_TIME_YMDHIS."\')
+                            , plt_history = CONCAT(plt_history,{$arr['plt_status']}|".G5_TIME_YMDHIS.")
                         WHERE plt_idx = '".$plt2['plt_idx']."'
                 ";
                 sql_query($sql,1);

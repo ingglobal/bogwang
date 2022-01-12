@@ -206,6 +206,28 @@ function update_mtr_status($arr) {
 }
 }
 
+// item 상태 변경 함수 (material 상태도 함께 변경)
+if(!function_exists('update_mtr_multi_status')){
+    function update_mtr_multi_status($arr) {
+        global $g5;
+    
+        // 연결된 자재의 모든 상태값을 변경
+        $sql = " UPDATE {$g5['material_table']} SET
+                    mtr_status = '".$arr['mtr_status']."'
+                    , mtr_history = CONCAT(mtr_history,'\n".$arr['mtr_status']."|".G5_TIME_YMDHIS."')
+                    , mtr_update_dt = '".G5_TIME_YMDHIS."'
+                WHERE com_idx = '".$arr['com_idx']."'
+                    AND bom_part_no = '".$arr['bom_part_no']."'
+                ORDER BY mtr_idx
+                LIMIT {$arr['count']}
+        ";
+        // echo $sql.'<br>';
+        sql_query($sql,1);
+    
+        return $arr['mtr_idx'];
+    }
+    }
+
 // 빠레트 출하 취소 함수
 if(!function_exists('pallet_item_init')){
 function pallet_item_init($arr) {
