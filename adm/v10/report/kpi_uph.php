@@ -154,7 +154,7 @@ for($j=0;$j<@sizeof($offwork);$j++){
 $sql_common = " FROM g5_1_item ";
 
 $where = array();
-$where[] = " mms_idx = '".$ser_mms_idx."' ";
+$where[] = " mms_idx = '".$ser_mms_idx."' AND itm_status IN ('ing','finish') ";
 
 if ($stx && $sfl) {
     switch ($sfl) {
