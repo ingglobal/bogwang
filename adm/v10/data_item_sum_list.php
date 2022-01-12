@@ -90,6 +90,7 @@ $items1 = array(
     "itm_idx"=>array("번호",0,0,1)
     ,"bom_idx"=>array("품명",0,0,0)
     ,"bom_part_no"=>array("파트번호",0,0,0)
+    ,"mms_idx"=>array("MMS_idx",0,0,0)
     ,"trm_idx_line"=>array("라인",0,0,0)
     ,"itm_shift"=>array("구간",0,0,0)
     ,"itm_price"=>array("단가",0,0,0)
