@@ -156,22 +156,6 @@ echo $g5['container_sub_title'];
     <p>엑셀파일에 의한 최초 등록후 재고품목의 <b style="color:skyblue">추가등록</b> 및 <b style="color:red">삭제작업</b>은 [<b style="color:orange">자재재고관리</b>] 페이지상에서 진행해 주세요.</p>
 </div>
 
-<div class="select_input">
-    <h3>선택목록 데이터일괄 입력</h3>
-    <p style="padding:30px 0 20px">
-        <label for="" class="slt_label">
-            <span>상태<i class="fa fa-times data_blank" aria-hidden="true"></i></span>
-            <select name="o_status" id="o_status">
-                <option value="">-선택-</option>
-                <?=$g5['set_mtr_status_options']?>
-                <?php if($is_admin){ ?>
-                <option value="trash">삭제</option>
-                <?php } ?>
-            </select>
-        </label>
-        <input type="button" id="slt_input" onclick="slet_input(document.getElementById('form01'));" value="선택항목 일괄입력" class="btn btn_02">
-    </p>
-</div>
 <script>
 $('.data_blank').on('click',function(e){
     e.preventDefault();
@@ -204,14 +188,10 @@ $('.data_blank').on('click',function(e){
     <caption><?php echo $g5['title']; ?> 목록</caption>
     <thead>
     <tr>
-        <th scope="col" id="mtr_list_chk">
-            <label for="chkall" class="sound_only">전체</label>
-            <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
-        </th>
         <th scope="col">입고일</th>
         <th scope="col">파트넘버</th>
         <th scope="col"><?php echo subject_sort_link('mtr_name') ?>품명</a></th>
-        <th scope="col">공급처</th>
+        <th scope="col">상태</th>
         <th scope="col">재고량</th>
     </tr>
     <tr>
@@ -229,32 +209,26 @@ $('.data_blank').on('click',function(e){
     ?>
 
     <tr class="<?php echo $bg; ?>" tr_id="<?php echo $row['mtr_idx'] ?>">
-        <td class="td_chk">
-            <input type="hidden" name="mtr_idx[<?php echo $row['mtr_idx'] ?>]" value="<?php echo $row['mtr_idx'] ?>" id="mtr_idx_<?php echo $i ?>">
-            <label for="chk_<?php echo $i; ?>" class="sound_only"><?php echo get_text($row['mtr_name']); ?> <?php echo get_text($row['mtr_nick']); ?>님</label>
-            <input type="checkbox" name="chk[]" value="<?php echo $row['mtr_idx'] ?>" id="chk_<?php echo $i ?>">
-            <div class="chkdiv_btn" chk_no="<?=$i?>"></div>
-        </td>
         <td class="td_mtr_input_date"><?=$row['mtr_input_date']?></td><!-- 입고일 -->
         <td class="td_mtr_part_no"><?=$row['bom_part_no']?></td><!-- 파트넘버 -->
         <td class="td_mtr_name"><?=$row['mtr_name']?></td><!-- 품명 -->
-        <td class="td_mtr_provider"><?=$row['com_name']?></td><!-- 공급처명 -->
+        <td class="td_mtr_status"><?=$g5['set_mtr_status'][$row['mtr_status']]?></td><!-- 공급처명 -->
         <td class="td_cnt"><?=$row['cnt']?></td>
     </tr>
     <?php
     }
     if ($i == 0)
-        echo "<tr><td colspan='9' class=\"empty_table\">자료가 없습니다.</td></tr>";
+        echo "<tr><td colspan='5' class=\"empty_table\">자료가 없습니다.</td></tr>";
     ?>
     </tbody>
     </table>
 </div>
 
 <div class="btn_fixed_top">
-    <?php if (!auth_check($auth[$sub_menu],'d')) { ?>
+    <?php if ($is_amdin){ //(!auth_check($auth[$sub_menu],'d')) { ?>
        <a href="javascript:" id="btn_excel_upload" class="btn btn_02" style="margin-right:50px;">엑셀등록</a>
     <?php } ?>
-    <?php if (!auth_check($auth[$sub_menu],'w')) { ?>
+    <?php if ($is_amdin){ //(!auth_check($auth[$sub_menu],'w')) { ?>
     <input type="submit" name="act_button2" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
     <input type="submit" name="act_button2" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
     <!--

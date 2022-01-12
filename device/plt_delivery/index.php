@@ -89,7 +89,7 @@ else if($getData[0]['plt_barcode']) {
             if($plt2['plt_idx']) {
                 $sql = "UPDATE {$table_name} SET 
                             {$sql_common}
-                            , plt_history = CONCAT(plt_history,'\n".$arr['plt_status']."|".G5_TIME_YMDHIS."')
+                            , plt_history = CONCAT(\'plt_history,'\n".$arr['plt_status']."|".G5_TIME_YMDHIS."\')
                         WHERE plt_idx = '".$plt2['plt_idx']."'
                 ";
                 sql_query($sql,1);
@@ -111,7 +111,7 @@ else if($getData[0]['plt_barcode']) {
                 $sql = "INSERT INTO {$table_name} SET 
                         {$sql_common}
                         , plt_idx_parent = '".$arr['plt_idx_parent']."'
-                        , plt_history = ".$arr['plt_status']."|".$arr['plt_dt']."'
+                        , plt_history = '".$arr['plt_status']."|".$arr['plt_dt']."'
                         , plt_reg_dt = '".$arr['plt_dt']."'
                 ";
                 sql_query($sql,1);
