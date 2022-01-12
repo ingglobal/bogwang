@@ -35,25 +35,9 @@ if ($stx != "") {
     }
 }
 
-if($shift){
-    $where[] = " itm_shift = '".$shift."' ";
-    $qstr .= $qstr.'&itm_shift='.$shift;
-}
-if($itm_static_date){
-    $where[] = " itm_date = '".$itm_static_date."' ";
-    $qstr .= $qstr.'&itm_date='.$itm_static_date;
-}
-if($itm2_status){
-    $where[] = " itm_status = '".$itm2_status."' ";
-    $qstr .= $qstr.'&itm_status='.$itms_status;
-}
-if($trm_idx_location){
-    $where[] = " trm_idx_location = '".$trm_idx_location."' ";
-    $qstr .= $qstr.'&trm_idx_location='.$trm_idx_location;
-}
-if($itm_delivery){
-    $where[] = " itm_delivery = '".$itm_delivery."' ";
-    $qstr .= $qstr.'&itm_delivery='.$itm_delivery;
+if($itm_date){
+    $where[] = " itm_date = '".$itm_date."' ";
+    $qstr .= $qstr.'&itm_date='.$itm_date;
 }
 
 // 최종 WHERE 생성
@@ -79,7 +63,7 @@ $row = sql_fetch($sql,1);
 $total_count = $row['cnt'];
 // echo $total_count.'<br>';
 
-$rows = $config['cf_page_rows'];
+$rows = 20;//$config['cf_page_rows'];
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
@@ -112,9 +96,8 @@ $qstr .= '&sca='.$sca.'&ser_cod_type='.$ser_cod_type; // 추가로 확장해서 
 .td_itm_history {width:190px !important;}
 label[for="itm_static_date"]{position:relative;}
 label[for="itm_static_date"] i{position:absolute;top:-10px;right:0px;z-index:2;cursor:pointer;}
-.slt_label{position:relative;}
-.slt_label span{position:absolute;top:-23px;left:0px;z-index:2;}
-.slt_label .data_blank{position:absolute;top:3px;right:-18px;z-index:2;font-size:1.1em;cursor:pointer;}
+.slt_label{position:relative;display:inline-block;}
+.slt_label i{position:absolute;top:-7px;right:0px;z-index:2;}
 </style>
 
 <div class="local_ov01 local_ov">
@@ -132,32 +115,12 @@ echo $g5['container_sub_title'];
 </select>
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
-<!--select name="shift" id="shift">
-    <option value="">::작업구간::</option>
-    <?php ;//$g5['set_itm_shift2_value_options']?>
-</select-->
-<select name="trm_idx_location" id="trm_idx_location">
-    <option value="">::라인선택::</option>
-    <option value="1">1라인</option>
-    <option value="2">2라인</option>
-    <option value="3">3라인</option>
-    <option value="4">4라인</option>
-</select>
-<select name="itm2_status" id="itm2_status">
-    <option value="">::상태선택::</option>
-    <?=$g5['set_itm_status_value_options']?>
-</select>
-<select name="itm_delivery" id="itm_delivery">
-    <option value="">::출하여부::</option>
-    <option value="1">출하상태</option>
-    <option value="0">재고상태</option>
-</select>
 <?php
-$itm_static_date = ($itm_static_date) ? $itm_static_date : G5_TIME_YMD;
+$itm_date = ($itm_date) ? $itm_date : G5_TIME_YMD;
 ?>
-<label for="itm_static_date"><strong class="sound_only">입고일 필수</strong>
+<label for="itm_date" class="slt_label"><strong class="sound_only">통계일 필수</strong>
 <i class="fa fa-times" aria-hidden="true"></i>
-<input type="text" name="itm_static_date" value="<?php echo $itm_static_date ?>" placeholder="통계일" id="itm_static_date" readonly class="frm_input readonly" style="width:80px;">
+<input type="text" name="itm_date" value="<?php echo $itm_date ?>" placeholder="통계일" id="itm_date" readonly class="frm_input readonly" style="width:80px;">
 </label>
 <script>
 <?php
@@ -171,26 +134,10 @@ $('#itm2_status').val('<?=$itm2_status?>');
 
 </form>
 
-<div class="local_desc01 local_desc" style="display:none;">
-    <p>새로운 고객을 등록</p>
+<div class="local_desc01 local_desc" style="display:no ne;">
+    <p>생산일에 따른 완재품별 재고조회 페이지입니다.</p>
 </div>
 
-<div class="select_input">
-    <h3>선택목록 데이터일괄 입력</h3>
-    <p style="padding:30px 0 20px">
-        <label for="" class="slt_label">
-            <span>상태<i class="fa fa-times data_blank" aria-hidden="true"></i></span>
-            <select name="o_status" id="o_status">
-                <option value="">-선택-</option>
-                <?=$g5['set_itm_status_options']?>
-                <?php if($is_admin){ ?>
-                <option value="trash">삭제</option>
-                <?php } ?>
-            </select>
-        </label>
-        <input type="button" id="slt_input" onclick="slet_input(document.getElementById('form01'));" value="선택항목 일괄입력" class="btn btn_02">
-    </p>
-</div>
 <script>
 $('.data_blank').on('click',function(e){
     e.preventDefault();
@@ -228,7 +175,6 @@ $('.data_blank').on('click',function(e){
         <th scope="col"><?php echo subject_sort_link('itm_name') ?>품명</a></th>
         <th scope="col">파트넘버</th>
         <th scope="col">외부라벨</th>
-        <th scope="col">상태</th>
         <th scope="col">갯수</th>
     </tr>
     <tr>
@@ -280,13 +226,12 @@ $('.data_blank').on('click',function(e){
         <td class="td_itm_name"><?=$row['itm_name']?></td><!-- 품명 -->
         <td class="td_itm_part_no"><?=$row['bom_part_no']?></td><!-- 파트넘버 -->
         <td class="td_itm_com_barcode"><?=$row['itm_com_barcode']?></td><!-- 외부라벨 -->
-        <td class="td_itm_status"><?php echo $g5['set_itm_status'][$row['itm_status']]?></td><!-- 상태 -->
         <td class="td_count"><?=$row['cnt']?></td><!-- 갯수 -->
     </tr>
     <?php
     }
     if ($i == 0)
-        echo "<tr><td colspan='7' class=\"empty_table\">자료가 없습니다.</td></tr>";
+        echo "<tr><td colspan='6' class=\"empty_table\">자료가 없습니다.</td></tr>";
     ?>
     </tbody>
     </table>
@@ -300,13 +245,13 @@ $('.data_blank').on('click',function(e){
        <a href="<?=G5_URL?>/device/plt_label/form.php" target="_blank" class="btn btn_02">빠레트라벨링</a>
        <a href="<?=G5_URL?>/device/plt_delivery/form.php" target="_blank" class="btn btn_02" style="margin-right:200px;">출하</a>
     <?php } ?>
-    <?php if (!auth_check($auth[$sub_menu],'w')) { ?>
-    <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
+    <?php ;//if (!auth_check($auth[$sub_menu],'w')) { ?>
     <?php if($is_admin){ ?>
+    <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
     <a href="./item_form.php" id="member_add" class="btn btn_01">추가하기</a>
     <?php } ?>
-    <?php } ?>
+    <?php //} ?>
 </div>
 
 </form>
@@ -344,7 +289,7 @@ $('.data_blank').on('click',function(e){
 <script>
 $("input[name*=_date]").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-99:c+99" });
 
-$('label[for="itm_static_date"] i').on('click',function(){
+$('label[for="itm_date"] i').on('click',function(){
     $(this).siblings('input').val('');
 });
 
@@ -368,101 +313,6 @@ $(".tbl_head01 tbody tr").on({
         $('tr[tr_id='+$(this).attr('tr_id')+']').find('td').css('background','unset');
     }
 });
-
-
-
-
-
-// 가격 입력 쉼표 처리
-$(document).on( 'keyup','input[name^=itm_price], input[name^=itm_count], input[name^=itm_lead_time]',function(e) {
-    if(!isNaN($(this).val().replace(/,/g,'')))
-        $(this).val( thousand_comma( $(this).val().replace(/,/g,'') ) );
-});
-
-// 숫자만 입력
-function chk_Number(object){
-    $(object).keyup(function(){
-        $(this).val($(this).val().replace(/[^0-9|-]/g,""));
-    });
-}
-
-var first_no = '';
-var second_no = '';
-$('.chkdiv_btn').on('click',function(e){
-    //시프트키 또는 알트키와 클릭을 같이 눌렀을 경우
-    if(e.shiftKey || e.altKey){
-        //first_no정보가 없으면 0번부터 shift+click한 체크까지 선택을 한다.
-        if(first_no == ''){
-            first_no = 0;
-        }
-        //first_no정보가 있으면 first_no부터 second_no까지 체크를 선택한다.
-        else{
-            ;
-        }
-        second_no = Number($(this).attr('chk_no'));
-        var key_type = (e.shiftKey) ? 'shift' : 'alt';
-        //multi_chk(first_no,second_no,key_type);
-        (function(first_no,second_no,key_type){
-            //console.log(first_no+','+second_no+','+key_type+':func');return;
-            var start_no = (first_no < second_no) ? first_no : second_no;
-            var end_no = (first_no < second_no) ? second_no : first_no;
-            //console.log(start_no+','+end_no);return;
-            for(var i=start_no;i<=end_no;i++){
-                if(key_type == 'shift')
-                    $('.chkdiv_btn[chk_no="'+i+'"]').siblings('input[type="checkbox"]').attr('checked',true);
-                else
-                    $('.chkdiv_btn[chk_no="'+i+'"]').siblings('input[type="checkbox"]').attr('checked',false);
-            }
-
-            first_no = '';
-            second_no = '';
-        })(first_no,second_no,key_type);
-    }
-    //클릭만했을 경우
-    else{
-        //이미 체크되어 있었던 경우 체크를 해제하고 first_no,second_no를 초기화해라
-        if($(this).siblings('input[type="checkbox"]').is(":checked")){
-            first_no = '';
-            second_no = '';
-            $(this).siblings('input[type="checkbox"]').attr('checked',false);
-        }
-        //체크가 안되어 있는 경우 체크를 넣고 first_no에 해당 체크번호를 대입하고, second_no를 초기화한다.
-        else{
-            $(this).siblings('input[type="checkbox"]').attr('checked',true);
-            first_no = $(this).attr('chk_no');
-            second_no = '';
-        }
-    }
-});
-
-
-function slet_input(f){
-    var chk_count = 0;
-    var chk_idx = [];
-    //var dt_pattern = new RegExp("^(\d{4}-\d{2}-\d{2})$");
-    var dt_pattern = /^(\d{4}-\d{2}-\d{2})$/;
-    for(var i=0; i<f.length; i++){
-        if(f.elements[i].name == "chk[]" && f.elements[i].checked){
-            chk_idx.push(f.elements[i].value);
-            chk_count++;
-        }
-    }
-    if (!chk_count) {
-        alert("일괄입력할 출하목록을 하나 이상 선택하세요.");
-        return false;
-    }
-
-    var o_status = document.getElementById('o_status').value;
-    var o_status_name = $('#o_status').find('option[value="'+o_status+'"]').text();
-
-    for(var idx in chk_idx){
-        //console.log(idx);continue;
-        if(o_status){
-            $('.td_itm_status_'+chk_idx[idx]).find('input[type="hidden"]').val(o_status);
-            $('.td_itm_status_'+chk_idx[idx]).find('input[type="text"]').val(o_status_name);
-        }
-    }
-}
 
 
 function form01_submit(f)
