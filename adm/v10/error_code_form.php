@@ -108,12 +108,12 @@ include_once ('./_head.php');
 
 ?>
 <style>
-.towhom_wrapper {border:solid 1px #ddd;background:#f5f5f5;padding:10px;}
+.towhom_wrapper {border:solid 1px #333;background:#000;padding:10px;color:#fff;}
 .towhom_form {margin-top:1px;}
-.towhom_info {min-height:80px;border:solid 1px #ddd;background:#fff;padding:10px;margin-top:5px;}
+.towhom_info {min-height:80px;border:solid 1px #555;background:#444;color:#fff;padding:10px;margin-top:5px;}
 .set_send_type {margin-right:5px;}
 .set_send_type input {margin-right:4px;}
-label[disabled] {color:#ddd;}
+label[disabled] {color:#fff;}
 </style>
 
 <form name="form01" id="form01" action="./<?=$g5['file_name']?>_update.php" onsubmit="return form01_submit(this);" method="post" enctype="multipart/form-data">
@@ -280,9 +280,9 @@ label[disabled] {color:#ddd;}
                     <input type="text" name="mb_role" class="frm_input" style="width:80px;" placeholder="직책">
                     <input type="text" name="mb_hp" class="frm_input" style="width:120px;" placeholder="휴대폰">
                     <input type="text" name="mb_email" class="frm_input" style="width:200px;" placeholder="이메일">
-                    <a href="javascript:" class="btn btn_02 btn_mb_report" style="height:33px;">추가</a>
-                    <a href="javascript:" class="btn btn_00 btn_mb_add float_right" style="height:33px;">일괄추가</a>
-                    <a href="javascript:" class="btn btn_02 btn_mb_del float_right" style="height:33px;margin-right:5px;">전체삭제</a>
+                    <a href="javascript:" class="btn btn_02 btn_mb_report" style="height:26px;line-height:26px;">추가</a>
+                    <a href="javascript:" class="btn btn_00 btn_mb_add float_right" style="height:26px;line-height:26px;">일괄추가</a>
+                    <a href="javascript:" class="btn btn_02 btn_mb_del float_right" style="height:26px;line-height:26px;margin-right:5px;">전체삭제</a>
                 </div>
                 <div class="towhom_info">
                     <ul>
