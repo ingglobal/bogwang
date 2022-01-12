@@ -880,7 +880,7 @@ include_once('./_top.kpi.php');
                             <tr class="'.$row['tr_class'].'">
                                 <td class="text_left">'.$row['item_name'].'</td>
                                 <td class="text_right pr_5">'.number_format($row['target']).'</td><!-- 목표 -->
-                                <td class="text_right pr_5">'.number_format($row['output_total']).'</td><!-- 생산 -->
+                                <td class="text_right pr_5">'.number_format($row['output_total']).'</td><!-- 생산 -->
                                 <td class="text_right pr_5">'.number_format($row['output_good']).'</td><!-- 양호 -->
                                 <td class="text_right pr_5">'.number_format($row['output_defect']).'</td><!-- 불량 -->
                                 <td class="td_graph text_left pl_0">'.$row['graph_good'].$row['graph_defect'].$row['graph_target'].'</td>

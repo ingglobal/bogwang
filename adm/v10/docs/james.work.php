@@ -684,16 +684,21 @@ ORDER BY UNIX_TIMESTAMP(itm_reg_dt) ASC
 SELECT ROUND((45.5 + RAND() * 4)) 
 UPDATE `g5_1_item` SET mms_idx = ROUND((45.5 + RAND() * 4)) 
 
-// statistics 
-SELECT itm.com_idx, itm.imp_idx, itm.mms_idx, itm_date, itm_shift, trm_idx_line, oop.bom_idx, bom_part_no, itm_price, itm_status
+
+
+// statistics 통계 맞추는 쿼리 (최종)
+// g5_1_item_sum 테이블 비우고 실행해 주시면 됩니다.
+INSERT INTO g5_1_item_sum (com_idx, mms_idx, mmg_idx, itm_date, itm_shift, trm_idx_line, bom_idx, bom_part_no, itm_price, itm_status, itm_count)
+SELECT itm.com_idx, itm.mms_idx, 14, itm_date, itm_shift, trm_idx_line, oop.bom_idx, bom_part_no, itm_price, itm_status
 , COUNT(itm_idx) AS itm_count
 FROM g5_1_item AS itm
     LEFT JOIN g5_1_order_out_practice AS oop ON oop.oop_idx = itm.oop_idx
     LEFT JOIN g5_1_order_practice AS orp ON orp.orp_idx = oop.orp_idx
 WHERE itm_status NOT IN ('trash','delete')
     AND itm_date != '0000-00-00'
-GROUP BY itm_date, trm_idx_line, itm_shift, bom_idx, itm_status
+GROUP BY itm_date, itm.mms_idx, trm_idx_line, itm_shift, bom_idx, itm_status
 ORDER BY itm_date ASC, trm_idx_line, itm_shift, bom_idx, itm_status
+
 
 
 
@@ -704,3 +709,29 @@ FROM g5_1_data_output_sum
 WHERE mms_idx = '34' AND dta_date >= '2022-01-01' AND dta_date <= '2022-01-11'
 GROUP BY dta_mmi_no, dta_date 
 ORDER BY dta_mmi_no, dta_date
+
+
+
+SELECT (CASE WHEN n='1' THEN ymd_date ELSE 'total' END) AS item_name , SUM(output_total) AS output_total , MAX(output_total) AS output_max , SUM(output_good) AS output_good , SUM(output_defect) AS output_defect FROM ( SELECT ymd_date , SUM(output_total) AS output_total , SUM(output_good) AS output_good , SUM(output_defect) AS output_defect FROM ( ( SELECT CAST(ymd_date AS CHAR) AS ymd_date , 0 AS output_total , 0 AS output_good , 0 AS output_defect FROM g5_5_ymd AS ymd WHERE ymd_date BETWEEN '2022-01-01' AND '2022-01-12' ORDER BY ymd_date ) UNION ALL ( 
+  
+SELECT itm_date AS ymd_date 
+  , SUM(itm_count) AS output_total 
+  , SUM( CASE WHEN itm_status IN ('ing','finish') THEN itm_count ELSE 0 END ) AS output_good 
+  , SUM( CASE WHEN itm_status IN ('error_stitch','error_wrinkle','error_fabric','error_push','error_pollution','error_bottom','error_etc') THEN itm_count ELSE 0 END ) AS output_defect
+FROM g5_1_item_sum
+WHERE itm_date >= '2022-01-01' AND itm_date <= '2022-01-12' AND com_idx='11'
+GROUP BY ymd_date
+ORDER BY ymd_date
+
+
+SELECT 
+    itm_date AS ymd_date
+    , SUM(itm_count) AS output_total
+    , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ok_array'])."') THEN itm_count ELSE 0 END ) AS output_good
+    , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ng_array'])."') THEN itm_count ELSE 0 END ) AS output_defect
+    FROM {$g5['item_sum_table']}
+WHERE itm_date >= '".$st_date."' AND itm_date <= '".$en_date."'
+    AND com_idx='".$com_idx."'
+    {$sql_mmses}
+GROUP BY ymd_date
+ORDER BY ymd_date

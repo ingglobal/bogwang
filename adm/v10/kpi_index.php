@@ -74,15 +74,11 @@ $(function(e){
 
 <div class="tab_wrapper reports">
 	<ul class="tab_list">
-		<li>통합 보고서</li>
 	  	<li>M-ERP 보고서</li>
 	</ul>
 	<div class="content_wrapper">
-	  <div class="tab_content"><!--kpi.report.php-->
-		  <iframe id="frame_report" src="./kpi.empty.php?text=1" frameborder="0" scrolling="no"></iframe>
-	  </div>
 	  <div class="tab_content"><!--kpi.merp.php-->
-		  <iframe id="frame_merp" src="" frameborder="0" scrolling="no"></iframe>
+		  <iframe id="frame_merp" src="kpi.merp.php?<?=$qstr?>" frameborder="0" scrolling="no"></iframe>
 	  </div>
 	</div>
 </div>
@@ -225,7 +221,8 @@ $(function(e){
 		// $(".reports").champ({active_tab :frm_idx});
 	});
 	// default first tap, 
-	$('.tab_list li').eq(<?=$tab_idx?>).trigger('click');
+	// $('.tab_list li').eq(<?=$tab_idx?>).trigger('click');
+	frame_loading(0);
 
     $("input[name$=_date]").datepicker({
         closeText: "닫기",
@@ -314,7 +311,7 @@ function frame_loading(flag) {
 
 	// iframe loading.
 	display_loading('show');
-	frame_file = (tab_idx==0) ? 'report' : 'merp';
+	frame_file = (tab_idx==0) ? 'merp' : 'merp';
 	$('#frame_'+frame_file).attr('src', './kpi.'+frame_file+'.php?'+data_serialized);
 	//console.log('./kpi.'+frame_file+'.php?'+data_serialized);
 }
