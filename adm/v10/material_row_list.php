@@ -37,31 +37,24 @@ if($mtr2_status) $where[] = " mtr_status = '".$mtr2_status."' ";
 if ($where)
     $sql_search = ' WHERE '.implode(' AND ', $where);
 
-$sql_group = " GROUP BY mtr.bom_idx ";
-
 if (!$sst) {
-    $sst = "mtr_input_date";
+    $sst = "mtr_idx";
     $sod = "desc";
 }
 
-if (!$sst2) {
-    $sst2 = ", mtr.bom_idx";
-    $sod2 = "desc";
-}
-
-$sql_order = " ORDER BY {$sst} {$sod} {$sst2} {$sod2} ";
+$sql_order = " ORDER BY {$sst} {$sod} ";
 
 $sql = " select count(*) as cnt {$sql_common} {$sql_search} ";
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
-$rows = 100;//$config['cf_page_rows'];
+$rows = 1000;//$config['cf_page_rows'];
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
-$sql = "SELECT * ,COUNT(*) AS cnt
-        {$sql_common} {$sql_search} {$sql_group} {$sql_order}
+$sql = "SELECT *
+        {$sql_common} {$sql_search} {$sql_order}
         LIMIT {$from_record}, {$rows}
 ";
 //print_r3($sql);
@@ -111,6 +104,14 @@ echo $g5['container_sub_title'];
         </select>
         <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
         <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" class="frm_input">
+        <select name="times" id="times">
+            <option value="">::입고차수::</option>
+            <?=$g5['set_mtr_times_value_options']?>
+        </select>
+        <select name="mtr2_status" id="mtr2_status">
+            <option value="">-상태선택-</option>
+            <?=$g5['set_mtr_status_value_options']?>
+        </select>
         <?php
         $mtr_input2_date = ($mtr_input2_date) ? $mtr_input2_date : G5_TIME_YMD;
         ?>
@@ -192,8 +193,6 @@ $('.data_blank').on('click',function(e){
 <form name="form01" id="form01" action="./material_list_update.php" onsubmit="return form01_submit(this);" method="post">
 <input type="hidden" name="sst" value="<?php echo $sst ?>">
 <input type="hidden" name="sod" value="<?php echo $sod ?>">
-<input type="hidden" name="sst2" value="<?php echo $sst ?>">
-<input type="hidden" name="sod2" value="<?php echo $sod ?>">
 <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
 <input type="hidden" name="stx" value="<?php echo $stx ?>">
 <input type="hidden" name="page" value="<?php echo $page ?>">
@@ -208,11 +207,14 @@ $('.data_blank').on('click',function(e){
             <label for="chkall" class="sound_only">전체</label>
             <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)">
         </th>
-        <th scope="col">입고일</th>
-        <th scope="col">파트넘버</th>
+        <th scope="col">ID</th>
         <th scope="col"><?php echo subject_sort_link('mtr_name') ?>품명</a></th>
+        <th scope="col">파트넘버</th>
         <th scope="col">공급처</th>
-        <th scope="col">재고량</th>
+        <th scope="col">입고일</th>
+        <th scope="col">차수</th>
+        <th scope="col">상태</th>
+        <th scope="col">관리</th>
     </tr>
     <tr>
     </tr>
@@ -235,11 +237,20 @@ $('.data_blank').on('click',function(e){
             <input type="checkbox" name="chk[]" value="<?php echo $row['mtr_idx'] ?>" id="chk_<?php echo $i ?>">
             <div class="chkdiv_btn" chk_no="<?=$i?>"></div>
         </td>
-        <td class="td_mtr_input_date"><?=$row['mtr_input_date']?></td><!-- 입고일 -->
-        <td class="td_mtr_part_no"><?=$row['bom_part_no']?></td><!-- 파트넘버 -->
+        <td class="td_mtr_name"><?=$row['mtr_idx']?></td><!-- ID -->
         <td class="td_mtr_name"><?=$row['mtr_name']?></td><!-- 품명 -->
+        <td class="td_mtr_part_no"><?=$row['bom_part_no']?></td><!-- 파트넘버 -->
         <td class="td_mtr_provider"><?=$row['com_name']?></td><!-- 공급처명 -->
-        <td class="td_cnt"><?=$row['cnt']?></td>
+        <td class="td_mtr_input_date"><?=$row['mtr_input_date']?></td><!-- 입고일 -->
+        <td class="td_mtr_times"><?=$row['mtr_times']?></td><!-- 차수 -->
+        <td class="td_mtr_status td_mtr_status_<?=$row['mtr_idx']?>" style="width:180px;">
+            <input type="hidden" name="mtr_status[<?php echo $row['mtr_idx'] ?>]" class="mtr_status_<?php echo $row['mtr_idx'] ?>" value="<?php echo $row['mtr_status']?>">
+            <input type="text" value="<?php echo $g5['set_mtr_status'][$row['mtr_status']]?>" readonly class="tbl_input readonly mtr_status_name_<?php echo $row['mtr_idx'] ?>" style="width:170px;text-align:center;">
+        </td><!-- 상태 -->
+        <td class="td_mng">
+            <?=($row['mtr_type']!='material')?$s_bom:''?><!-- 자재가 아닌 경우만 BOM 버튼 -->
+			<?=$s_mod?>
+		</td>
     </tr>
     <?php
     }
