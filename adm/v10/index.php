@@ -80,7 +80,7 @@ add_javascript('<script src="'.G5_USER_URL.'/js/slick-1.8.1/slick/slick.min.js">
         <tr class="tr_title">
             <td colspan="2" class="td_center" title="<?=$row['mms_name']?>"><?=cut_str($row['mms_name'],7,'..')?></td>
         </tr>
-        <tr>
+        <tr style="display:none;">
             <td>생산기종</td>
             <td class="mms_mmi_no"><?=$row['item']['mmi_no']?></td>
         </tr>

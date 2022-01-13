@@ -269,9 +269,9 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
         <th scope="col">작업시간(분)</th>
         <th scope="col">공제시간(분)</th>
         <th scope="col">실작업시간(시)</th>
-        <th scope="col">비가동시간(시)</th>
-        <th scope="col">SPH(비가동포함)</th>
-        <th scope="col">SPH(비가동제외)</th>
+        <th scope="col" style="display:none;">비가동시간(시)</th>
+        <th scope="col" style="display:none;">SPH(비가동포함)</th>
+        <th scope="col">UPH</th>
     </tr>
     </thead>
     <tbody>
@@ -571,8 +571,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_USER_ADMIN_URL.'/js/timepicker
         <td><?=$row['workmin']?></td><!-- 작업시간(분) -->
         <td><?=$row['offworkmin']?></td><!-- 공제(분) -->
         <td><?=$row['workrealmin']?> (<?=$row['workhour']?>)</td><!-- 실작업시간(시) -->
-        <td><?=$row['downtimemin']?> (<?=$row['downtimehour']?>)</td><!-- 비가동시간(시) -->
-        <td><?=round($row['output_sum']/$row['workhour'],2)?></td><!-- SPH(비가동포함) -->
+        <td style="display:none;"><?=$row['downtimemin']?> (<?=$row['downtimehour']?>)</td><!-- 비가동시간(시) -->
+        <td style="display:none;"><?=round($row['output_sum']/$row['workhour'],2)?></td><!-- SPH(비가동포함) -->
         <td><?=round($row['output_sum']/($row['workhour']-$row['downtimehour']),2)?></td><!-- SPH(비가동제외) -->
     </tr>
     <?php
