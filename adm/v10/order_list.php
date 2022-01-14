@@ -279,6 +279,7 @@ $('.date_blank').on('click',function(e){
                     $create = 0;
                     $oro_add_url = '';
                     $oro_add_btn = '';
+                    $next_date = '';
                 }
             }
             else {
@@ -287,6 +288,7 @@ $('.date_blank').on('click',function(e){
                 $oro_btn = '<spn style="color:orange;">출하생성</span>';
                 $oro_add_url = '';
                 $oro_add_btn = '';
+                $next_date = '';
             }
         }
         else{
