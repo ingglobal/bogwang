@@ -295,6 +295,7 @@ $('.date_blank').on('click',function(e){
             $oro_btn = '<span>-</span>';
             $oro_add_url = '';
             $oro_add_btn = '';
+            $next_date = '';
         }
 
         //$s_item = '<a href="./order_item.php?'.$qstr.'&amp;ord_idx='.$row['ord_idx'].'" class="btn btn_03">상품</a>';
