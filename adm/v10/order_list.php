@@ -245,7 +245,14 @@ $('.date_blank').on('click',function(e){
         $oro_btn = '';
         
         //다음 레코드의 날짜 데이터를 호출
+        $next_sql = " SELECT ord_date FROM {$g5['order_table']} WHERE 
+                        ord_date > '{$row['ord_date']}' 
+                        AND ord_status NOT IN('delete','del','trash')
+                      ORDER BY ord_date LIMIT 1 
+        ";
+        /*
         $next_sql = " SELECT ord_date FROM {$g5['order_table']} WHERE ord_idx = ( SELECT MIN(ord_idx) FROM {$g5['order_table']} WHERE ord_idx > {$row['ord_idx']} ) ";
+        */
         //echo $next_sql;
         $next = sql_fetch($next_sql);
 
@@ -279,7 +286,6 @@ $('.date_blank').on('click',function(e){
                     $create = 0;
                     $oro_add_url = '';
                     $oro_add_btn = '';
-                    $next_date = '';
                 }
             }
             else {
@@ -288,7 +294,6 @@ $('.date_blank').on('click',function(e){
                 $oro_btn = '<spn style="color:orange;">출하생성</span>';
                 $oro_add_url = '';
                 $oro_add_btn = '';
-                $next_date = '';
             }
         }
         else{
@@ -297,9 +302,8 @@ $('.date_blank').on('click',function(e){
             $oro_btn = '<span>-</span>';
             $oro_add_url = '';
             $oro_add_btn = '';
-            $next_date = '';
         }
-
+        
         //$s_item = '<a href="./order_item.php?'.$qstr.'&amp;ord_idx='.$row['ord_idx'].'" class="btn btn_03">상품</a>';
         $s_mod = '<a href="./order_form.php?'.$qstr.'&amp;w=u&amp;ord_idx='.$row['ord_idx'].'" class="btn btn_03">수정</a>';
 		//print_r2($next_date);
