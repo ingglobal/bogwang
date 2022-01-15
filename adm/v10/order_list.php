@@ -188,6 +188,7 @@ $('.date_blank').on('click',function(e){
     <?php
     //print_r2($result);
     $next_date = '';
+    $next2_date = '';
     for ($i=0; $row=sql_fetch_array($result); $i++) {
         $csql = sql_fetch(" SELECT com_name FROM {$g5['company_table']} WHERE com_idx = '{$row['com_idx_customer']}' ");
         $row['com_name_customer'] = $csql['com_name'];
@@ -248,19 +249,26 @@ $('.date_blank').on('click',function(e){
         $next_sql = " SELECT ord_date FROM {$g5['order_table']} WHERE 
                         ord_date > '{$row['ord_date']}' 
                         AND ord_status NOT IN('delete','del','trash')
-                      ORDER BY ord_date LIMIT 1 
+                      ORDER BY ord_date LIMIT 0, 1
         ";
-        /*
-        $next_sql = " SELECT ord_date FROM {$g5['order_table']} WHERE ord_idx = ( SELECT MIN(ord_idx) FROM {$g5['order_table']} WHERE ord_idx > {$row['ord_idx']} ) ";
-        */
-        //echo $next_sql;
+        // echo $next_sql;
         $next = sql_fetch($next_sql);
-
-        //당일데 해당하는 레코드의 날짜 데이터에서 다음날짜를 변수에 저장
-        if($row['ord_date'] == G5_TIME_YMD) $next_date = $next['ord_date'];
+        //다다음 레코드의 날짜 데이터를 호출
+        $next2_sql = " SELECT ord_date FROM {$g5['order_table']} WHERE 
+                        ord_date > '{$row['ord_date']}' 
+                        AND ord_status NOT IN('delete','del','trash')
+                      ORDER BY ord_date LIMIT 1, 1
+        ";
+        // echo $next_sql;
+        $next2 = sql_fetch($next2_sql);
+        //당일데 해당하는 레코드의 날짜 데이터에서 다음날짜와 다다음날짜를 변수에 저장
+        if($row['ord_date'] == G5_TIME_YMD){
+            $next_date = $next['ord_date'];
+            $next2_date = $next2['ord_date'];
+        }
 
         $creat = 0;
-        if($row['ord_date'] == G5_TIME_YMD || $row['ord_date'] == $next_date){
+        if($row['ord_date'] == G5_TIME_YMD || $row['ord_date'] == $next_date || $row['ord_date'] == $next2_date){
             if($row['oro']['cnt']){
                 $oro_url = './order_out_list.php?sfl=oro.ord_idx&stx='.$row['ord_idx'];
                 $oro_btn = $row['oro']['cnt'].'건';
