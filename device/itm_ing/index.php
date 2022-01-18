@@ -4,6 +4,15 @@
 header('Content-Type: application/json; charset=UTF-8');
 include_once('./_common.php');
 
+if(!isset($config['cf_line1_bom_idx'])) {
+    sql_query(" ALTER TABLE `{$g5['config_table']}`
+                    ADD `cf_line1_bom_idx` VARCHAR(255) NOT NULL AFTER `cf_recaptcha_secret_key`,
+                    ADD `cf_line2_bom_idx` VARCHAR(255) NOT NULL AFTER `cf_line1_bom_idx`,
+                    ADD `cf_line3_bom_idx` VARCHAR(255) NOT NULL AFTER `cf_line2_bom_idx`,
+                    ADD `cf_line4_bom_idx` VARCHAR(255) NOT NULL AFTER `cf_line3_bom_idx` ", true);
+}
+
+
 //print_r2($_REQUEST);exit;
 //echo $_REQUEST['shf_type'][0];
 $rawBody = file_get_contents("php://input"); // 본문을 불러옴
@@ -118,6 +127,11 @@ else if($getData[0]['bom_part_no']) {
         $itm['itm_idx'] = sql_insert_id();
         $result_arr['code'] = 200;
         $result_arr['message'] = "Inserted OK!";
+
+        if($config['cf_line'.$arr['trm_idx_location'].'_bom_idx'] != $oop['bom_idx']){
+            $sqlc = " UPDATE {$g5['config_table']} SET cf_line".$arr['trm_idx_location']."_bom_idx = '".$oop['bom_idx']."' ";
+            sql_query($sqlc, false);
+        }
     }
     // echo $sql.'<br>';
     $result_arr['itm_idx'] = $itm['itm_idx'];   // 고유번호
