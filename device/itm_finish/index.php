@@ -1,5 +1,5 @@
 <?php
-// 크롬 요소검사 열고 확인하면 되겠습니다. 
+// 크롬 요소검사 열고 확인하면 되겠습니다.
 // print_r2 안 쓰고 print_r로 확인하는 게 좋습니다.
 header('Content-Type: application/json; charset=UTF-8');
 include_once('./_common.php');
@@ -73,6 +73,7 @@ else if($getData[0]['itm_barcode']) {
 
         // update statistics for two days which are the changed day as well as the pervious statistics day.
         update_item_sum_by_status($itm['itm_idx']);
+		// sql_query(" INSERT INTO {$g5['meta_table']} SET mta_db_table ='test', mta_db_id ='test', mta_key ='update_item_sum_by_status-finish', mta_value = '".$itm['itm_idx']."' ");
 
     }
 }

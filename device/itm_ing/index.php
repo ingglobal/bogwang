@@ -167,7 +167,7 @@ else if($getData[0]['bom_part_no']) {
     $ar['bom_idx'] = $oop['bom_idx'];
     $ar['itm_status'] = $arr['itm_status'];
     update_item_sum($ar);
-    //sql_query(" INSERT INTO {$g5['meta_table']} SET mta_db_table ='".$ar['itm_date']."', mta_db_id ='10', mta_key ='itm_ing', mta_value = '".json_encode($ar)."' ");
+    // sql_query(" INSERT INTO {$g5['meta_table']} SET mta_db_table ='".$ar['itm_date']."', mta_db_id ='10', mta_key ='itm_ing', mta_value = '".json_encode($ar)."' ");
     unset($ar);
     // sql_query(" INSERT INTO {$g5['meta_table']} SET mta_db_table ='".$arr['itm_flag']."', mta_db_id ='10', mta_key ='itm_ing', mta_value = '".addslashes($arr)."' ");
     //sql_query(" INSERT INTO {$g5['meta_table']} SET mta_db_table ='".$ar['itm_date']."', mta_db_id ='10', mta_key ='itm_ing', mta_value = '".json_encode($arr)."' ");

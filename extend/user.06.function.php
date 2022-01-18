@@ -210,7 +210,7 @@ function update_mtr_status($arr) {
 if(!function_exists('update_mtr_multi_status')){
     function update_mtr_multi_status($arr) {
         global $g5;
-    
+
         // 연결된 자재의 모든 상태값을 변경
         $sql = " UPDATE {$g5['material_table']} SET
                     mtr_status = '".$arr['mtr_status']."'
@@ -223,7 +223,7 @@ if(!function_exists('update_mtr_multi_status')){
         ";
         // echo $sql.'<br>';
         sql_query($sql,1);
-    
+
         return $arr['mtr_idx'];
     }
     }

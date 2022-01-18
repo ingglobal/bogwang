@@ -114,6 +114,8 @@ if( is_array($mmg_down_idxs[$mmg_idx]) ) {
     $sql_mmses1 = " AND arm.mms_idx IN (".implode(",",$mms_array).") ";
     // 게시판용 mms_idx 조건절
     $sql_mmses2 = " AND wr_2 IN (".implode(",",$mms_array).") ";
+    // 지시수량용 mms_idx 조건절
+    $sql_mmses3 = " AND trm_idx_line IN (".implode(",",$mms_array).") ";
 }
 // 선택라인이 없으면 전체에서 추출한다.
 else {
@@ -129,7 +131,7 @@ $sql = "SELECT bom_idx, trm_idx_line, orp_done_date, oop_count, oop_1, oop_2, oo
             AND orp_start_date >= '".$st_date."'
             AND orp_done_date <= '".$en_date."'
             AND orp_done_date != '0000-00-00'
-            {$sql_mmses}
+            {$sql_mmses3}
         GROUP BY bom_idx, trm_idx_line, orp_done_date, oop_count, oop_1, oop_2, oop_3, oop_4, oop_5, oop_6, oop_7, oop_8, oop_9, oop_10
         ORDER BY bom_idx, trm_idx_line, orp_done_date
 ";

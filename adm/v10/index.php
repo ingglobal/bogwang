@@ -88,7 +88,7 @@ add_javascript('<script src="'.G5_USER_URL.'/js/slick-1.8.1/slick/slick.min.js">
             <td>일생산</td>
             <td><span class="daily_output"></span></td>
         </tr>
-        <tr>
+        <tr style="display:none;">
             <td>달성율</td>
             <td><span class="daily_output_rate"></span></td>
         </tr>
@@ -345,7 +345,7 @@ if($i>0) {
                 <!-- 설비정보 -->
                 <div id="tabs-2">
                     <table class="data_mms_table">
-                    <tr>
+                    <tr style="display:none;">
                         <td>생산기종</td>
                         <td class="mms_mmi_no"><?=$row['item']['mmi_no']?></td>
                     </tr>
@@ -353,7 +353,7 @@ if($i>0) {
                         <td>일생산</td>
                         <td class="daily_output">0</td>
                     </tr>
-                    <tr>
+                    <tr style="display:none;">
                         <td>달성율</td>
                         <td class="daily_output_rate">0%</td>
                     </tr>

@@ -87,13 +87,15 @@ else if($_REQUEST['mms_idx']){
     $list['item_no'] = $item['dta_mmi_no'];
 
     // 일 생산 갯수
-    $output = sql_fetch("   SELECT SUM(dta_value) AS dta_sum
-                                , SUM( IF(dta_defect=0,dta_value,0) ) AS dta_sum_success
-                                , SUM( IF(dta_defect=1,dta_value,0) ) AS dta_sum_defect
-                            FROM {$g5['data_output_sum_table']}
-                            WHERE mms_idx = '".$mms_idx."'
-                                AND dta_date = '".$mms_date1."'
-    ");
+    $sql = "SELECT SUM(itm_count) AS dta_sum
+                , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ok_array'])."') THEN itm_count ELSE 0 END ) AS dta_sum_success
+                , SUM( CASE WHEN itm_status IN ('".implode("','",$g5['set_itm_status_ng_array'])."') THEN itm_count ELSE 0 END ) AS dta_sum_defect
+            FROM {$g5['item_sum_table']}
+            WHERE mms_idx = '".$mms_idx."'
+                AND itm_date = '".$mms_date1."'
+    ";
+    // echo $sql.'<br>';
+    $output = sql_fetch($sql,1);
     $list['output_count'] = $output['dta_sum'];
     $list['output_count_success'] = $output['dta_sum_success'];
     $list['output_count_defect'] = $output['dta_sum_defect'];
@@ -119,88 +121,16 @@ else if($_REQUEST['mms_idx']){
     ");
     $list['alarm_count'] = $alarm['dta_sum'];
     
-    // 가동시간 추출
-    // if run_count exists.
-    if($_REQUEST['run_count']) {
-        // 0~1분 안에 데이터
-        $run1 = sql_fetch("SELECT count(dta_idx) AS dta_count, GROUP_CONCAT(mms_status ORDER BY dta_idx DESC) AS mms_statuses
-                FROM {$g5['data_run_real_table']} 
-                WHERE dta_dt >= date_add(now(), INTERVAL -60 SECOND)
-                    AND mms_idx = '".$mms_idx."'
-        ");
-        if( isset($run1['mms_statuses']) ) {
-            $list['run_total'][1] = $run1['dta_count'];
-            $list['run_status'][1] = explode(",",$run1['mms_statuses']);
-            $list['run'][1] = $list['run_status'][1][0];
-        }
-
-        // 1~2분 안에 데이터
-        $run1 = sql_fetch("SELECT count(dta_idx) AS dta_count, GROUP_CONCAT(mms_status ORDER BY dta_idx DESC) AS mms_statuses
-                FROM {$g5['data_run_real_table']} 
-                WHERE dta_dt <= date_add(now(), INTERVAL -60 SECOND)
-                    AND dta_dt >= date_add(now(), INTERVAL -120 SECOND)
-                    AND mms_idx = '".$mms_idx."'
-        ");
-        if( isset($run1['mms_statuses']) ) {
-            $list['run_total'][2] = $run1['dta_count'];
-            $list['run_status'][2] = explode(",",$run1['mms_statuses']);
-            $list['run'][2] = $list['run_status'][2][0];
-        }
-
-        // 2~3분 안에 데이터
-        $run1 = sql_fetch("SELECT count(dta_idx) AS dta_count, GROUP_CONCAT(mms_status ORDER BY dta_idx DESC) AS mms_statuses
-                FROM {$g5['data_run_real_table']} 
-                WHERE dta_dt <= date_add(now(), INTERVAL -120 SECOND)
-                    AND dta_dt >= date_add(now(), INTERVAL -180 SECOND)
-                    AND mms_idx = '".$mms_idx."'
-        ");
-        if( isset($run1['mms_statuses']) ) {
-            $list['run_total'][3] = $run1['dta_count'];
-            $list['run_status'][3] = explode(",",$run1['mms_statuses']);
-            $list['run'][3] = $list['run_status'][3][0];
-        }
-
-        // 3~4분 안에 데이터
-        $run1 = sql_fetch("SELECT count(dta_idx) AS dta_count, GROUP_CONCAT(mms_status ORDER BY dta_idx DESC) AS mms_statuses
-                FROM {$g5['data_run_real_table']} 
-                WHERE dta_dt <= date_add(now(), INTERVAL -180 SECOND)
-                    AND dta_dt >= date_add(now(), INTERVAL -240 SECOND)
-                    AND mms_idx = '".$mms_idx."'
-        ");
-        if( isset($run1['mms_statuses']) ) {
-            $list['run_total'][4] = $run1['dta_count'];
-            $list['run_status'][4] = explode(",",$run1['mms_statuses']);
-            $list['run'][4] = $list['run_status'][4][0];
-        }
-
-        // 4~5분 안에 데이터
-        $run1 = sql_fetch("SELECT count(dta_idx) AS dta_count, GROUP_CONCAT(mms_status ORDER BY dta_idx DESC) AS mms_statuses
-                FROM {$g5['data_run_real_table']} 
-                WHERE dta_dt <= date_add(now(), INTERVAL -240 SECOND)
-                    AND dta_dt >= date_add(now(), INTERVAL -300 SECOND)
-                    AND mms_idx = '".$mms_idx."'
-        ");
-        if( isset($run1['mms_statuses']) ) {
-//            $list['run'][5] = $run1['dta_count'];
-            $list['run_total'][5] = $run1['dta_count'];
-            $list['run_status'][5] = explode(",",$run1['mms_statuses']);
-            $list['run'][5] = $list['run_status'][5][0];
-        }
-    }
-    // if not, chech out exists within 60 seconds.
-    else {
-        // 0~1분 안에 데이터
-        $run1 = sql_fetch("SELECT count(dta_idx) AS dta_count, GROUP_CONCAT(mms_status ORDER BY dta_idx DESC) AS mms_statuses
-                FROM {$g5['data_run_real_table']} 
-                WHERE dta_dt >= date_add(now(), INTERVAL -60 SECOND)
-                    AND mms_idx = '".$mms_idx."'
-        ");
-        if( isset($run1['mms_statuses']) ) {
-            $list['run_total'][0] = $run1['dta_count'];
-            $list['run_status'][0] = explode(",",$run1['mms_statuses']);
-            $list['run'][0] = $list['run_status'][0][0];
-        }
-    }
+    // 가동상태 추출
+    // 0~5분 안에 데이터
+    $run1 = sql_fetch("SELECT mms_status
+            FROM {$g5['data_run_real_table']} 
+            WHERE dta_dt >= date_add(now(), INTERVAL -300 SECOND)
+                AND mms_idx = '".$mms_idx."'
+            ORDER BY dta_idx DESC
+            LIMIT 1
+    ");
+    $list['mms_status'] = $run1['mms_status'];
 
     // Run time(Hour) total today.
     $runt = sql_fetch("   SELECT SUM(dta_value) AS dta_sum
