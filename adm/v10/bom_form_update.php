@@ -85,7 +85,7 @@ else if ($w == 'u') {
         //print_r2($del_arr);exit;
         if(@count($del_arr)) delete_idx_file($del_arr);
 
-        //print_r2($_FILES);exit;
+        // print_r2($_FILES);exit;
         for($i=1;$i<=6;$i++){
             //print_r2($_FILES['cat_f'.$i]);
             upload_multi_file($_FILES['bom_f'.$i],'bom',${$pre."_idx"},'bomf'.$i);

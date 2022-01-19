@@ -61,7 +61,7 @@ else if ($w == 'u') {
         $flesql = " SELECT * FROM {$g5['file_table']}
         WHERE fle_db_table = 'bom'
         AND fle_type IN ('bomf1','bomf2','bomf3','bomf4','bomf5','bomf6')
-        AND fle_db_id = '".${$pre."_idx"}."' ORDER BY fle_reg_dt,fle_idx DESC ";
+        AND fle_db_id = '".${$pre."_idx"}."' ORDER BY fle_reg_dt,fle_idx ";
         //print_r3($flesql);
         $fle_rs = sql_query($flesql,1);
 
@@ -436,7 +436,7 @@ $(function() {
     var bom_file_cnt = $('.bom_file').length;
     for(var i=1; i<=bom_file_cnt; i++){
         $('#multi_file'+i).MultiFile({
-            max: 1,
+            max: <?=$g5['setting']['set_monitor_cnt']?>,
             accept: 'gif|jpg|png'
         });
     }

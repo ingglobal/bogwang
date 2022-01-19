@@ -73,6 +73,27 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 			</td>
 		</tr>
 		<tr>
+			<th scope="row">모니터별업로드이미지개수</th>
+			<td colspan="3">
+				<?php echo help('예) 3 : 최대 3장 업로드 가능') ?>
+				<input type="text" name="set_monitor_cnt" value="<?php echo $g5['setting']['set_monitor_cnt'] ?>" id="set_monitor_cnt" required class="required frm_input" style="width:60%;">
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">모니터이미지로테이션시간</th>
+			<td colspan="3">
+				<?php echo help('예) 3000 : 3초') ?>
+				<input type="text" name="set_monitor_time" value="<?php echo $g5['setting']['set_monitor_time'] ?>" id="set_monitor_time" required class="required frm_input" style="width:60%;">
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">모니터페이지리로딩간격시간</th>
+			<td colspan="3">
+				<?php echo help('예) 10000 : 10초') ?>
+				<input type="text" name="set_monitor_reload" value="<?php echo $g5['setting']['set_monitor_reload'] ?>" id="set_monitor_reload" required class="required frm_input" style="width:60%;">
+			</td>
+		</tr>
+		<tr>
 			<th scope="row">분류(카테고리) terms</th>
 			<td colspan="3">
 				<?php echo help('') ?>
