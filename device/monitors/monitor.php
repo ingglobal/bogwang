@@ -61,7 +61,7 @@ if($res->num_rows){
             $img_url = $no_url;
         }
         $lst .= '<li no="'.$i.'" id="m'.$i.'" class="img_lst">'.PHP_EOL;
-        $lst .= '<img src="'.$img_url.'">'.PHP_EOL;    
+        $lst .= '<img src="'.$img_url.'">'.PHP_EOL;
         $lst .= '</li>'.PHP_EOL;
     }
     $lst .= '</ul>'.PHP_EOL;
@@ -69,7 +69,7 @@ if($res->num_rows){
 else{
     $lst .= '<ul>'.PHP_EOL;
     $lst .= '<li no="'.$i.'" id="m'.$i.'" class="img_lst">'.PHP_EOL;
-    $lst .= '<img src="'.$no_url.'">'.PHP_EOL;    
+    $lst .= '<img src="'.$no_url.'">'.PHP_EOL;
     $lst .= '</li>'.PHP_EOL;
 }
 echo $lst;
