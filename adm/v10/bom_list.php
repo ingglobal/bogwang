@@ -33,6 +33,10 @@ if ($stx != "") {
 		case ( $sfl == 'bom_part_no' ) :
 			$where[] = " {$sfl} = '".trim($stx)."' ";
             break;
+        
+		case ( $sfl == 'bom_idx' ) :
+			$where[] = " {$sfl} = '".trim($stx)."' ";
+            break;
         default :
 			$where[] = " $sfl LIKE '%".trim($stx)."%' ";
             break;

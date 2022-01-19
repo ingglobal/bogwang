@@ -65,7 +65,7 @@ else if ($w == "u")
     $flesql = " SELECT * FROM {$g5['file_table']}
         WHERE fle_db_table = 'bom_category'
         AND fle_type IN ('file1','file2','file3','file4','file5','file6')
-        AND fle_db_id = '{$bct_id}' ORDER BY fle_reg_dt,fle_idx DESC ";
+        AND fle_db_id = '{$bct_id}' ORDER BY fle_reg_dt,fle_idx ";
     $fle_rs = sql_query($flesql,1);
 
     $row['cat_file1'] = array();//1번째 파일그룹
@@ -277,7 +277,7 @@ var cat_file_cnt = $('.cat_file').length;
 for(var i=1; i<=cat_file_cnt; i++){
 
     $('#multi_file'+i).MultiFile({
-        max: 1,
+        max: <?=$g5['setting']['set_monitor_cnt']?>,
         accept: 'gif|jpg|png'
     });
 }
