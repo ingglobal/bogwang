@@ -74,7 +74,7 @@ function update_item_sum($arr) {
     // echo $sql.'<br>';
     // print_r2($sum1);
 
-
+    sql_query(" INSERT INTO {$g5['meta_table']} SET mta_key ='test', mta_value = '".json_encode($arr)."' ");
     // Record update or insert
     $sql = "SELECT itm_idx
             FROM {$g5['item_sum_table']}
@@ -120,6 +120,8 @@ function update_item_sum($arr) {
     }
     // echo $sql.'<br>';
     //sql_query(" INSERT INTO {$g5['meta_table']} SET mta_db_table ='extend', mta_db_id ='10', mta_key ='itm_ing', mta_value = '".addslashes($sql)."' ");
+
+
 
     return $row['itm_idx'];
 }

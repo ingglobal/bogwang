@@ -12,5 +12,5 @@ $menu["menu915"] = array (
 	//,array('915160', '작업구간설정', ''.G5_USER_ADMIN_URL.'/shift_list.php', 'shift_list')
 	,array('915165', '공제시간설정', ''.G5_USER_ADMIN_URL.'/offwork_list.php', 'offwork_list')
 	,array('915170', '비가동데이터', ''.G5_USER_ADMIN_URL.'/data_downtime_list.php', 'data_downtime_list')
-	,array('915190', '내정보', ''.G5_USER_ADMIN_URL.'/my_info.php', 'my_info')
+	,array('915115', '내정보', ''.G5_USER_ADMIN_URL.'/my_info.php', 'my_info')
 );

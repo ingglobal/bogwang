@@ -145,8 +145,9 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
         </td>
         <th scope="row"><label for="mb_password">비밀번호<?php echo $sound_only ?></label></th>
         <td>
+            <?php echo help('비밀번호는 반드시 영문으로 시작해야하고 이 후 영문숫자 조합으로 6글자이상 입력해 주세요.') ?>
             <?php if($w==''||$member['mb_manager_yn']) { ?>
-            <input type="password" name="mb_password" id="mb_password" <?php echo $required_mb_password ?> class="frm_input <?php echo $required_mb_password ?>" size="15" maxlength="20">
+            <input type="password" name="mb_password" id="mb_password" <?php //echo $required_mb_password ?> class="frm_input <?php //echo $required_mb_password ?>" size="15" maxlength="20">
             <?php } else { ?>
             <span style="color:#aaa;">비밀번호 수정 불가</span>
             <?php } ?>
@@ -418,6 +419,35 @@ $(function() {
 
 function fmember_submit(f)
 {
+    //비밀번호 체크
+    //영문으로 시작하고 반드시 영문숫자 조합하여 6글자 이상
+    
+    if(f.w.value == 'u' && f.mb_password.value){
+        var pw = f.mb_password.value;
+        var pt = /^(?=.*[0-9]+)[a-zA-Z][a-zA-Z0-9]{5,}$/;
+        if(!pt.test(pw)){
+            alert('비밀번호가 영문숫자조합 및 6글자이상의 문자열\n규칙에 위반된 구성입니다.');
+            f.mb_password.focus();
+            return false;
+        }
+    }
+    else if(f.w.value == ''){
+        if(!f.mb_password.value){
+            alert('비밀번호를 반드시 입력해 주세요');
+            f.mb_password.focus();
+            return false;
+        }
+        else {
+            var pw = f.mb_password.value;
+            var pt = /^(?=.*[0-9]+)[a-zA-Z][a-zA-Z0-9]{5,}$/;
+            if(!pt.test(pw)){
+                alert('비밀번호가 영문숫자조합 및 6글자이상의 문자열\n규칙에 위반된 구성입니다.');
+                f.mb_password.focus();
+                return false;
+            }
+        }
+    }
+
     // 닉네임 검사
     // empty_mb_nick, valid_mb_nick, count_mb_nick, exist_mb_nick, reserve_mb_nick 차례대로 다 검사합니다. 위치: /bbs/ajax.mb_nick.php (함수위치는 /lib/register.lib.php)
     if ((f.w.value == "") || (f.w.value == "u" && f.mb_nick.defaultValue != f.mb_nick.value)) {
@@ -451,6 +481,8 @@ function fmember_submit(f)
 
     $('#reg_mb_nick').val( $('#mb_name').val() );
 
+    
+    
     return true;
 }
 </script>
