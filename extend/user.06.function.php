@@ -3848,7 +3848,7 @@ function item_shif_date_return($date){
         if($todaytime >= $gstarttime && $todaytime <= $gendtime) $return_date = get_dayAddDate($today,-1);
     }
 
-    $arr = array('shift'=>"'".$shift."'",'workday'=>$return_date);
+    $arr = array('shift'=>$shift,'workday'=>$return_date);
     return $arr;
 }
 }
