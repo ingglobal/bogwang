@@ -584,6 +584,8 @@ $g5['set_data_url'] = 'bogwang.epcs.co.kr';
 
 // BOM구성 표시
 $g5['set_bom_type_displays'] = explode(',', preg_replace("/\s+/", "", $g5['setting']['set_bom_type_display']));
+
+//kpi,m-erp,데이터 관련 페이지 접근할때만 item_sum테이블을 초기화한다.
 if($sub_menu == '960100' || $sub_menu == '955400' || $sub_menu == '955500'){
     //item_sum 테이블 초기화
     $truncate_sql = " TRUNCATE {$g5['item_sum_table']} ";
