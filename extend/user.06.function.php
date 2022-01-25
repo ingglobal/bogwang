@@ -118,7 +118,7 @@ function update_item_sum($arr) {
         sql_query($sql,1);
         $row['itm_idx'] = sql_insert_id();
     }
-    
+    /*
     $sql = " SELECT itm.com_idx, itm.mms_idx, 14, itm_date, itm_shift, trm_idx_line, oop.bom_idx, bom_part_no, itm_price, itm_status
         , COUNT(itm_idx) AS itm_count
         FROM {$g5['item_table']} AS itm
@@ -146,7 +146,7 @@ function update_item_sum($arr) {
             sql_query($sql,1);
         }
     }
-
+    */
     return $row['itm_idx'];
 }
 }
