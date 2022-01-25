@@ -4,6 +4,7 @@ include_once('./_common.php');
 
 auth_check($auth[$sub_menu],"r");
 
+
 // 변수 설정, 필드 구조 및 prefix 추출
 $table_name = 'item_sum';
 $g5_table_name = $g5[$table_name.'_table'];
@@ -288,6 +289,9 @@ function sch_submit(f){
 
 <div class="btn_fixed_top">
     <?php if($is_admin){ //(!auth_check($auth[$sub_menu],"d",1)) { ?>
+    <!--
+    <input type="submit" name="act_button" value="전체보정" onclick="document.pressed=this.value" class="btn_02 btn">
+    -->
     <input type="submit" name="act_button" value="일괄입력" onclick="document.pressed=this.value" class="btn_02 btn">
     <input type="submit" name="act_button" value="테스트입력" onclick="document.pressed=this.value" class="btn_03 btn">
     <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn_02 btn" style="display:none;">
@@ -386,14 +390,19 @@ function form01_submit(f)
         return false;
 	}
 
-    if (!is_checked("chk[]")) {
-        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요.");
+    if (!is_checked("chk[]") && document.pressed != "전체보정") {
+        alert(document.pressed+" 하실 항목을 하나 이상 선택하세요2.");
         return false;
     }
 
 	if(document.pressed == "선택수정") {
 		$('input[name="w"]').val('u');
 	}
+
+    if(document.pressed == "전체보정") {
+		$('input[name="w"]').val('m');
+	}
+
 	if(document.pressed == "선택삭제") {
 		if (!confirm("선택한 항목(들)을 정말 삭제 하시겠습니까?\n복구가 어려우니 신중하게 결정 하십시오.")) {
 			return false;

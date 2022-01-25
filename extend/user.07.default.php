@@ -584,5 +584,22 @@ $g5['set_data_url'] = 'bogwang.epcs.co.kr';
 
 // BOM구성 표시
 $g5['set_bom_type_displays'] = explode(',', preg_replace("/\s+/", "", $g5['setting']['set_bom_type_display']));
+if($sub_menu == '960100' || $sub_menu == '955400' || $sub_menu == '955500'){
+    //item_sum 테이블 초기화
+    $truncate_sql = " TRUNCATE {$g5['item_sum_table']} ";
+    sql_query($truncate_sql,1);
 
+    $sqls = " INSERT INTO {$g5['item_sum_table']} (com_idx, mms_idx, mmg_idx, itm_date, itm_shift, trm_idx_line, bom_idx, bom_part_no, itm_price, itm_status, itm_count)
+            SELECT itm.com_idx, itm.mms_idx, 14, itm_date, itm_shift, trm_idx_line, oop.bom_idx, bom_part_no, itm_price, itm_status
+            , COUNT(itm_idx) AS itm_count
+            FROM {$g5['item_table']} AS itm
+                LEFT JOIN {$g5['order_out_practice_table']} AS oop ON oop.oop_idx = itm.oop_idx
+                LEFT JOIN {$g5['order_practice_table']} AS orp ON orp.orp_idx = oop.orp_idx
+            WHERE itm_status NOT IN ('trash','delete')
+                AND itm_date != '0000-00-00'
+            GROUP BY itm_date, itm.mms_idx, trm_idx_line, itm_shift, bom_idx, itm_status
+            ORDER BY itm_date ASC, trm_idx_line, itm_shift, bom_idx, itm_status 
+    ";
+    sql_query($sqls,1);
+}
 ?>

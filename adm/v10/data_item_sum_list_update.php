@@ -13,7 +13,7 @@ $fname = preg_replace("/_update/","",$g5['file_name']); // _update을 제외한 
 //$qstr .= '&mms_idx='.$mms_idx; // 추가로 확장해서 넘겨야 할 변수들
 
 
-if (!count($_POST['chk'])) {
+if (!count($_POST['chk']) && $w != 'm') {
     alert($_POST['act_button']." 하실 항목을 하나 이상 체크하세요.");
 }
 
@@ -53,6 +53,25 @@ else if($w == 'd') {
 			sql_query($sql,1);
         }
     }
+}
+// 전체 데이터 item_sum 테이블 보정
+else if($w == 'm') {
+    //테이블 초기화
+    $truncate_sql = " TRUNCATE {$g5['item_sum_table']} ";
+    sql_query($truncate_sql,1);
+
+    $sql = " INSERT INTO {$g5['item_sum_table']} (com_idx, mms_idx, mmg_idx, itm_date, itm_shift, trm_idx_line, bom_idx, bom_part_no, itm_price, itm_status, itm_count)
+            SELECT itm.com_idx, itm.mms_idx, 14, itm_date, itm_shift, trm_idx_line, oop.bom_idx, bom_part_no, itm_price, itm_status
+            , COUNT(itm_idx) AS itm_count
+            FROM {$g5['item_table']} AS itm
+                LEFT JOIN {$g5['order_out_practice_table']} AS oop ON oop.oop_idx = itm.oop_idx
+                LEFT JOIN {$g5['order_practice_table']} AS orp ON orp.orp_idx = oop.orp_idx
+            WHERE itm_status NOT IN ('trash','delete')
+                AND itm_date != '0000-00-00'
+            GROUP BY itm_date, itm.mms_idx, trm_idx_line, itm_shift, bom_idx, itm_status
+            ORDER BY itm_date ASC, trm_idx_line, itm_shift, bom_idx, itm_status 
+    ";
+    sql_query($sql,1);
 }
 
 if ($msg)
