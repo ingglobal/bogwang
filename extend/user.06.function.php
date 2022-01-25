@@ -135,14 +135,14 @@ function update_item_sum($arr) {
     $res = sql_query($sql,1);
 
     if($res->num_rows){
-        for($i=0;$row=sql_fetch_array($res);$i++){
+        for($i=0;$row1=sql_fetch_array($res);$i++){
             $sql = " UPDATE {$g5['item_sum_table']} SET
-                        itm_count = '{$row['itm_count']}'
-                    WHERE itm_date = '{$row['itm_date']}'
-                        AND itm_shift = '{$row['itm_shift']}'
-                        AND trm_idx_line = '{$row['trm_idx_line']}'
-                        AND bom_idx = '{$row['bom_idx']}'
-                        AND itm_status = '{$row['itm_status']}'
+                        itm_count = '{$row1['itm_count']}'
+                    WHERE itm_date = '{$row1['itm_date']}'
+                        AND itm_shift = '{$row1['itm_shift']}'
+                        AND trm_idx_line = '{$row1['trm_idx_line']}'
+                        AND bom_idx = '{$row1['bom_idx']}'
+                        AND itm_status = '{$row1['itm_status']}'
             ";
             sql_query($sql,1);
         }
