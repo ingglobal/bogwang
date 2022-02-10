@@ -84,11 +84,12 @@ $(function(){
         $('.img_lst').eq(idx).show();
         if(idx == len) idx = 0;
         else idx++;
-    },<?=$gap?>);
-
-    setTimeout(function(){
-        location.reload();
-    },<?=$reload?>);
+    },<?=$gap?>);   
 });
 </script>
 <?php } ?>
+<script>
+setTimeout(function(){
+	location.reload();
+},<?=$reload?>);
+</script>
