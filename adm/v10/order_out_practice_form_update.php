@@ -65,7 +65,7 @@ if($first_flag){
     ";
     sql_query($sql2,1);
 }
-//완전히 새로운 등록이 아니면서, oop_idx없고, orp_idx와 bom_idx가 있을 경우, 
+//완전히 새로운 등록이 아니면서, oop_idx없고, orp_idx와 bom_idx가 있을 경우,
 else if(!$first_flag && !$oop_idx && $orp_idx && $bom_idx){
     //기존 orp_idx 에 등록된 해당 bom_idx로 등록된 oop_idx가 존재하는지 확인하고 있으면 해당 oop_idx에서 수정하라고 튕긴다.
     $oop = sql_fetch(" SELECT COUNT(*) AS cnt, oop_idx FROM {$g5['order_out_practice_table']}
@@ -73,7 +73,7 @@ else if(!$first_flag && !$oop_idx && $orp_idx && $bom_idx){
     ");
     // 동일제품이 있으면 튕겨내라
     if($oop['cnt']){
-        alert("선택하신 설비라인에 이미 동일한 상품(생산계회상품ID:".$oop['oop_idx'].")이 존재합니다.\n해당 상품에서 내용을 변경해 주세요.");
+        alert("선택하신 설비라인에 이미 동일한 상품이 이미 존재합니다.",'./order_out_practice_list.php?'.$qstr);
     }
     // 동일제품이 없으면 등록해라
     else {
