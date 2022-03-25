@@ -7,7 +7,7 @@ auth_check($auth[$sub_menu], 'r');
 $g5['title'] = '출하관리';
 // include_once('./_top_menu_oro.php');
 include_once('./_head.php');
-// echo $g5['container_sub_title'];
+// echo $g5['container_sub_title'];//
 
 $sql_common = " FROM {$g5['order_out_table']} AS oro
                     LEFT JOIN {$g5['order_item_table']} AS ori ON ori.ori_idx = oro.ori_idx
