@@ -13,7 +13,6 @@ $sql_common = " FROM {$g5['order_out_table']} AS oro
                     LEFT JOIN {$g5['order_item_table']} AS ori ON ori.ori_idx = oro.ori_idx
                     LEFT JOIN {$g5['order_table']} AS ord ON ord.ord_idx = oro.ord_idx
                     LEFT JOIN {$g5['bom_table']} AS bom ON bom.bom_idx = ori.bom_idx
-                    LEFT JOIN {$g5['order_out_practice_table']} AS oop ON oop.oro_idx = oro.oro_idx
 ";
 
 $where = array();
@@ -91,11 +90,11 @@ $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
-$sql = "SELECT oro.*, oop.orp_idx, ori.bom_idx, ori.ori_count, bom.bom_name, bom.bom_part_no, bom.bct_id, ord.ord_date, ord.ord_reg_dt
+$sql = "SELECT oro.*, ori.bom_idx, ori.ori_count, bom.bom_name, bom.bom_part_no, bom.bct_id, ord.ord_date, ord.ord_reg_dt
         {$sql_common} {$sql_search} {$sql_order}
         LIMIT {$from_record}, {$rows}
 ";
-// print_r3($sql);
+// print_r3($sql);exit;
 $result = sql_query($sql,1);
 
 $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
@@ -294,14 +293,14 @@ $('.data_blank').on('click',function(e){
             }
         }
         // 실행계획 건수
-        $sql2 = " SELECT COUNT(orp_idx) AS cnt FROM {$g5['order_out_practice_table']} WHERE oro_idx = '".$row['oro_idx']."' ";
+        $sql2 = " SELECT orp_idx, COUNT(orp_idx) AS cnt FROM {$g5['order_out_practice_table']} WHERE oro_idx = '".$row['oro_idx']."' ";
         $orp_exist = sql_fetch($sql2,1);
         $row['orp_cnt'] = $orp_exist['cnt'];
         if($row['orp_cnt']) {
             //$g5['line_name'][$row['trm_idx_line']]
             //$row['orp_count'] = $row['orp_cnt'];
 
-            $ordq = sql_fetch(" SELECT trm_idx_line, orp_start_date FROM {$g5['order_practice_table']} WHERE orp_idx = '{$row['orp_idx']}' ");
+            $ordq = sql_fetch(" SELECT trm_idx_line, orp_start_date FROM {$g5['order_practice_table']} WHERE orp_idx = '{$orp_exist['orp_idx']}' ");
             $row['orp_count'] = $g5['line_name'][$ordq['trm_idx_line']];
 
             $sql3 = " SELECT GROUP_CONCAT(orp_idx) AS orp_grp FROM {$g5['order_out_practice_table']} WHERE oro_idx = '".$row['oro_idx']."' ";
@@ -311,7 +310,6 @@ $('.data_blank').on('click',function(e){
             $pcnt = 0;
             foreach($orp_arr as $orpv){
                 $rest = ($pcnt == 0) ? '':',';
-                //$orp_str .= $rest.'<a href="./order_practice_list.php?sfl=oop.orp_idx&stx='.$orpv.'">'.$orpv.'</a>';
                 $orp_str .= $rest.'<a href="./order_out_practice_list.php?sfl=oop.orp_idx&stx='.$orpv.'">'.$orpv.'</a>';
                 $pcnt++;
             }
