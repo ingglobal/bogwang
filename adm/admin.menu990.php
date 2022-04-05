@@ -12,4 +12,5 @@ $menu["menu990"] = array (
     ,array('990160', '카테고리 설정', ''.G5_USER_ADMIN_URL.'/config_form.php', 'config_form')
     ,array('990165', '관리자관리', ''.G5_USER_ADMIN_URL.'/manager_list.php', 'manager_list')
     ,array('990170', '업체관리', ''.G5_USER_ADMIN_URL.'/company_list.php', 'company_list')
+    ,array('990180', '로그인로그', G5_USER_ADMIN_URL.'/login_log.php', 'login_log')
 );
