@@ -55,10 +55,10 @@ $result = sql_query($sql);
         $loiparr = explode('.',$row['lo_url']);
         $loip = '';
         for($k=0;$k<count($loiparr);$k++){
-            if($k % 2 == 0){
-                $loip .= ($k == 0) ? $loiparr[$k] : '.'.$loiparr[$k];
+            if($k % 2 == 1){
+                $loip .= $loiparr[$k];
             }else{
-                $loip .= '.'.str_replace($loiparr[$k],'***',$loiparr[$k]); 
+                $loip .= ($k == 0) ? str_replace($loiparr[$k],'***',$loiparr[$k]) : '.'.str_replace($loiparr[$k],'***',$loiparr[$k]); 
             }
         }
 
