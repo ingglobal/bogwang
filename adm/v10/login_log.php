@@ -11,7 +11,7 @@ $colspan = 6;
 
 $sql_common = " from {$g5['login_table']} ";
 // $sql_search = " where lo_datetime between '{$fr_date} 00:00:00' and '{$to_date} 23:59:59' ";
-$sql_search = " where mb_id != '' AND mb_id != 'super' AND lo_location != 'EPCS'  ";
+$sql_search = " where mb_id != '' AND mb_id != 'super' AND lo_location != 'EPCS' AND lo_url != ''  ";
 
 $sql = " select count(*) as cnt
             {$sql_common}
