@@ -34,6 +34,9 @@ $result = sql_query($sql);
 <style>
 .tbl_head01{font-size:1.3em;}
 </style>
+<div class="local_ov01 local_ov">
+    <span class="btn_ov01"><span class="ov_txt">총 </span><span class="ov_num"> <?php echo number_format($total_count) ?>건 </span></span>
+</div>
 <div class="tbl_head01 tbl_wrap">
     <table>
     <caption><?php echo $g5['title']; ?> 목록</caption>
