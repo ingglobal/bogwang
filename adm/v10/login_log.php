@@ -56,7 +56,7 @@ $result = sql_query($sql);
         $loip = '';
         for($k=0;$k<count($loiparr);$k++){
             if($k % 2 == 1){
-                $loip .= $loiparr[$k];
+                $loip .= '.'.$loiparr[$k];
             }else{
                 $loip .= ($k == 0) ? str_replace($loiparr[$k],'***',$loiparr[$k]) : '.'.str_replace($loiparr[$k],'***',$loiparr[$k]); 
             }
