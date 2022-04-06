@@ -11,7 +11,7 @@ $colspan = 6;
 
 $sql_common = " from {$g5['login_table']} ";
 // $sql_search = " where lo_datetime between '{$fr_date} 00:00:00' and '{$to_date} 23:59:59' ";
-$sql_search = " where mb_id != '' AND mb_id != 'super' AND lo_location != 'EPCS' AND lo_url != ''  ";
+$sql_search = " where mb_id != '' AND mb_id != 'super' AND lo_location != 'EPCS' AND lo_url != '' AND lo_url REGEXP '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+'  ";
 
 $sql = " select count(*) as cnt
             {$sql_common}
@@ -51,14 +51,14 @@ $result = sql_query($sql);
     <tbody>
     <?php
     for ($i=0; $row=sql_fetch_array($result); $i++) {
-        
+
         $loiparr = explode('.',$row['lo_url']);
         $loip = '';
         for($k=0;$k<count($loiparr);$k++){
             if($k % 2 == 1){
                 $loip .= '.'.$loiparr[$k];
             }else{
-                $loip .= ($k == 0) ? str_replace($loiparr[$k],'***',$loiparr[$k]) : '.'.str_replace($loiparr[$k],'***',$loiparr[$k]); 
+                $loip .= ($k == 0) ? str_replace($loiparr[$k],'***',$loiparr[$k]) : '.'.str_replace($loiparr[$k],'***',$loiparr[$k]);
             }
         }
 
