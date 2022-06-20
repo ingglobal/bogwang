@@ -13,7 +13,7 @@ $fname = $g5['file_name'];
 
 
 $g5['title'] = '사용자로그통계';
-include_once('./_top_menu_stat.php');
+include_once('./_top_menu_setting.php');
 include_once('./_head.php');
 echo $g5['container_sub_title'];
 
@@ -55,8 +55,7 @@ $sql_group = " GROUP BY usl_menu_cd ";
 
 $sql_order = " ORDER BY {$sst} {$sod} {$sst2} {$sod2} ";
 
-$sql = " SELECT (ROW_NUMBER() OVER(ORDER BY usl_menu_cd)) AS num
-            ,usl_menu_cd
+$sql = " SELECT usl_menu_cd
             ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
                     WHERE usl_menu_cd = usl.usl_menu_cd
                         AND usl_type = '접속'
@@ -93,53 +92,13 @@ $sql = " SELECT (ROW_NUMBER() OVER(ORDER BY usl_menu_cd)) AS num
         {$sql_order}
 ";
 
-/*
-$sql = " SELECT usl1.num
-            ,usl1.usl_menu_cd
-            ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
-                    WHERE usl_menu_cd = usl1.usl_menu_cd
-                        AND usl_type = '접속'
-                        AND usl_reg_dt >='{$f_dt}'
-                        AND usl_reg_dt <='{$t_dt}'
-            ) AS usl_cnt_login      
-            ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
-                    WHERE usl_menu_cd = usl1.usl_menu_cd
-                        AND usl_type = '검색'
-                        AND usl_reg_dt >='{$f_dt}'
-                        AND usl_reg_dt <='{$t_dt}'
-            ) AS usl_cnt_search
-            ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
-                    WHERE usl_menu_cd = usl1.usl_menu_cd
-                        AND usl_type = '등록'
-                        AND usl_reg_dt >='{$f_dt}'
-                        AND usl_reg_dt <='{$t_dt}'
-            ) AS usl_cnt_register
-            ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
-                    WHERE usl_menu_cd = usl1.usl_menu_cd
-                        AND usl_type = '수정'
-                        AND usl_reg_dt >='{$f_dt}'
-                        AND usl_reg_dt <='{$t_dt}'
-            ) AS usl_cnt_modify
-            ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
-                    WHERE usl_menu_cd = usl1.usl_menu_cd
-                        AND usl_type = '삭제'
-                        AND usl_reg_dt >='{$f_dt}'
-                        AND usl_reg_dt <='{$t_dt}'
-            ) AS usl_cnt_delete
-    FROM
-    (
-        SELECT (ROW_NUMBER() OVER(ORDER BY usl_menu_cd)) AS num
-            ,usl_menu_cd
-            ,usl_type    
-        {$sql_common}
-        {$sql_search}
-        {$sql_group}
-        {$sql_order}
-    ) AS usl1
-";
-*/
 // echo $sql;
 $result = sql_query($sql,1);
+
+$rows = 100;
+$count = sql_fetch_array( sql_query(" SELECT FOUND_ROWS() as total ") );
+$total_count = $count['total'];
+$total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 
 $colspan = 7;
 ?>
@@ -189,6 +148,8 @@ $colspan = 7;
         for($i=0;$row=sql_fetch_array($result);$i++){
             $tr_bg = ($no % 2 == 0)?'tr_even':'';
             // print_r2($row);
+            $list_num = $total_count - ($page - 1) * $rows;
+            $row['num'] = $list_num - $i;
         ?>
         <tr class="<?=$tr_bg?>">
             <td class="td_no"><?=$row['num']?></td>
