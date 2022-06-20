@@ -5,9 +5,12 @@ if (!defined('_GNUBOARD_')) exit;
 ${'active_'.$g5['file_name']} = ' btn_top_menu_active';
 
 // 최고관리자인 경우만
-if($member['mb_level']>=9) {
+if($member['mb_level']>=10) {
     $sub_title_list = ' <a href="'.G5_ADMIN_URL.'/shop_admin/configform.php" class="btn_top_menu '.$active_term_list.'">쇼핑몰설정</a>
                         <a href="'.G5_ADMIN_URL.'/shop_admin/bannerlist.php" class="btn_top_menu '.$active_order_list.'">배너관리</a>
+    ';
+    $sub_title_list .= '
+        <a href="./stat_user_log.php" class="btn_top_menu '.$active_stat_user_log.'">사용자로그통계</a>
     ';
 }
 

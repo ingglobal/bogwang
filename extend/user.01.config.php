@@ -45,6 +45,8 @@ define('G5_USER_ADMIN_SQL_PATH',   		    G5_ADMIN_PATH.'/'.G5_USER_ADMIN_DIR.'/s
 define('G5_USER_ADMIN_SQL_URL',   		    G5_ADMIN_URL.'/'.G5_USER_ADMIN_DIR.'/sql');
 define('G5_USER_ADMIN_TEST_PATH',   		G5_ADMIN_PATH.'/'.G5_USER_ADMIN_DIR.'/test');
 define('G5_USER_ADMIN_TEST_URL',   		    G5_ADMIN_URL.'/'.G5_USER_ADMIN_DIR.'/test');
+define('G5_USER_ADMIN_SQLS_PATH',   		G5_ADMIN_PATH.'/'.G5_USER_ADMIN_DIR.'/'.'sqls');
+define('G5_USER_ADMIN_SQLS_URL',    		G5_ADMIN_URL.'/'.G5_USER_ADMIN_DIR.'/'.'sqls');
 define('G5_USER_ADMIN_MOBILE_PATH',         G5_USER_ADMIN_PATH.'/'.G5_MOBILE_DIR);
 define('G5_USER_ADMIN_MOBILE_URL',          G5_USER_ADMIN_URL.'/'.G5_MOBILE_DIR);
 define('G5_USER_ADMIN_MOBILE_AJAX_PATH',    G5_USER_ADMIN_PATH.'/'.G5_MOBILE_DIR.'/'.G5_AJAX_DIR);
@@ -94,6 +96,7 @@ $g5['mywidget_table']               = USER_TABLE_PREFIX.'mywidget';
 $g5['mywidget_option_table']        = USER_TABLE_PREFIX.'mywidget_option';
 $g5['widget_table']                 = USER_TABLE_PREFIX.'widget';
 $g5['widget_option_table']          = USER_TABLE_PREFIX.'widget_option';
+$g5['user_log_table'] 				= USER_TABLE_PREFIX.'user_log';
 
 // kosmo 인증키
 $g5['kosmo_erp_crtfckey'] = '';

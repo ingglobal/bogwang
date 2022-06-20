@@ -45,6 +45,13 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 		</colgroup>
 		<tbody>
 		<tr>
+			<th scope="row">스마트공장<br>사후관리로그 API Key값</th>
+			<td colspan="3">
+				<?php echo help('ex) $5$API$3Ue8EDeh9uh5SBT98qSOmiuz636aFqZyV5aMgFmL4rD') ?>
+				<input type="text" name="set_userlog_crtfckey" value="<?php echo $g5['setting']['set_userlog_crtfckey'] ?>" id="set_userlog_crtfckey" required class="required frm_input" style="width:60%;">
+			</td>
+		</tr>
+		<tr>
 			<th scope="row">디폴트상태값</th>
 			<td colspan="3">
 				<?php echo help('pending=대기,auto-draft=자동저장,ok=정상,hide=숨김,trash=삭제') ?>
