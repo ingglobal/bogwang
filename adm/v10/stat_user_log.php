@@ -55,45 +55,64 @@ $sql_group = " GROUP BY usl_menu_cd ";
 
 $sql_order = " ORDER BY {$sst} {$sod} {$sst2} {$sod2} ";
 
-$sql = " SELECT usl_menu_cd
+
+$sql = " SELECT * FROM {$g5['user_log_table']}
+            {$sql_search}
+            {$sql_order}
+";
+
+$sql2 = " SELECT 
+            usl_menu_cd
             ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
-                    WHERE usl_menu_cd = usl.usl_menu_cd
+                    WHERE usl_menu_cd = ust.usl_menu_cd
                         AND usl_type = '접속'
                         AND usl_reg_dt >='{$f_dt}'
                         AND usl_reg_dt <='{$t_dt}'
             ) AS usl_cnt_login      
             ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
-                    WHERE usl_menu_cd = usl.usl_menu_cd
+                    WHERE usl_menu_cd = ust.usl_menu_cd
                         AND usl_type = '검색'
                         AND usl_reg_dt >='{$f_dt}'
                         AND usl_reg_dt <='{$t_dt}'
             ) AS usl_cnt_search      
             ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
-                    WHERE usl_menu_cd = usl.usl_menu_cd
+                    WHERE usl_menu_cd = ust.usl_menu_cd
                         AND usl_type = '등록'
                         AND usl_reg_dt >='{$f_dt}'
                         AND usl_reg_dt <='{$t_dt}'
             ) AS usl_cnt_register      
             ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
-                    WHERE usl_menu_cd = usl.usl_menu_cd
+                    WHERE usl_menu_cd = ust.usl_menu_cd
                         AND usl_type = '수정'
                         AND usl_reg_dt >='{$f_dt}'
                         AND usl_reg_dt <='{$t_dt}'
             ) AS usl_cnt_modify      
             ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
-                    WHERE usl_menu_cd = usl.usl_menu_cd
+                    WHERE usl_menu_cd = ust.usl_menu_cd
                         AND usl_type = '삭제'
                         AND usl_reg_dt >='{$f_dt}'
                         AND usl_reg_dt <='{$t_dt}'
-            ) AS usl_cnt_delete     
-        {$sql_common}
-        {$sql_search}
+            ) AS usl_cnt_delete      
+            ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
+                    WHERE usl_menu_cd = ust.usl_menu_cd
+                        AND usl_type = '기타'
+                        AND usl_reg_dt >='{$f_dt}'
+                        AND usl_reg_dt <='{$t_dt}'
+            ) AS usl_cnt_etc      
+            ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
+                    WHERE usl_menu_cd = ust.usl_menu_cd
+                        AND usl_type = '종료'
+                        AND usl_reg_dt >='{$f_dt}'
+                        AND usl_reg_dt <='{$t_dt}'
+            ) AS usl_cnt_end
+        FROM (
+            {$sql}
+        ) AS ust
+        LEFT JOIN {$g5['member_table']} AS mb ON ust.mb_id = mb.mb_id
         {$sql_group}
-        {$sql_order}
 ";
-
-// echo $sql;
-$result = sql_query($sql,1);
+// echo $sql2;
+$result = sql_query($sql2,1);
 
 $rows = 100;
 $count = sql_fetch_array( sql_query(" SELECT FOUND_ROWS() as total ") );
@@ -134,22 +153,25 @@ $colspan = 7;
         <thead>
         <tr>
             <th scope="col">번호</th>
-            <th scope="col">메뉴</th>
+            <th scope="col" style="width:150px;">메뉴</th>
             <th scope="col">접속</th>
             <th scope="col">등록</th>
             <th scope="col">검색</th>
             <th scope="col">수정</th>
             <th scope="col">삭제</th>
+            <th scope="col">종료</th>
+            <th scope="col">기타</th>
         </tr>
         </thead>
         <tbody>
         <?php
         $no = 0;
+        // print_r2($rows);
         for($i=0;$row=sql_fetch_array($result);$i++){
             $tr_bg = ($no % 2 == 0)?'tr_even':'';
             // print_r2($row);
-            $list_num = $total_count - ($page - 1) * $rows;
-            $row['num'] = $list_num - $i;
+            // $list_num = $total_count - ($page - 1) * $rows;
+            $row['num'] = $i+1;
         ?>
         <tr class="<?=$tr_bg?>">
             <td class="td_no"><?=$row['num']?></td>
@@ -170,6 +192,12 @@ $colspan = 7;
             </td>
             <td class="td_usl_cnt_delete">
                 <?=(($row['usl_cnt_delete'])?$row['usl_cnt_delete']:'')?>
+            </td>
+            <td class="td_usl_cnt_end">
+                <?=(($row['usl_cnt_end'])?$row['usl_cnt_end']:'')?>
+            </td>
+            <td class="td_usl_cnt_etc">
+                <?=(($row['usl_cnt_etc'])?$row['usl_cnt_etc']:'')?>
             </td>
         </tr>
         <?php }

@@ -2213,8 +2213,8 @@ function send_kosmo_log(){
 	if(!$is_member)
 		return;
 
-	if(!$g5['setting']['set_userlog_crtfckey'])
-		return;
+	// if(!$g5['setting']['set_userlog_crtfckey'])
+	// 	return;
 
 	if(!$member['mb_id'])
 		return;
@@ -2229,7 +2229,7 @@ function send_kosmo_log(){
 
 	// print_r2($access_menu_cd);exit;
 
-	$user_status = '';
+	$user_status = '기타';
 	if(preg_match('/update$/i',$g5['file_name'])){
 		if(!$w) $user_status = '등록';
 		else if($w == 'u') $user_status = '수정';
@@ -2264,27 +2264,28 @@ function send_kosmo_log(){
 		'dataUsgqty' => ''
 	);
 	// print_r3($darr);exit;
-	$opt = array(
-		'http' => array(
-			'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-			'method' => 'POST',
-			'content' => http_build_query($darr)
-		)
-	);
-	$_opt = json_encode($opt);
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-	curl_setopt($ch, CURLOPT_POST, true);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $_opt);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	$result = curl_exec($ch);
-	/*
-	$context = stream_context_create($opt); //데이터 가공
-	$result = file_get_contents($url, false, $context); //전송 ~ 결과값 반환
-	*/
-	$data = json_decode($result, true);
-
+	if($g5['setting']['set_userlog_crtfckey']){
+		$opt = array(
+			'http' => array(
+				'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+				'method' => 'POST',
+				'content' => http_build_query($darr)
+			)
+		);
+		$_opt = json_encode($opt);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $_opt);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$result = curl_exec($ch);
+		/*
+		$context = stream_context_create($opt); //데이터 가공
+		$result = file_get_contents($url, false, $context); //전송 ~ 결과값 반환
+		*/
+		$data = json_decode($result, true);
+	}
 	//위의 정보를 다시 epcs DB서버 g5_5_user_log테이블에 저장한다.
 	$sql = " INSERT INTO {$g5['user_log_table']} SET
 			mb_id = '{$member['mb_id']}',
