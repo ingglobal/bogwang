@@ -95,12 +95,6 @@ $sql2 = " SELECT
             ) AS usl_cnt_delete      
             ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
                     WHERE usl_menu_cd = ust.usl_menu_cd
-                        AND usl_type = '기타'
-                        AND usl_reg_dt >='{$f_dt}'
-                        AND usl_reg_dt <='{$t_dt}'
-            ) AS usl_cnt_etc      
-            ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
-                    WHERE usl_menu_cd = ust.usl_menu_cd
                         AND usl_type = '종료'
                         AND usl_reg_dt >='{$f_dt}'
                         AND usl_reg_dt <='{$t_dt}'
@@ -119,7 +113,7 @@ $count = sql_fetch_array( sql_query(" SELECT FOUND_ROWS() as total ") );
 $total_count = $count['total'];
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 
-$colspan = 7;
+$colspan = 8;
 ?>
 <style>
 #container{min-width:1800px !important;}
@@ -160,7 +154,6 @@ $colspan = 7;
             <th scope="col">수정</th>
             <th scope="col">삭제</th>
             <th scope="col">종료</th>
-            <th scope="col">기타</th>
         </tr>
         </thead>
         <tbody>
@@ -195,9 +188,6 @@ $colspan = 7;
             </td>
             <td class="td_usl_cnt_end">
                 <?=(($row['usl_cnt_end'])?$row['usl_cnt_end']:'')?>
-            </td>
-            <td class="td_usl_cnt_etc">
-                <?=(($row['usl_cnt_etc'])?$row['usl_cnt_etc']:'')?>
             </td>
         </tr>
         <?php }

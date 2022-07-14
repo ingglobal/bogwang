@@ -2208,16 +2208,8 @@ function form_tag($name='',$f=array(),$w=''){
 //KOSMO에 log데이터 전송 함수
 if(!function_exists('send_kosmo_log')){
 function send_kosmo_log(){
-	global $g5, $board, $sub_menu, $is_member, $member, $w, $stx, $mb;
+	global $g5, $board, $sub_menu, $is_member, $member, $w, $sfl, $stx, $mb;
 
-	if(!$is_member)
-		return;
-
-	// if(!$g5['setting']['set_userlog_crtfckey'])
-	// 	return;
-
-	if(!$member['mb_id'])
-		return;
 
 	if($board['bo_1']){
 		$access_menu_cd = $board['bo_1'];
@@ -2228,31 +2220,32 @@ function send_kosmo_log(){
 	}
 
 	// print_r2($access_menu_cd);exit;
-
-	$user_status = '기타';
+	$user_status = '';
 	if(preg_match('/update$/i',$g5['file_name'])){
 		if(!$w) $user_status = '등록';
 		else if($w == 'u') $user_status = '수정';
 		else if($w == 'd') $user_status = '삭제';
 	}
 	else if(preg_match('/list$/i',$g5['file_name']) || preg_match('/board$/i',$g5['file_name'])){
-		if($stx) $user_status = '검색';
+		if($stx || $sfl || count($_GET)) $user_status = '검색';
 	}
 	else{
-		if($g5['file_name'] == 'login_check'){
+		// print_r2($g5['file_name'].'-in');
+		if($g5['file_name'] === 'login_check' && $mb['mb_id']){
 			// print_r2($member);exit;
 			$user_status = '접속';
 		}
-		else if($g5['file_name'] == 'logout'){
+		else if($g5['file_name'] === 'logout'){
 			// print_r2($g5);exit;
 			$user_status = '종료';
 		}
 	}
-	// print_r2($g5);exit;
+	
 	// print_r2($user_status);exit;
 	if(!$user_status)
 		return;
-
+	
+	// print_r2($user_status);exit;
 	$url = 'https://log.smart-factory.kr/apisvc/sendLogData.json';
 
 	$darr = array(

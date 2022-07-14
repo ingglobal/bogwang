@@ -48,16 +48,8 @@ user.02.function.php
 //KOSMO에 log데이터 전송 함수 정의
 if(!function_exists('send_kosmo_log')){
 function send_kosmo_log(){
-	global $g5, $board, $sub_menu, $is_member, $member, $w, $stx, $mb;
+	global $g5, $board, $sub_menu, $is_member, $member, $w, $sfl, $stx, $mb;
 
-	if(!$is_member)
-		return;
-
-	if(!$g5['setting']['set_userlog_crtfckey'])
-		return;
-
-	if(!$member['mb_id'])
-		return;
 
 	if($board['bo_1']){
 		$access_menu_cd = $board['bo_1'];
@@ -68,7 +60,6 @@ function send_kosmo_log(){
 	}
 
 	// print_r2($access_menu_cd);exit;
-
 	$user_status = '';
 	if(preg_match('/update$/i',$g5['file_name'])){
 		if(!$w) $user_status = '등록';
@@ -76,23 +67,25 @@ function send_kosmo_log(){
 		else if($w == 'd') $user_status = '삭제';
 	}
 	else if(preg_match('/list$/i',$g5['file_name']) || preg_match('/board$/i',$g5['file_name'])){
-		if($stx) $user_status = '검색';
+		if($stx || $sfl || count($_GET)) $user_status = '검색';
 	}
 	else{
-		if($g5['file_name'] == 'login_check'){
+		// print_r2($g5['file_name'].'-in');
+		if($g5['file_name'] === 'login_check' && $mb['mb_id']){
 			// print_r2($member);exit;
 			$user_status = '접속';
 		}
-		else if($g5['file_name'] == 'logout'){
+		else if($g5['file_name'] === 'logout'){
 			// print_r2($g5);exit;
 			$user_status = '종료';
 		}
 	}
-	// print_r2($g5);exit;
+	
 	// print_r2($user_status);exit;
 	if(!$user_status)
 		return;
-
+	
+	// print_r2($user_status);exit;
 	$url = 'https://log.smart-factory.kr/apisvc/sendLogData.json';
 
 	$darr = array(
@@ -104,27 +97,28 @@ function send_kosmo_log(){
 		'dataUsgqty' => ''
 	);
 	// print_r3($darr);exit;
-	$opt = array(
-		'http' => array(
-			'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-			'method' => 'POST',
-			'content' => http_build_query($darr)
-		)
-	);
-	$_opt = json_encode($opt);
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-	curl_setopt($ch, CURLOPT_POST, true);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $_opt);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	$result = curl_exec($ch);
-	/*
-	$context = stream_context_create($opt); //데이터 가공
-	$result = file_get_contents($url, false, $context); //전송 ~ 결과값 반환
-	*/
-	$data = json_decode($result, true);
-
+	if($g5['setting']['set_userlog_crtfckey']){
+		$opt = array(
+			'http' => array(
+				'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+				'method' => 'POST',
+				'content' => http_build_query($darr)
+			)
+		);
+		$_opt = json_encode($opt);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $_opt);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$result = curl_exec($ch);
+		/*
+		$context = stream_context_create($opt); //데이터 가공
+		$result = file_get_contents($url, false, $context); //전송 ~ 결과값 반환
+		*/
+		$data = json_decode($result, true);
+	}
 	//위의 정보를 다시 epcs DB서버 g5_5_user_log테이블에 저장한다.
 	$sql = " INSERT INTO {$g5['user_log_table']} SET
 			mb_id = '{$member['mb_id']}',
