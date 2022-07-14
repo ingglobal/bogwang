@@ -113,7 +113,7 @@ $count = sql_fetch_array( sql_query(" SELECT FOUND_ROWS() as total ") );
 $total_count = $count['total'];
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 
-$colspan = 8;
+$colspan = 7;
 ?>
 <style>
 #container{min-width:1800px !important;}
@@ -152,7 +152,6 @@ $colspan = 8;
             <th scope="col">등록</th>
             <th scope="col">검색</th>
             <th scope="col">수정</th>
-            <th scope="col">삭제</th>
             <th scope="col">종료</th>
         </tr>
         </thead>
@@ -182,9 +181,6 @@ $colspan = 8;
             </td>
             <td class="td_usl_cnt_modify">
                 <?=(($row['usl_cnt_modify'])?$row['usl_cnt_modify']:'')?>
-            </td>
-            <td class="td_usl_cnt_delete">
-                <?=(($row['usl_cnt_delete'])?$row['usl_cnt_delete']:'')?>
             </td>
             <td class="td_usl_cnt_end">
                 <?=(($row['usl_cnt_end'])?$row['usl_cnt_end']:'')?>
