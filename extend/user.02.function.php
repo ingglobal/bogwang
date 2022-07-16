@@ -2319,6 +2319,44 @@ function category_tree_array($cat_code){
     return $cat_arr;
 }
 }
+
+// 특정 개월만큼 개월수 만큼 개월수만큼 년-월 년월 을 표시
+if(!function_exists('months_range')){
+function months_range($cur_date,$mcnt,$sort='desc'){
+	$ym = substr($cur_date,0,7);
+	$ym_arr = explode('-',$ym);
+	$y = $ym_arr[0];
+	$m = $ym_arr[1];
+	$int_m = (int) $m;
+	$cnt_y = $y;
+	$cnt_m = $int_m;
+	$ym_array = array();
+	$ym_array_reverse = array();
+	for($c=0;$c<$mcnt;$c++){
+		array_push($ym_array,$cnt_y.'-'.sprintf("%02d",$cnt_m));
+		$cnt_y = ($cnt_m == 1) ? $cnt_y - 1 : $cnt_y;
+		$cnt_m = ($cnt_m == 1) ? 12 : $cnt_m - 1;
+	}
+	if($sort == 'desc' || $sort == 'DESC')
+		return $ym_array;
+	else
+		return array_reverse($ym_array);
+}
+}
+
+// 두 날짜 두날짜 사이의 날수차이 시간차이 시간수차이
+if(!function_exists('two_days_num')){
+function two_days_num($fromDay,$toDay,$type='d'){ //$type : 'd' 날수 , 'h' 시간 
+	$start_date = strtotime($fromDay);//날짜계산을 위해 string날짜를 time으로 변경
+	$end_date = strtotime($toDay);//날짜계산을 위해 string날짜를 time으로 변경
+	$diffTime = $end_date - $start_date;
+	$diffdays = floor($diffTime/60/60/24);
+	$diffhours = floor($diffTime/60/60);
+
+	return ($type=='h')?$diffhours:$diffdays;
+}
+}
+
 //
 
 if(!function_exists('tmp_test')){

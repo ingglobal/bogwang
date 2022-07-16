@@ -1,32 +1,26 @@
 <?php
 include('./_common.php');
-
+/*
+'910100' : 마스터대시보드
+'915110' : 사원정보
+'915120' : 거래처정보
+'915125' : 제품카테고리
+'915130' : 제품사양(BOM)
+'915165' : 공제시간설정
+'920100' : 수주관리
+'920110' : 출하관리
+'930100' : 생산계획(제품별)
+'945115' : 완제품제고관리
+*/
 $menus = array(
-    '910100'
-    ,'915125'
-    ,'915130'
-    ,'915145'
-    ,'915115'
-    ,'920100'
+    '920100'
     ,'920110'
-    ,'925100'
-    ,'925180'
-    ,'925120'
-    ,'925130'
-    ,'925230'
     ,'930100'
-    ,'930105'
-    ,'945110'
     ,'945115'
-    ,'945118'
-    ,'950100'
-    ,'950110'
-    ,'955400'
-    ,'955500'
-    ,'960100'
 );
-// array_rand($menus,1);
 
+// array_rand($menus,1);
+/*
 $mbs = array(
     'kbw'
     ,'kyh'
@@ -39,12 +33,18 @@ $mbs = array(
     ,'ktw'
     ,'kes'
 );
+*/
+$mbs = array(
+    'kbw'
+    ,'kyh'
+    ,'rjs'
+    ,'rhy'
+    ,'khs'
+);
 // array_rand($mbs,1);
 
 $types = array(
-    '접속'
-    ,'종료'
-    ,'등록'
+    '등록'
     ,'수정'
     ,'검색'
 );
@@ -67,7 +67,7 @@ $sql = " INSERT INTO g5_tblname SET
 */
 
 $insert_strs = '';
-for($i=0;$i<100;$i++){
+for($i=0;$i<600;$i++){
     $insert_strs .= ($insert_strs === '') ? " ( '".$mbs[array_rand($mbs,1)]."','".$menus[array_rand($menus,1)]."','".$types[array_rand($types,1)]."', FROM_UNIXTIME(FLOOR(unix_timestamp('2022-01-05 00:00:00')+(RAND()*(unix_timestamp('2022-07-14 00:00:00')-unix_timestamp('2022-01-05 00:00:00'))))) ) " : " ,( '".$mbs[array_rand($mbs,1)]."','".$menus[array_rand($menus,1)]."','".$types[array_rand($types,1)]."', FROM_UNIXTIME(FLOOR(unix_timestamp('2022-01-05 00:00:00')+(RAND()*(unix_timestamp('2022-07-14 00:00:00')-unix_timestamp('2022-01-05 00:00:00'))))) ) ";
 }
 

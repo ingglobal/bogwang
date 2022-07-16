@@ -7,8 +7,11 @@ auth_check($auth[$sub_menu],"r");
 // 변수 설정, 필드 구조 및 prefix 추출
 $qstr .= '&ser_mms_idx='.$ser_mms_idx.'&st_date='.$st_date.'&en_date='.$en_date.'&st_time='.$st_time.'&en_time='.$en_time; // 추가로 확장해서 넘겨야 할 변수들
 
+$ym_arr = months_range(date("Y-m-01",G5_SERVER_TIME),7);
+
 // st_date, en_date
-$st_date = $st_date ?: date("Y-m-01",G5_SERVER_TIME);
+// $st_date = $st_date ?: date("Y-m-01",G5_SERVER_TIME);
+$st_date = $st_date ?: date(end($ym_arr).'-01',G5_SERVER_TIME);
 $en_date = $en_date ?: date("Y-m-d");
 $st_time = $st_time ?: '00:00:00';
 $en_time = $en_time ?: '23:59:59';
@@ -46,6 +49,9 @@ $sql = "SELECT table_name, table_rows, auto_increment
 ";
 // echo $sql.'<br>';
 $rs = sql_query($sql,1);
+// print_r2(array_keys($mms)[2]);
+//오븐기 번호변수가 넘어왔으면 그대로 가지고 있고 없으면 오븐기3의 번호를 대입한다.
+$ser_mms_idx = ($ser_mms_idx) ? $ser_mms_idx : array_keys($mms)[2];
 for($i=0;$row=sql_fetch_array($rs);$i++) {
     // echo ($i+1).'<br>';
     $row['ar'] = explode("_",$row['table_name']);
@@ -56,9 +62,10 @@ for($i=0;$row=sql_fetch_array($rs);$i++) {
         // echo $mms[$row['ar'][4]].' / ';
         // echo $g5['set_data_type'][$row['ar'][5]].' / ';
         // echo $row['ar'][4].'_'.$row['ar'][5].'_'.$row['ar'][6].' (mms_idx='.$row['ar'][4].'/.dat_type='.$row['ar'][5].'/dat_no='.$row['ar'][6].')<br>';
-        $ser_mms_idx = ($ser_mms_idx) ?: $row['ar'][4];
+        // $ser_mms_idx = ($ser_mms_idx) ?: $row['ar'][4];
     }
 }
+// print_r2($row['ar']);
 // echo $ser_mms_idx.'<br>';
 
 if(!$ser_mms_idx)
@@ -192,7 +199,7 @@ if ($en_date) {
 if ($where)
     $sql_search = ' WHERE '.implode(' AND ', $where);
 
-
+/*
 $sql = " SELECT SQL_CALC_FOUND_ROWS mms_idx, bom_part_no, itm_date
             , COUNT(itm_idx) AS output_sum
             , MIN(itm_reg_dt) AS itm_ymdhis_min
@@ -202,6 +209,17 @@ $sql = " SELECT SQL_CALC_FOUND_ROWS mms_idx, bom_part_no, itm_date
         GROUP BY itm_date
         ORDER BY itm_date DESC
 ";
+*/
+$sql = " SELECT SQL_CALC_FOUND_ROWS itm_date
+            , COUNT(itm_idx) AS output_sum
+            , MIN(itm_reg_dt) AS itm_ymdhis_min
+            , MAX(itm_reg_dt) AS itm_ymdhis_max
+		{$sql_common}
+		{$sql_search}
+        GROUP BY itm_date
+        ORDER BY itm_date DESC
+";
+
 // echo $sql;
 $result = sql_query($sql,1);
 

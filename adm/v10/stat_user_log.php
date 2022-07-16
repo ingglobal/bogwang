@@ -65,12 +65,6 @@ $sql2 = " SELECT
             usl_menu_cd
             ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
                     WHERE usl_menu_cd = ust.usl_menu_cd
-                        AND usl_type = '접속'
-                        AND usl_reg_dt >='{$f_dt}'
-                        AND usl_reg_dt <='{$t_dt}'
-            ) AS usl_cnt_login      
-            ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
-                    WHERE usl_menu_cd = ust.usl_menu_cd
                         AND usl_type = '검색'
                         AND usl_reg_dt >='{$f_dt}'
                         AND usl_reg_dt <='{$t_dt}'
@@ -86,19 +80,7 @@ $sql2 = " SELECT
                         AND usl_type = '수정'
                         AND usl_reg_dt >='{$f_dt}'
                         AND usl_reg_dt <='{$t_dt}'
-            ) AS usl_cnt_modify      
-            ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
-                    WHERE usl_menu_cd = ust.usl_menu_cd
-                        AND usl_type = '삭제'
-                        AND usl_reg_dt >='{$f_dt}'
-                        AND usl_reg_dt <='{$t_dt}'
-            ) AS usl_cnt_delete      
-            ,( SELECT COUNT(*) FROM {$g5['user_log_table']}
-                    WHERE usl_menu_cd = ust.usl_menu_cd
-                        AND usl_type = '종료'
-                        AND usl_reg_dt >='{$f_dt}'
-                        AND usl_reg_dt <='{$t_dt}'
-            ) AS usl_cnt_end
+            ) AS usl_cnt_modify
         FROM (
             {$sql}
         ) AS ust
@@ -148,11 +130,9 @@ $colspan = 7;
         <tr>
             <th scope="col">번호</th>
             <th scope="col" style="width:150px;">메뉴</th>
-            <th scope="col">접속</th>
             <th scope="col">등록</th>
             <th scope="col">검색</th>
             <th scope="col">수정</th>
-            <th scope="col">종료</th>
         </tr>
         </thead>
         <tbody>
@@ -170,9 +150,6 @@ $colspan = 7;
             <td class="td_usl_menu">
                 <?=$menu_arr[$row['usl_menu_cd']]?>
             </td>
-            <td class="td_usl_cnt_login">
-                <?=(($row['usl_cnt_login'])?$row['usl_cnt_login']:'')?>
-            </td>
             <td class="td_usl_cnt_register">
                 <?=(($row['usl_cnt_register'])?$row['usl_cnt_register']:'')?>
             </td>
@@ -181,9 +158,6 @@ $colspan = 7;
             </td>
             <td class="td_usl_cnt_modify">
                 <?=(($row['usl_cnt_modify'])?$row['usl_cnt_modify']:'')?>
-            </td>
-            <td class="td_usl_cnt_end">
-                <?=(($row['usl_cnt_end'])?$row['usl_cnt_end']:'')?>
             </td>
         </tr>
         <?php }
