@@ -12,7 +12,7 @@ $pt_date = "/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/";
 $pt_dt = "/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\s(0[1-9]|1[0-9]|2[0-3])\:(0[1-9]|[1-5][0-9])\:(0[1-9]|[1-5][0-9])$/";
 
 $adj_mms = ($mms_idx && preg_match($pt_num,$mms_idx)) ? trim($mms_idx) : 48;
-$adj_date = ($itm_date && preg_match($pt_date,$itm_date)) ? trim($itm_date) : '2022-05-11';
+$adj_date = ($itm_date && preg_match($pt_date,$itm_date)) ? trim($itm_date) : '2022-07-16';
 
 $res_sql = " SELECT itm_date
     ,MIN(itm_reg_dt) AS min_dt

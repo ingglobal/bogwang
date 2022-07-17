@@ -10,8 +10,8 @@ $qstr .= '&ser_mms_idx='.$ser_mms_idx.'&st_date='.$st_date.'&en_date='.$en_date.
 $ym_arr = months_range(date("Y-m-01",G5_SERVER_TIME),7);
 
 // st_date, en_date
-// $st_date = $st_date ?: date("Y-m-01",G5_SERVER_TIME);
-$st_date = $st_date ?: date(end($ym_arr).'-01',G5_SERVER_TIME);
+$st_date = $st_date ?: date("Y-m-01",G5_SERVER_TIME);
+// $st_date = $st_date ?: date(end($ym_arr).'-01',G5_SERVER_TIME);
 $en_date = $en_date ?: date("Y-m-d");
 $st_time = $st_time ?: '00:00:00';
 $en_time = $en_time ?: '23:59:59';
